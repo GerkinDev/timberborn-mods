@@ -1,0 +1,9 @@
+{
+  "Name": "Dam walkway",
+  "Version": "1.0.0.1",
+  "Id": "GerkinDev.DamWalkway",
+  "MinimumGameVersion": "1.0.0",
+  "Description": "TODO",
+  "RequiredMods": [
+  ]
+}
