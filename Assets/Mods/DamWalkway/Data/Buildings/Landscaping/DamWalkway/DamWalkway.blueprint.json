@@ -35,7 +35,7 @@
     "Size": {
       "X": 1,
       "Y": 1,
-      "Z": 3
+      "Z": 2
     },
     "Blocks": [
       {
@@ -48,13 +48,6 @@
       {
         "MatterBelow": "Any",
         "Occupations": "All",
-        "Stackable": "None",
-        "OccupyAllBelow": false,
-        "Underground": false
-      },
-      {
-        "MatterBelow": "Any",
-        "Occupations": "Floor, Bottom, Corners, Path, Middle",
         "Stackable": "None",
         "OccupyAllBelow": false,
         "Underground": false
@@ -132,36 +125,25 @@
   "Children": {
     "#Finished": {
       "TimbermeshSpec": {
-        "Model": "Buildings/Landscaping/Floodgate/Floodgate.Folktails.Model"
+        "Model": "Buildings/Landscaping/DamWalkway/DamWalkway.Model"
       },
       "CollidersSpec": {
         "BoxColliders": [
           {
             "Center": {
               "X": 0.5,
-              "Y": 0.510495067,
+              "Y": 0.9,
               "Z": 0.5
             },
             "Size": {
               "X": 0.9,
-              "Y": 1.02099013,
+              "Y": 1.8,
               "Z": 0.9
             }
           }
         ],
         "SphereColliders": [],
-        "CapsuleColliders": [
-          {
-            "Center": {
-              "X": 0.5,
-              "Y": 2.1,
-              "Z": 0.5
-            },
-            "Radius": 0.2,
-            "Height": 1.0,
-            "Axis": "Z"
-          }
-        ]
+        "CapsuleColliders": []
       }
     },
     "#Unfinished": {
@@ -171,68 +153,20 @@
         },
         "ConstructionStage0": {
           "TimbermeshSpec": {
-            "Model": "Buildings/Landscaping/Floodgate/Floodgate.Folktails.ConstructionStage0.Model"
+            "Model": "Buildings/Landscaping/DamWalkway/DamWalkway.Model"
           },
           "CollidersSpec": {
             "BoxColliders": [
               {
                 "Center": {
                   "X": 0.5,
-                  "Y": 0.05,
+                  "Y": 0.6,
                   "Z": 0.5
                 },
                 "Size": {
-                  "X": 1.0,
-                  "Y": 0.1,
-                  "Z": 1.0
-                }
-              },
-              {
-                "Center": {
-                  "X": 0.94,
-                  "Y": 0.6757244,
-                  "Z": 0.05400767
-                },
-                "Size": {
-                  "X": 0.136779755,
-                  "Y": 1.3408854,
-                  "Z": 0.128220215
-                }
-              },
-              {
-                "Center": {
-                  "X": 0.05326183,
-                  "Y": 0.6757244,
-                  "Z": 0.94
-                },
-                "Size": {
-                  "X": 0.136779755,
-                  "Y": 1.3408854,
-                  "Z": 0.128220215
-                }
-              },
-              {
-                "Center": {
-                  "X": 0.05326183,
-                  "Y": 0.6757244,
-                  "Z": 0.05400767
-                },
-                "Size": {
-                  "X": 0.136779755,
-                  "Y": 1.3408854,
-                  "Z": 0.128220215
-                }
-              },
-              {
-                "Center": {
-                  "X": 0.94,
-                  "Y": 0.6757244,
-                  "Z": 0.94
-                },
-                "Size": {
-                  "X": 0.136779755,
-                  "Y": 1.3408854,
-                  "Z": 0.128220215
+                  "X": 0.9,
+                  "Y": 1.2,
+                  "Z": 0.9
                 }
               }
             ],
