@@ -14,9 +14,9 @@ namespace GerkinDev.DamWalkway.Assets.Mods.DamWalkway.Scripts
 			MultiBind<EntityPanelModule>().ToProvider<DamWalkwayEntityPanelModuleProvider>().AsSingleton();
 
 			Bind<DamWalkway>().AsTransient();
-			MultiBind<TemplateModule>().ToProvider(ProvideTemplateModule).AsSingleton();
+			MultiBind<TemplateModule>().ToProvider(_ProvideTemplateModule).AsSingleton();
 		}
-		private static TemplateModule ProvideTemplateModule()
+		private static TemplateModule _ProvideTemplateModule()
 		{
 			var builder = new TemplateModule.Builder();
 			builder.AddDecorator<DamWalkwaySpec, DamWalkway>();

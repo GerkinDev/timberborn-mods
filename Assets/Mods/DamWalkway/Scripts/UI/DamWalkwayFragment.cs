@@ -27,10 +27,10 @@ namespace GerkinDev.DamWalkway.Assets.Mods.DamWalkway.Scripts.UI
 		public VisualElement InitializeFragment()
 		{
 			// Delegates bellow are ran only on update, thus only if the target is set
-			SliderToggleItem sliderToggleItemOpen = _CreateToggleItem(DamWalkway.EState.Open);
-			SliderToggleItem sliderToggleItemClose = _CreateToggleItem(DamWalkway.EState.Close);
-			SliderToggleItem sliderToggleItemPass = _CreateToggleItem(DamWalkway.EState.Pass);
-			SliderToggleItem sliderToggleItemAutomated = _CreateToggleItem(DamWalkway.EState.Automated);
+			var sliderToggleItemOpen = _CreateToggleItem(DamWalkway.EState.Open);
+			var sliderToggleItemClose = _CreateToggleItem(DamWalkway.EState.Close);
+			var sliderToggleItemPass = _CreateToggleItem(DamWalkway.EState.Pass);
+			var sliderToggleItemAutomated = _CreateToggleItem(DamWalkway.EState.Automated);
 			_toggle = _sliderToggleFactory.Create(_modeToggleContainer, sliderToggleItemOpen, sliderToggleItemClose, sliderToggleItemPass, sliderToggleItemAutomated);
 
 			return _root;
@@ -42,12 +42,12 @@ namespace GerkinDev.DamWalkway.Assets.Mods.DamWalkway.Scripts.UI
 			return SliderToggleItem.Create(
 				() => name,
 				$"is-{name}",
-				() => TargetState = state,
-				() => TargetState == state
+				() => _TargetState = state,
+				() => _TargetState == state
 			);
 		}
 
-		private DamWalkway.EState TargetState
+		private DamWalkway.EState _TargetState
 		{
 			get
 			{
@@ -65,13 +65,13 @@ namespace GerkinDev.DamWalkway.Assets.Mods.DamWalkway.Scripts.UI
 					return;
 				}
 				_target.state = value;
-				UpdateLabel();
+				_UpdateLabel();
 			}
 		}
 
-		private void UpdateLabel()
+		private void _UpdateLabel()
 		{
-			_label.text = TargetState.ToString();
+			_label.text = _TargetState.ToString();
 		}
 
 		public void ShowFragment(BaseComponent entity)
@@ -80,7 +80,7 @@ namespace GerkinDev.DamWalkway.Assets.Mods.DamWalkway.Scripts.UI
 			if (component is not null)
 			{
 				_target = component;
-				UpdateLabel();
+				_UpdateLabel();
 				_root.ToggleDisplayStyle(true);
 			}
 		}
