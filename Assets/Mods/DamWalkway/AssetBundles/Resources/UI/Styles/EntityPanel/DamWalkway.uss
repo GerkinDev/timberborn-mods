@@ -1,0 +1,7 @@
+:root {
+}
+
+.unity-toggle__checkmark {
+    width: 40px;
+    height: 40px;
+}
