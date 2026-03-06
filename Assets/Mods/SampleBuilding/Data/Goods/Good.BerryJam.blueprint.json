@@ -1,0 +1,26 @@
+﻿{
+  "GoodSpec": {
+    "Id": "BerryJam",
+    "BackwardCompatibleIds": [],
+    "ConsumptionEffects": [
+    ],
+    "GoodType": "Box",
+    "StockpileVisualization": "Box",
+    "VisibleContainer": "Box",
+    "ContainerColor": {
+      "r": 0.1254902,
+      "g": 0.07058824,
+      "b": 0.4705882,
+      "a": 1.0
+    },
+    "ContainerMaterial": "",
+    "CarryingAnimation": "CarryInHands",
+    "Weight": 1,
+    "GoodGroupId": "Ingredients",
+    "GoodOrder": 8050,
+    "Icon": "Sprites/Goods/BerryJamIcon",
+    "ForceImport": true,
+    "DisplayNameLocKey": "Good.BerryJam.DisplayName",
+    "PluralDisplayNameLocKey": "Good.BerryJam.PluralDisplayName"
+  }
+}

@@ -1,0 +1,30 @@
+﻿{
+  "RecipeSpec": {
+    "Id": "BerryBun",
+    "BackwardCompatibleIds": [],
+    "DisplayLocKey": "Good.BerryBun.PluralDisplayName",
+    "CycleDurationInHours": 2.0,
+    "Ingredients": [
+      {
+        "Id": "WheatFlour",
+        "Amount": 1
+      },
+      {
+        "Id": "BerryJam",
+        "Amount": 1
+      }
+    ],
+    "Products": [
+      {
+        "Id": "BerryBun",
+        "Amount": 4
+      }
+    ],
+    "ProducedSciencePoints": 0,
+    "Fuel": "Log",
+    "CyclesFuelLasts": 10,
+    "FuelCapacity": 5,
+    "CyclesCapacity": 20,
+    "Icon": "Sprites/Goods/BerryBunIcon"
+  }
+}

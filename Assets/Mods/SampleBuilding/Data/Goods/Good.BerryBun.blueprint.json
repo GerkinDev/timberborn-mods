@@ -1,0 +1,34 @@
+﻿{
+  "GoodSpec": {
+    "Id": "BerryBun",
+    "BackwardCompatibleIds": [],
+    "ConsumptionEffects": [
+      {
+        "NeedId": "Hunger",
+        "Points": 0.3
+      },
+      {
+        "NeedId": "BerryBun",
+        "Points": 0.2
+      }
+    ],
+    "GoodType": "Box",
+    "StockpileVisualization": "Box",
+    "VisibleContainer": "Box",
+    "ContainerColor": {
+      "r": 0.9098039,
+      "g": 0.5647059,
+      "b": 0.08235294,
+      "a": 1.0
+    },
+    "ContainerMaterial": "",
+    "CarryingAnimation": "CarryInHands",
+    "Weight": 1,
+    "GoodGroupId": "Food",
+    "GoodOrder": 9090,
+    "Icon": "Sprites/Goods/BerryBunIcon",
+    "ForceImport": true,
+    "DisplayNameLocKey": "Good.BerryBun.DisplayName",
+    "PluralDisplayNameLocKey": "Good.BerryBun.PluralDisplayName"
+  }
+}
