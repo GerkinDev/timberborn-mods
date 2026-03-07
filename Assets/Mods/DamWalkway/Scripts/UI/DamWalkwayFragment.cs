@@ -27,35 +27,35 @@ namespace GerkinDev.DamWalkway.Assets.Mods.DamWalkway.Scripts.UI
 		public VisualElement InitializeFragment()
 		{
 			// Delegates bellow are ran only on update, thus only if the target is set
-			var sliderToggleItemOpen = _CreateToggleItem(DamWalkway.EState.Open);
-			var sliderToggleItemClose = _CreateToggleItem(DamWalkway.EState.Close);
-			var sliderToggleItemPass = _CreateToggleItem(DamWalkway.EState.Pass);
-			var sliderToggleItemAutomated = _CreateToggleItem(DamWalkway.EState.Automated);
+			var sliderToggleItemOpen = _CreateToggleItem(DamWalkway.EMode.Open);
+			var sliderToggleItemClose = _CreateToggleItem(DamWalkway.EMode.Close);
+			var sliderToggleItemPass = _CreateToggleItem(DamWalkway.EMode.Pass);
+			var sliderToggleItemAutomated = _CreateToggleItem(DamWalkway.EMode.Automated);
 			_toggle = _sliderToggleFactory.Create(_modeToggleContainer, sliderToggleItemOpen, sliderToggleItemClose, sliderToggleItemPass, sliderToggleItemAutomated);
 
 			return _root;
 		}
 
-		private SliderToggleItem _CreateToggleItem(DamWalkway.EState state)
+		private SliderToggleItem _CreateToggleItem(DamWalkway.EMode mode)
 		{
-			var name = state.ToString();
+			var name = mode.ToString();
 			return SliderToggleItem.Create(
 				() => name,
 				$"is-{name}",
-				() => _TargetState = state,
-				() => _TargetState == state
+				() => _TargetMode = mode,
+				() => _TargetMode == mode
 			);
 		}
 
-		private DamWalkway.EState _TargetState
+		private DamWalkway.EMode _TargetMode
 		{
 			get
 			{
 				if (_target is null)
 				{
-					return DamWalkway.EState.Open;
+					return DamWalkway.EMode.Open;
 				}
-				return _target.state;
+				return _target.Mode;
 			}
 
 			set
@@ -64,14 +64,14 @@ namespace GerkinDev.DamWalkway.Assets.Mods.DamWalkway.Scripts.UI
 				{
 					return;
 				}
-				_target.state = value;
+				_target.Mode = value;
 				_UpdateLabel();
 			}
 		}
 
 		private void _UpdateLabel()
 		{
-			_label.text = _TargetState.ToString();
+			_label.text = _TargetMode.ToString();
 		}
 
 		public void ShowFragment(BaseComponent entity)

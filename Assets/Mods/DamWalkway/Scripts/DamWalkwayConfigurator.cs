@@ -6,7 +6,7 @@ using Timberborn.TemplateInstantiation;
 namespace GerkinDev.DamWalkway.Assets.Mods.DamWalkway.Scripts
 {
 	[Context("Game")]
-	internal partial class DamWalkwayConfigurator : Configurator
+	internal class DamWalkwayConfigurator : Configurator
 	{
 		protected override void Configure()
 		{
@@ -16,10 +16,20 @@ namespace GerkinDev.DamWalkway.Assets.Mods.DamWalkway.Scripts
 			Bind<DamWalkway>().AsTransient();
 			MultiBind<TemplateModule>().ToProvider(_ProvideTemplateModule).AsSingleton();
 		}
+
+		//class GateNavMeshBlockerInitializer : IDedicatedDecoratorInitializer<DamWalkway, GateNavMeshBlocker>
+		//{
+		//	public void Initialize(DamWalkway subject, GateNavMeshBlocker decorator)
+		//	{
+		//		decorator._
+		//	}
+		//}
 		private static TemplateModule _ProvideTemplateModule()
 		{
 			var builder = new TemplateModule.Builder();
 			builder.AddDecorator<DamWalkwaySpec, DamWalkway>();
+			//builder.
+			//builder.AddDedicatedDecorator<DamWalkwaySpec, GateNavMeshBlocker>(new GateNavMeshBlockerInitializer());
 			return builder.Build();
 		}
 	}

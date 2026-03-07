@@ -1,4 +1,10 @@
 {
+  "TemplateSpec": {
+    "TemplateName": "GerkinDev.DamWalkway.DamWalkway",
+    "BackwardCompatibleTemplateNames": [],
+    "RequiredFeatureToggle": "",
+    "DisablingFeatureToggle": ""
+  },
   "BuildingSpec": {
     "SelectionSoundName": "Floodgate",
     "LoopingSoundName": "",
@@ -25,12 +31,6 @@
     "ConstructionModeModel": "Finished",
     "UndergroundModelDepth": 0
   },
-  "TemplateSpec": {
-    "TemplateName": "GerkinDev.DamWalkway.DamWalkway",
-    "BackwardCompatibleTemplateNames": [],
-    "RequiredFeatureToggle": "",
-    "DisablingFeatureToggle": ""
-  },
   "BlockObjectSpec": {
     "Size": {
       "X": 1,
@@ -40,7 +40,7 @@
     "Blocks": [
       {
         "MatterBelow": "GroundOrStackable",
-        "Occupations": "Bottom, Top, Corners, Path, Middle",
+        "Occupations": "Bottom, Path, Middle",
         "Stackable": "None",
         "OccupyAllBelow": false,
         "Underground": false
@@ -66,17 +66,81 @@
     "Flippable": false
   },
   "BlockObjectNavMeshSettingsSpec": {
-    "NoAutoWalls": false,
+    "NoAutoWalls": true,
     "GenerateFloorsOnStackable": false,
-    "EdgeGroups": [],
+    "EdgeGroups": [
+      {
+        "Cost": 0.0,
+        "Group": {
+          "UseGroup": false,
+          "GroupName": ""
+        },
+        "IsPath": true,
+        "AddedEdges": [
+          {
+            "Start": {
+              "X": 0,
+              "Y": 0,
+              "Z": 0
+            },
+            "End": {
+              "X": 0,
+              "Y": 1,
+              "Z": 0
+            },
+            "IsTwoWay": false
+          },
+          {
+            "Start": {
+              "X": 0,
+              "Y": 0,
+              "Z": 0
+            },
+            "End": {
+              "X": 0,
+              "Y": -1,
+              "Z": 0
+            },
+            "IsTwoWay": false
+          }
+        ]
+      }
+    ],
     "UnblockedCoordinates": [],
-    "BlockedEdges": []
+    "BlockedEdges": [
+      {
+        "Group": "",
+        "Start": {
+          "X": 0,
+          "Y": 0,
+          "Z": 0
+        },
+        "End": {
+          "X": 1,
+          "Y": 0,
+          "Z": 0
+        }
+      },
+      {
+        "Group": "",
+        "Start": {
+          "X": 0,
+          "Y": 0,
+          "Z": 0
+        },
+        "End": {
+          "X": -1,
+          "Y": 0,
+          "Z": 0
+        }
+      }
+    ]
   },
   "PlaceableBlockObjectSpec": {
     "ToolGroupId": "Landscaping",
     "ToolOrder": 30,
     "ToolShape": "Square",
-    "Layout": "Line",
+    "Layout": "Single",
     "CustomPivot": {
       "HasCustomPivot": false,
       "Coordinates": {
@@ -88,34 +152,11 @@
     "CanBeAttachedToTerrainSide": false,
     "DevModeTool": false
   },
-  "FloodgateSpec": {
-    "MaxHeight": 1
-  },
-  "WaterObstacleSpec": {
-    "Coordinates": [
-      {
-        "X": 0,
-        "Y": 0
-      }
-    ]
-  },
-  "FloodgateAnimationControllerSpec": {
-    "GateName": "#Floodgate1x1FolktailsMisc"
-  },
   "LabeledEntitySpec": {
     "DisplayNameLocKey": "GerkinDev.DamWalkway.Building.DamWalkway.DisplayName",
     "DescriptionLocKey": "GerkinDev.DamWalkway.Building.DamWalkway.Description",
     "FlavorDescriptionLocKey": "GerkinDev.DamWalkway.Building.DamWalkway.FlavorDescription",
     "Icon": "Buildings/Landscaping/Floodgate/FloodgateIcon"
-  },
-  "FinishableHorizontalWaterObstacleSpec": {
-    "Obstacles": [
-      {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      }
-    ]
   },
   "ConstructionSiteProgressVisualizerSpec": {
     "ProgressThresholds": [
@@ -147,8 +188,46 @@
         "Y": 0.0,
         "Z": 0.0
       }
+    },
+    "OpenTime": 0.0,
+    "CloseTime": 0.0,
+    "PathStart": {
+      "X": 0,
+      "Y": -1,
+      "Z": 0
+    },
+    "PathCenter": {
+      "X": 0,
+      "Y": 0,
+      "Z": 0
+    },
+    "PathEnd": {
+      "X": 0,
+      "Y": 1,
+      "Z": 0
+    },
+    "WaterBlockingPositions": [
+      {
+        "X": 0,
+        "Y": 0,
+        "Z": 1
+      }
+    ],
+    "WaterDynamicPosition": {
+      "X": 0,
+      "Y": 0,
+      "Z": 0
     }
   },
+  "PathSpec": {
+    "MainPathCoordinates": {
+      "X": 0,
+      "Y": 0,
+      "Z": 0
+    }
+  },
+  "BlockObjectWithPathRangeSpec": {},
+  "MergeableObjectModelEnforcerSpec": {},
   "Children": {
     "#Finished": {
       "TimbermeshSpec": {

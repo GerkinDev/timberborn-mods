@@ -1,4 +1,5 @@
-﻿using Timberborn.BlueprintSystem;
+﻿using System.Collections.Immutable;
+using Timberborn.BlueprintSystem;
 using UnityEngine;
 
 namespace GerkinDev.DamWalkway.Assets.Mods.DamWalkway.Scripts
@@ -9,6 +10,13 @@ namespace GerkinDev.DamWalkway.Assets.Mods.DamWalkway.Scripts
 		[Serialize] public string Anchor { get; set; }
 		[Serialize] public GateTransformSpec OpenTransform { get; init; }
 		[Serialize] public GateTransformSpec CloseTransform { get; init; }
+		[Serialize] public float OpenTime { get; init; }
+		[Serialize] public float CloseTime { get; init; }
+		[Serialize] public Vector3Int PathStart { get; init; }
+		[Serialize] public Vector3Int PathCenter { get; init; }
+		[Serialize] public Vector3Int PathEnd { get; init; }
+		[Serialize] public ImmutableArray<Vector3Int> WaterBlockingPositions { get; init; }
+		[Serialize] public Vector3Int WaterDynamicPosition { get; init; }
 	}
 
 	public record GateTransformSpec
