@@ -1,7 +1,7 @@
 {
   "TemplateSpec": {
-    "TemplateName": "GerkinDev.DamWalkway.DamWalkway",
-    "BackwardCompatibleTemplateNames": [],
+    "TemplateName": "GerkinDev.DamServiceGate.DamServiceGate",
+    "BackwardCompatibleTemplateNames": ["GerkinDev.DamWalkway.DamWalkway"],
     "RequiredFeatureToggle": "",
     "DisablingFeatureToggle": ""
   },
@@ -153,9 +153,9 @@
     "DevModeTool": false
   },
   "LabeledEntitySpec": {
-    "DisplayNameLocKey": "GerkinDev.DamWalkway.Building.DamWalkway.DisplayName",
-    "DescriptionLocKey": "GerkinDev.DamWalkway.Building.DamWalkway.Description",
-    "FlavorDescriptionLocKey": "GerkinDev.DamWalkway.Building.DamWalkway.FlavorDescription",
+    "DisplayNameLocKey": "GerkinDev.DamServiceGate.Building.DamServiceGate.DisplayName",
+    "DescriptionLocKey": "GerkinDev.DamServiceGate.Building.DamServiceGate.Description",
+    "FlavorDescriptionLocKey": "GerkinDev.DamServiceGate.Building.DamServiceGate.FlavorDescription",
     "Icon": "Buildings/Landscaping/Floodgate/FloodgateIcon"
   },
   "ConstructionSiteProgressVisualizerSpec": {
@@ -163,7 +163,7 @@
       0.0
     ]
   },
-  "DamWalkwaySpec": {
+  "DamServiceGateSpec": {
     "Anchor": "#GateAnchor",
     "OpenTransform": {
       "Position": {
@@ -251,7 +251,7 @@
   "Children": {
     "#Finished": {
       "TimbermeshSpec": {
-        "Model": "Buildings/Landscaping/DamWalkway/DamWalkway.Model"
+        "Model": "Buildings/Landscaping/DamServiceGate/DamServiceGate.Model"
       },
       "CollidersSpec": {
         "BoxColliders": [
@@ -311,7 +311,7 @@
         },
         "ConstructionStage0": {
           "TimbermeshSpec": {
-            "Model": "Buildings/Landscaping/DamWalkway/DamWalkway.Model"
+            "Model": "Buildings/Landscaping/DamServiceGate/DamServiceGate.Model"
           },
           "CollidersSpec": {
             "BoxColliders": [

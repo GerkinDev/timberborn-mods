@@ -15,7 +15,7 @@ using Timberborn.WaterObjects;
 using Timberborn.WorldPersistence;
 using UnityEngine;
 
-namespace GerkinDev.DamWalkway.Assets.Mods.DamWalkway.Draft
+namespace GerkinDev.DamServiceGate.Assets.Mods.DamServiceGate.Draft
 {
 
 	public class Floodgate : BaseComponent, IAwakableComponent, IFinishedStateListener, IUnfinishedStateListener, IPreviewStateListener, IPersistentEntity, IDuplicable<Floodgate>, IDuplicable, ITerminal

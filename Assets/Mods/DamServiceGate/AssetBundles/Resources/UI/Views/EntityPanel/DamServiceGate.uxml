@@ -1,6 +1,6 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:cui="Timberborn.CoreUI" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <Style src="project://database/Assets/Mods/DamWalkway/AssetBundles/Resources/UI/Styles/EntityPanel/DamWalkway.uss?fileID=7433441132597879392&amp;guid=7c726e23701f19e4798907462759e8d4&amp;type=3#DamWalkway"/>
-    <cui:NineSliceVisualElement name="DamWalkwayFragment" class="entity-sub-panel dam-walkway-fragment bg-sub-box--green" style="align-items: center; align-self: stretch; flex-direction: row;">
+    <Style src="project://database/Assets/Mods/DamServiceGate/AssetBundles/Resources/UI/Styles/EntityPanel/DamServiceGate.uss?fileID=7433441132597879392&amp;guid=7c726e23701f19e4798907462759e8d4&amp;type=3#DamServiceGate"/>
+    <cui:NineSliceVisualElement name="DamServiceGateFragment" class="entity-sub-panel dam-walkway-fragment bg-sub-box--green" style="align-items: center; align-self: stretch; flex-direction: row;">
         <ui:VisualElement name="ModeToggle" style="flex-direction: row;">
             <ui:Toggle label="" value="false" style="width: auto; height: auto;"/>
             <ui:Toggle label=""/>

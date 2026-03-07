@@ -1,12 +1,12 @@
 ﻿using Timberborn.WaterSystem;
 using UnityEngine;
 
-namespace GerkinDev.DamWalkway.Assets.Mods.DamWalkway.Scripts
+namespace GerkinDev.DamServiceGate.Assets.Mods.DamServiceGate.Scripts
 {
 	/// <summary>
 	/// Extracted from <see cref="Timberborn.WaterObjects.WaterObstacle"/>
 	/// </summary>
-	internal partial class DamWalkway
+	internal partial class DamServiceGate
 	{
 		private readonly IWaterService _waterObstacle_waterService;
 		private bool _waterObstacle_wasAdded;

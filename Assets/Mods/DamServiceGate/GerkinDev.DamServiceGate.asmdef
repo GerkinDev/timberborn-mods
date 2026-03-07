@@ -1,6 +1,6 @@
 ﻿{
-    "name": "GerkinDev.DamWalkway",
-    "rootNamespace": "GerkinDev.DamWalkway",
+    "name": "GerkinDev.DamServiceGate",
+    "rootNamespace": "GerkinDev.DamServiceGate",
     "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],

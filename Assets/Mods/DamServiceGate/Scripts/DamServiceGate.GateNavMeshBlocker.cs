@@ -6,12 +6,12 @@ using Timberborn.PathSystem;
 using Timberborn.WalkingSystem;
 using UnityEngine;
 
-namespace GerkinDev.DamWalkway.Assets.Mods.DamWalkway.Scripts
+namespace GerkinDev.DamServiceGate.Assets.Mods.DamServiceGate.Scripts
 {
 	/// <summary>
 	/// Extracted from <see cref="Timberborn.AutomationBuildings.GateNavMeshBlocker"/>
 	/// </summary>
-	internal partial class DamWalkway : IPathConnectionEnforcer
+	internal partial class DamServiceGate : IPathConnectionEnforcer
 	{
 		private readonly INavMeshService _gateNavMeshBlocker_navMeshService;
 		private readonly NavMeshGroupService _gateNavMeshBlocker_navMeshGroupService;

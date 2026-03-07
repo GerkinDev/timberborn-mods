@@ -2,7 +2,7 @@
   "TemplateCollectionSpec": {
     "CollectionId": "Buildings.Folktails",
     "Blueprints#append": [
-      "Buildings/Landscaping/DamWalkway/DamWalkway.blueprint"
+      "Buildings/Landscaping/DamServiceGate/DamServiceGate.blueprint"
     ]
   }
 }

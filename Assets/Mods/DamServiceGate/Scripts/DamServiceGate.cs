@@ -12,11 +12,11 @@ using Timberborn.WaterSystem;
 using Timberborn.WorldPersistence;
 using UnityEngine;
 
-namespace GerkinDev.DamWalkway.Assets.Mods.DamWalkway.Scripts
+namespace GerkinDev.DamServiceGate.Assets.Mods.DamServiceGate.Scripts
 {
-	internal partial class DamWalkway : BaseComponent, IAwakableComponent, IPersistentEntity, IDeletableEntity, IFinishedStateListener, IAutomatableNeeder, ITerminal, IInitializableEntity
+	internal partial class DamServiceGate : BaseComponent, IAwakableComponent, IPersistentEntity, IDeletableEntity, IFinishedStateListener, IAutomatableNeeder, ITerminal, IInitializableEntity
 	{
-		public DamWalkway(INavMeshService navMeshService, NavMeshGroupService navMeshGroupService, IWaterService waterService, IPathService pathService)
+		public DamServiceGate(INavMeshService navMeshService, NavMeshGroupService navMeshGroupService, IWaterService waterService, IPathService pathService)
 		{
 			_gateNavMeshBlocker_navMeshService = navMeshService;
 			_gateNavMeshBlocker_navMeshGroupService = navMeshGroupService;
@@ -57,7 +57,7 @@ namespace GerkinDev.DamWalkway.Assets.Mods.DamWalkway.Scripts
 		}
 
 		#region IAwakableComponent
-		private DamWalkwaySpec _spec;
+		private DamServiceGateSpec _spec;
 		private Automatable _automatable;
 		private BlockObject _blockObject;
 		private Transform _anchor;
@@ -71,7 +71,7 @@ namespace GerkinDev.DamWalkway.Assets.Mods.DamWalkway.Scripts
 			_ = typeof(HaulCandidate);
 			//_ = typeof(Suspension);
 			//_ = typeof(TimbermeshPreviewFactory);
-			_spec = GetComponent<DamWalkwaySpec>();
+			_spec = GetComponent<DamServiceGateSpec>();
 			_automatable = GetComponent<Automatable>();
 			_blockObject = GetComponent<BlockObject>();
 			_anchor = GameObject.FindChildTransform(_spec.Anchor);
@@ -80,7 +80,7 @@ namespace GerkinDev.DamWalkway.Assets.Mods.DamWalkway.Scripts
 		#endregion
 
 		#region IPersistentEntity
-		private static readonly ComponentKey _persistenceKey = new("DamWalkway");
+		private static readonly ComponentKey _persistenceKey = new("DamServiceGate");
 		private static readonly PropertyKey<EMode> _modeKey = new(nameof(_mode));
 
 		public void Load(IEntityLoader entityLoader)

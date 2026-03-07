@@ -2,10 +2,10 @@
 using Timberborn.BlueprintSystem;
 using UnityEngine;
 
-namespace GerkinDev.DamWalkway.Assets.Mods.DamWalkway.Scripts
+namespace GerkinDev.DamServiceGate.Assets.Mods.DamServiceGate.Scripts
 {
 	/// <seealso href="https://github.com/mechanistry/timberborn-modding/wiki/Timberborn-architecture#specs"/>
-	internal record DamWalkwaySpec : ComponentSpec
+	internal record DamServiceGateSpec : ComponentSpec
 	{
 		[Serialize] public string Anchor { get; set; }
 		[Serialize] public GateTransformSpec OpenTransform { get; init; }

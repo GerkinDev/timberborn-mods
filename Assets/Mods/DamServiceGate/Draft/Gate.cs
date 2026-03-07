@@ -13,7 +13,7 @@ using Timberborn.EntitySystem;
 using Timberborn.Persistence;
 using Timberborn.WorldPersistence;
 
-namespace GerkinDev.DamWalkway.Assets.Mods.DamWalkway.Draft
+namespace GerkinDev.DamServiceGate.Assets.Mods.DamServiceGate.Draft
 {
 
 	public class Gate : BaseComponent, IAwakableComponent, IDeletableEntity, IPersistentEntity, IFinishedStateListener, IAutomatableNeeder, IDuplicable<Gate>, IDuplicable, ITerminal

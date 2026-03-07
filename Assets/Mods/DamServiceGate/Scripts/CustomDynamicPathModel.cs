@@ -10,7 +10,7 @@ using Timberborn.PathSystem;
 using Timberborn.TerrainSystem;
 using UnityEngine;
 
-namespace GerkinDev.DamWalkway.Assets.Mods.DamWalkway.Scripts
+namespace GerkinDev.DamServiceGate.Assets.Mods.DamServiceGate.Scripts
 {
 	public class CustomDynamicPathModel : BaseComponent, IAwakableComponent, IModelUpdater
 	{

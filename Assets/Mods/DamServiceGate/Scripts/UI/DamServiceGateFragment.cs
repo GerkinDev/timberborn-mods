@@ -5,20 +5,20 @@ using Timberborn.SingletonSystem;
 using Timberborn.SliderToggleSystem;
 using UnityEngine.UIElements;
 
-namespace GerkinDev.DamWalkway.Assets.Mods.DamWalkway.Scripts.UI
+namespace GerkinDev.DamServiceGate.Assets.Mods.DamServiceGate.Scripts.UI
 {
-	internal class DamWalkwayFragment : IEntityPanelFragment, ILoadableSingleton
+	internal class DamServiceGateFragment : IEntityPanelFragment, ILoadableSingleton
 	{
 		private readonly VisualElementLoader _visualElementLoader;
 		private readonly SliderToggleFactory _sliderToggleFactory;
 		private VisualElement _root;
 		private SliderToggle _toggle;
-		private DamWalkway? _target;
+		private DamServiceGate? _target;
 
 		private Label? _label;
 		private VisualElement? _modeToggleContainer;
 
-		public DamWalkwayFragment(VisualElementLoader visualElementLoader, SliderToggleFactory sliderToggleFactory)
+		public DamServiceGateFragment(VisualElementLoader visualElementLoader, SliderToggleFactory sliderToggleFactory)
 		{
 			_visualElementLoader = visualElementLoader;
 			_sliderToggleFactory = sliderToggleFactory;
@@ -27,16 +27,16 @@ namespace GerkinDev.DamWalkway.Assets.Mods.DamWalkway.Scripts.UI
 		public VisualElement InitializeFragment()
 		{
 			// Delegates bellow are ran only on update, thus only if the target is set
-			var sliderToggleItemOpen = _CreateToggleItem(DamWalkway.EMode.Open);
-			var sliderToggleItemClose = _CreateToggleItem(DamWalkway.EMode.Close);
-			var sliderToggleItemPass = _CreateToggleItem(DamWalkway.EMode.Pass);
-			var sliderToggleItemAutomated = _CreateToggleItem(DamWalkway.EMode.Automated);
+			var sliderToggleItemOpen = _CreateToggleItem(DamServiceGate.EMode.Open);
+			var sliderToggleItemClose = _CreateToggleItem(DamServiceGate.EMode.Close);
+			var sliderToggleItemPass = _CreateToggleItem(DamServiceGate.EMode.Pass);
+			var sliderToggleItemAutomated = _CreateToggleItem(DamServiceGate.EMode.Automated);
 			_toggle = _sliderToggleFactory.Create(_modeToggleContainer, sliderToggleItemOpen, sliderToggleItemClose, sliderToggleItemPass, sliderToggleItemAutomated);
 
 			return _root;
 		}
 
-		private SliderToggleItem _CreateToggleItem(DamWalkway.EMode mode)
+		private SliderToggleItem _CreateToggleItem(DamServiceGate.EMode mode)
 		{
 			var name = mode.ToString();
 			return SliderToggleItem.Create(
@@ -47,13 +47,13 @@ namespace GerkinDev.DamWalkway.Assets.Mods.DamWalkway.Scripts.UI
 			);
 		}
 
-		private DamWalkway.EMode _TargetMode
+		private DamServiceGate.EMode _TargetMode
 		{
 			get
 			{
 				if (_target is null)
 				{
-					return DamWalkway.EMode.Open;
+					return DamServiceGate.EMode.Open;
 				}
 				return _target.Mode;
 			}
@@ -76,7 +76,7 @@ namespace GerkinDev.DamWalkway.Assets.Mods.DamWalkway.Scripts.UI
 
 		public void ShowFragment(BaseComponent entity)
 		{
-			var component = entity.GetComponent<DamWalkway>();
+			var component = entity.GetComponent<DamServiceGate>();
 			if (component is not null)
 			{
 				_target = component;
@@ -102,7 +102,7 @@ namespace GerkinDev.DamWalkway.Assets.Mods.DamWalkway.Scripts.UI
 
 		public void Load()
 		{
-			_root = _visualElementLoader.LoadVisualElement("EntityPanel/DamWalkway");
+			_root = _visualElementLoader.LoadVisualElement("EntityPanel/DamServiceGate");
 			_label = _root.Q<Label>("ModeLabel");
 			_modeToggleContainer = _root.Q<VisualElement>("ModeToggle");
 			_modeToggleContainer.Clear();
