@@ -1,10 +1,12 @@
 ﻿using Timberborn.Automation;
 using Timberborn.BaseComponentSystem;
 using Timberborn.BlockSystem;
+using Timberborn.Common;
 using Timberborn.EntitySystem;
 using Timberborn.Fields;
 using Timberborn.Hauling;
 using Timberborn.Navigation;
+using Timberborn.PathSystem;
 using Timberborn.Persistence;
 using Timberborn.WaterSystem;
 using Timberborn.WorldPersistence;
@@ -12,14 +14,16 @@ using UnityEngine;
 
 namespace GerkinDev.DamWalkway.Assets.Mods.DamWalkway.Scripts
 {
-	internal partial class DamWalkway : BaseComponent, IAwakableComponent, IPersistentEntity, IDeletableEntity
+	internal partial class DamWalkway : BaseComponent, IAwakableComponent, IPersistentEntity, IDeletableEntity, IFinishedStateListener, IAutomatableNeeder, ITerminal, IInitializableEntity
 	{
-		public DamWalkway(INavMeshService navMeshService, NavMeshGroupService navMeshGroupService, IWaterService waterService)
+		public DamWalkway(INavMeshService navMeshService, NavMeshGroupService navMeshGroupService, IWaterService waterService, IPathService pathService)
 		{
 			_gateNavMeshBlocker_navMeshService = navMeshService;
 			_gateNavMeshBlocker_navMeshGroupService = navMeshGroupService;
 			_waterObstacle_waterService = waterService;
+			_gateNavMeshBlocker_pathService = pathService;
 		}
+
 		internal enum EMode
 		{
 			Open = 0b01,
@@ -35,7 +39,7 @@ namespace GerkinDev.DamWalkway.Assets.Mods.DamWalkway.Scripts
 				if (_mode != value)
 				{
 					_mode = value;
-					UpdateState();
+					_UpdateState();
 				}
 			}
 		}
@@ -56,6 +60,7 @@ namespace GerkinDev.DamWalkway.Assets.Mods.DamWalkway.Scripts
 		private DamWalkwaySpec _spec;
 		private Automatable _automatable;
 		private BlockObject _blockObject;
+		private Transform _anchor;
 
 		public void Awake()
 		{
@@ -64,10 +69,12 @@ namespace GerkinDev.DamWalkway.Assets.Mods.DamWalkway.Scripts
 			_ = typeof(BlockObject);
 			_ = typeof(FarmHouse);
 			_ = typeof(HaulCandidate);
+			//_ = typeof(Suspension);
 			//_ = typeof(TimbermeshPreviewFactory);
 			_spec = GetComponent<DamWalkwaySpec>();
 			_automatable = GetComponent<Automatable>();
 			_blockObject = GetComponent<BlockObject>();
+			_anchor = GameObject.FindChildTransform(_spec.Anchor);
 			_GateNavMeshBlocker_Awake();
 		}
 		#endregion
@@ -97,11 +104,44 @@ namespace GerkinDev.DamWalkway.Assets.Mods.DamWalkway.Scripts
 		}
 		#endregion
 
-		public void UpdateState()
+		#region IFinishedStateListener
+		public void OnEnterFinishedState()
+		{
+			_UpdateState();
+		}
+
+		public void OnExitFinishedState()
+		{
+		}
+		#endregion
+
+		#region IAutomatableNeeder
+		public bool NeedsAutomatable => Mode == EMode.Automated;
+		#endregion
+
+		#region ITerminal
+		public void Evaluate()
+		{
+			if (NeedsAutomatable)
+			{
+				_UpdateState();
+			}
+		}
+		#endregion
+
+		#region IInitializableEntity
+		public void InitializeEntity()
+		{
+			_UpdateState();
+		}
+		#endregion
+
+		private bool _IsOpen => _mode == EMode.Open || _IsOpenByAutomation;
+		private void _UpdateState()
 		{
 			if (_blockObject.IsFinished)
 			{
-				if (_mode == EMode.Open || _IsOpenByAutomation)
+				if (_IsOpen)
 				{
 					Debug.Log("Schedule to open");
 					_GateNavMeshBlocker_Unblock();
@@ -116,6 +156,18 @@ namespace GerkinDev.DamWalkway.Assets.Mods.DamWalkway.Scripts
 					//_gateUpdater.ScheduleToClose(this);
 				}
 			}
+			if (_IsOpen)
+			{
+				_SetAnchorTransform(_spec.OpenTransform);
+			}
+			else
+			{
+				_SetAnchorTransform(_spec.CloseTransform);
+			}
+		}
+		private void _SetAnchorTransform(GateTransformSpec transform)
+		{
+			_anchor.transform.SetLocalPositionAndRotation(transform.Position, Quaternion.Euler(transform.Rotation));
 		}
 	}
 }

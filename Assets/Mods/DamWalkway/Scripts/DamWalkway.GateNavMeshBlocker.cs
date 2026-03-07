@@ -1,5 +1,8 @@
-﻿using Timberborn.BuildingsNavigation;
+﻿using Timberborn.BlockSystem;
+using Timberborn.BuildingsNavigation;
+using Timberborn.Coordinates;
 using Timberborn.Navigation;
+using Timberborn.PathSystem;
 using Timberborn.WalkingSystem;
 using UnityEngine;
 
@@ -8,10 +11,11 @@ namespace GerkinDev.DamWalkway.Assets.Mods.DamWalkway.Scripts
 	/// <summary>
 	/// Extracted from <see cref="Timberborn.AutomationBuildings.GateNavMeshBlocker"/>
 	/// </summary>
-	internal partial class DamWalkway
+	internal partial class DamWalkway : IPathConnectionEnforcer
 	{
 		private readonly INavMeshService _gateNavMeshBlocker_navMeshService;
 		private readonly NavMeshGroupService _gateNavMeshBlocker_navMeshGroupService;
+		private readonly IPathService _gateNavMeshBlocker_pathService;
 		public bool Gate_NavMeshBlocked { get; private set; }
 		private bool _gateNavMeshBlocker_expensiveTraverseCostSet;
 
@@ -30,6 +34,28 @@ namespace GerkinDev.DamWalkway.Assets.Mods.DamWalkway.Scripts
 			{
 				_GateNavMeshBlocker_Unblock();
 			}
+		}
+		#endregion
+
+		#region IPathConnectionEnforcer
+		public bool CanConnectPath(Vector3Int origin, Vector3Int target)
+		{
+			// Verify if the path is on the correct sides (aligned with passage)
+			var direction = origin - target;
+			if (direction != _blockObject.TransformDirection(Direction2D.Down).ToOffset() && direction != _blockObject.TransformDirection(Direction2D.Up).ToOffset())
+			{
+				return false;
+			}
+			// Check if there is some path at positions
+			if (_blockObject.IsIntersecting(Block.FullFrom(origin)))
+			{
+				return _gateNavMeshBlocker_pathService.IsPath(target);
+			}
+			if (_blockObject.IsIntersecting(Block.FullFrom(target)))
+			{
+				return _gateNavMeshBlocker_pathService.IsPath(origin);
+			}
+			return false;
 		}
 		#endregion
 

@@ -14,6 +14,7 @@ namespace GerkinDev.DamWalkway.Assets.Mods.DamWalkway.Scripts
 			MultiBind<EntityPanelModule>().ToProvider<DamWalkwayEntityPanelModuleProvider>().AsSingleton();
 
 			Bind<DamWalkway>().AsTransient();
+			Bind<CustomDynamicPathModel>().AsTransient();
 			MultiBind<TemplateModule>().ToProvider(_ProvideTemplateModule).AsSingleton();
 		}
 
@@ -28,6 +29,7 @@ namespace GerkinDev.DamWalkway.Assets.Mods.DamWalkway.Scripts
 		{
 			var builder = new TemplateModule.Builder();
 			builder.AddDecorator<DamWalkwaySpec, DamWalkway>();
+			builder.AddDecorator<CustomDynamicPathModelSpec, CustomDynamicPathModel>();
 			//builder.
 			//builder.AddDedicatedDecorator<DamWalkwaySpec, GateNavMeshBlocker>(new GateNavMeshBlockerInitializer());
 			return builder.Build();

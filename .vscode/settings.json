@@ -3,5 +3,6 @@
 		"explorer.fileNesting.patterns": {
 			"*": "${capture}.meta",
 		},
-		"search.useIgnoreFiles": false
+		"search.useIgnoreFiles": false,
+		"dotnet.preferCSharpExtension": true
 }
