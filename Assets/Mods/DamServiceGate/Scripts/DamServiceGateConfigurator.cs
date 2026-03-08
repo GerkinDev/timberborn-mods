@@ -14,24 +14,19 @@ namespace GerkinDev.DamServiceGate.Assets.Mods.DamServiceGate.Scripts
 			MultiBind<EntityPanelModule>().ToProvider<DamServiceGateEntityPanelModuleProvider>().AsSingleton();
 
 			Bind<DamServiceGate>().AsTransient();
+			Bind<NavMeshBlocker>().AsTransient();
+			Bind<WaterBlocker>().AsTransient();
 			Bind<CustomDynamicPathModel>().AsTransient();
 			MultiBind<TemplateModule>().ToProvider(_ProvideTemplateModule).AsSingleton();
 		}
 
-		//class GateNavMeshBlockerInitializer : IDedicatedDecoratorInitializer<DamServiceGate, GateNavMeshBlocker>
-		//{
-		//	public void Initialize(DamServiceGate subject, GateNavMeshBlocker decorator)
-		//	{
-		//		decorator._
-		//	}
-		//}
 		private static TemplateModule _ProvideTemplateModule()
 		{
 			var builder = new TemplateModule.Builder();
 			builder.AddDecorator<DamServiceGateSpec, DamServiceGate>();
+			builder.AddDecorator<DamServiceGate, NavMeshBlocker>();
+			builder.AddDecorator<DamServiceGate, WaterBlocker>();
 			builder.AddDecorator<CustomDynamicPathModelSpec, CustomDynamicPathModel>();
-			//builder.
-			//builder.AddDedicatedDecorator<DamServiceGateSpec, GateNavMeshBlocker>(new GateNavMeshBlockerInitializer());
 			return builder.Build();
 		}
 	}

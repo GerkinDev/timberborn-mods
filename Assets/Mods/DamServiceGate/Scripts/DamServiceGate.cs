@@ -5,25 +5,14 @@ using Timberborn.Common;
 using Timberborn.EntitySystem;
 using Timberborn.Fields;
 using Timberborn.Hauling;
-using Timberborn.Navigation;
-using Timberborn.PathSystem;
 using Timberborn.Persistence;
-using Timberborn.WaterSystem;
 using Timberborn.WorldPersistence;
 using UnityEngine;
 
 namespace GerkinDev.DamServiceGate.Assets.Mods.DamServiceGate.Scripts
 {
-	internal partial class DamServiceGate : BaseComponent, IAwakableComponent, IPersistentEntity, IDeletableEntity, IFinishedStateListener, IAutomatableNeeder, ITerminal, IInitializableEntity
+	internal class DamServiceGate : BaseComponent, IAwakableComponent, IPersistentEntity, IFinishedStateListener, IAutomatableNeeder, ITerminal, IInitializableEntity
 	{
-		public DamServiceGate(INavMeshService navMeshService, NavMeshGroupService navMeshGroupService, IWaterService waterService, IPathService pathService)
-		{
-			_gateNavMeshBlocker_navMeshService = navMeshService;
-			_gateNavMeshBlocker_navMeshGroupService = navMeshGroupService;
-			_waterObstacle_waterService = waterService;
-			_gateNavMeshBlocker_pathService = pathService;
-		}
-
 		internal enum EMode
 		{
 			Open = 0b01,
@@ -61,6 +50,8 @@ namespace GerkinDev.DamServiceGate.Assets.Mods.DamServiceGate.Scripts
 		private Automatable _automatable;
 		private BlockObject _blockObject;
 		private Transform _anchor;
+		private NavMeshBlocker _navMeshBlocker;
+		private WaterBlocker _waterBlocker;
 
 		public void Awake()
 		{
@@ -75,7 +66,8 @@ namespace GerkinDev.DamServiceGate.Assets.Mods.DamServiceGate.Scripts
 			_automatable = GetComponent<Automatable>();
 			_blockObject = GetComponent<BlockObject>();
 			_anchor = GameObject.FindChildTransform(_spec.Anchor);
-			_GateNavMeshBlocker_Awake();
+			_navMeshBlocker = GetComponent<NavMeshBlocker>();
+			_waterBlocker = GetComponent<WaterBlocker>();
 		}
 		#endregion
 
@@ -94,13 +86,6 @@ namespace GerkinDev.DamServiceGate.Assets.Mods.DamServiceGate.Scripts
 		public void Save(IEntitySaver entitySaver)
 		{
 			entitySaver.GetComponent(_persistenceKey).Set(_modeKey, _mode);
-		}
-		#endregion
-
-		#region IDeletableEntity
-		public void DeleteEntity()
-		{
-			_GateNavMeshBlocker_DeleteEntity();
 		}
 		#endregion
 
@@ -141,18 +126,17 @@ namespace GerkinDev.DamServiceGate.Assets.Mods.DamServiceGate.Scripts
 		{
 			if (_blockObject.IsFinished)
 			{
+				_navMeshBlocker.NavMeshBlocked = !_IsOpen;
 				if (_IsOpen)
 				{
 					Debug.Log("Schedule to open");
-					_GateNavMeshBlocker_Unblock();
-					_WaterObstacle_SetObstacleHeight(0);
+					_waterBlocker.Height = 0;
 					//_gateUpdater.ScheduleToOpen(this);
 				}
 				else
 				{
 					Debug.Log("Schedule to close");
-					_GateNavMeshBlocker_Block();
-					_WaterObstacle_SetObstacleHeight(1);
+					_waterBlocker.Height = 1;
 					//_gateUpdater.ScheduleToClose(this);
 				}
 			}
