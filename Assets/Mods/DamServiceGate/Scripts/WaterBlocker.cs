@@ -84,11 +84,9 @@ namespace GerkinDev.DamServiceGate.Assets.Mods.DamServiceGate.Scripts
 			{
 				case 1f:
 					_waterService.RemoveFullObstacle(coordinates);
-					Debug.LogFormat("Remove old obstacle");
 					break;
 				case > 0f when height == 0:
 					_waterService.RemoveInflowLimiter(coordinates);
-					Debug.LogFormat("Remove old limiter");
 					break;
 				default:
 					break;
@@ -97,11 +95,9 @@ namespace GerkinDev.DamServiceGate.Assets.Mods.DamServiceGate.Scripts
 			{
 				case 1f:
 					_waterService.AddFullObstacle(coordinates);
-					Debug.LogFormat("Add obstacle");
 					break;
 				case > 0f:
 					_waterService.UpdateInflowLimiter(coordinates, height);
-					Debug.LogFormat("Set limiter");
 					break;
 				default:
 					break;

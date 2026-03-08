@@ -1,7 +1,9 @@
 {
   "TemplateSpec": {
     "TemplateName": "GerkinDev.DamServiceGate.DamServiceGate",
-    "BackwardCompatibleTemplateNames": ["GerkinDev.DamWalkway.DamWalkway"],
+    "BackwardCompatibleTemplateNames": [
+      "GerkinDev.DamWalkway.DamWalkway"
+    ],
     "RequiredFeatureToggle": "",
     "DisablingFeatureToggle": ""
   },

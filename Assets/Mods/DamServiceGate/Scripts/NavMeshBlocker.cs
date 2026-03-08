@@ -57,7 +57,7 @@ namespace GerkinDev.DamServiceGate.Assets.Mods.DamServiceGate.Scripts
 		#region IDeletableEntity
 		public void DeleteEntity()
 		{
-			NavMeshBlocked = false;
+			NavMeshBlocked = true;
 		}
 		#endregion
 

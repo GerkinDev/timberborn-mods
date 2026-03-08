@@ -10,6 +10,8 @@ namespace GerkinDev.DamServiceGate.Assets.Mods.DamServiceGate.Scripts
 	{
 		protected override void Configure()
 		{
+			Bind<GateLikeUpdater>().AsSingleton();
+
 			Bind<DamServiceGateFragment>().AsSingleton();
 			MultiBind<EntityPanelModule>().ToProvider<DamServiceGateEntityPanelModuleProvider>().AsSingleton();
 

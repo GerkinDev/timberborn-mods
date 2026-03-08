@@ -1,20 +1,17 @@
-﻿using System;
+﻿using GerkinDev.DamServiceGate.Assets.Mods.DamServiceGate.Scripts.Extensions;
+using System;
 using Timberborn.Automation;
-using Timberborn.AutomationBuildings;
 using Timberborn.BaseComponentSystem;
 using Timberborn.BlockSystem;
 using Timberborn.Common;
 using Timberborn.EntitySystem;
-using Timberborn.Fields;
-using Timberborn.Hauling;
-using Timberborn.Navigation;
 using Timberborn.Persistence;
 using Timberborn.WorldPersistence;
 using UnityEngine;
 
 namespace GerkinDev.DamServiceGate.Assets.Mods.DamServiceGate.Scripts
 {
-	internal class DamServiceGate : BaseComponent, IAwakableComponent, IPersistentEntity, IFinishedStateListener, IAutomatableNeeder, ITerminal, IInitializableEntity
+	internal class DamServiceGate : BaseComponent, IAwakableComponent, IPersistentEntity, IFinishedStateListener, IAutomatableNeeder, ITerminal, IInitializableEntity, IGateLike, IPreInitializableEntity
 	{
 		internal enum EMode
 		{
@@ -31,7 +28,7 @@ namespace GerkinDev.DamServiceGate.Assets.Mods.DamServiceGate.Scripts
 				if (_mode != value)
 				{
 					_mode = value;
-					_UpdateState();
+					_ScheduleStateUpdate();
 				}
 			}
 		}
@@ -50,38 +47,29 @@ namespace GerkinDev.DamServiceGate.Assets.Mods.DamServiceGate.Scripts
 		public bool IsConflict { get; private set; }
 		public event EventHandler StateChanged;
 
-		private readonly GateConflictDetector _gateConflictDetector;
-		private readonly GateUpdater _gateUpdater;
+		private readonly GateLikeUpdater _gateLikeUpdater;
 
-		public DamServiceGate(GateConflictDetector gateConflictDetector, GateUpdater gateUpdater)
+		public DamServiceGate(GateLikeUpdater gateLikeUpdater)
 		{
-			_gateConflictDetector = gateConflictDetector;
-			_gateUpdater = gateUpdater;
+			_gateLikeUpdater = gateLikeUpdater;
 		}
 
 		#region IAwakableComponent
 		private DamServiceGateSpec _spec;
 		private Automatable _automatable;
 		private BlockObject _blockObject;
-		private Transform _anchor;
 		private NavMeshBlocker _navMeshBlocker;
 		private WaterBlocker _waterBlocker;
+		private Transform _anchor;
 
 		public void Awake()
 		{
-			_ = typeof(Timberborn.WaterBuildings.Floodgate);
-			_ = typeof(Timberborn.AutomationBuildings.Gate);
-			_ = typeof(BlockObject);
-			_ = typeof(FarmHouse);
-			_ = typeof(HaulCandidate);
-			//_ = typeof(Suspension);
-			//_ = typeof(TimbermeshPreviewFactory);
 			_spec = GetComponent<DamServiceGateSpec>();
 			_automatable = GetComponent<Automatable>();
-			_blockObject = GetComponent<BlockObject>();
-			_anchor = GameObject.FindChildTransform(_spec.Anchor);
+			_blockObject = GetComponent<BlockObject>(); /// Position is not initialized yet. See <see cref="PreInitializeEntity"/> for transforms
 			_navMeshBlocker = GetComponent<NavMeshBlocker>();
 			_waterBlocker = GetComponent<WaterBlocker>();
+			_anchor = GameObject.FindChildTransform(_spec.Anchor);
 		}
 		#endregion
 
@@ -91,10 +79,7 @@ namespace GerkinDev.DamServiceGate.Assets.Mods.DamServiceGate.Scripts
 
 		public void Load(IEntityLoader entityLoader)
 		{
-			if (entityLoader.TryGetComponent(_persistenceKey, out var objectLoader))
-			{
-				_mode = objectLoader.Get(_modeKey);
-			}
+			Mode = entityLoader.GetOrDefault(_persistenceKey, _modeKey, EMode.Open);
 		}
 
 		public void Save(IEntitySaver entitySaver)
@@ -106,7 +91,7 @@ namespace GerkinDev.DamServiceGate.Assets.Mods.DamServiceGate.Scripts
 		#region IFinishedStateListener
 		public void OnEnterFinishedState()
 		{
-			_UpdateState();
+			_ScheduleStateUpdate();
 		}
 
 		public void OnExitFinishedState()
@@ -123,7 +108,7 @@ namespace GerkinDev.DamServiceGate.Assets.Mods.DamServiceGate.Scripts
 		{
 			if (NeedsAutomatable)
 			{
-				_UpdateState();
+				_ScheduleStateUpdate();
 			}
 		}
 		#endregion
@@ -131,40 +116,77 @@ namespace GerkinDev.DamServiceGate.Assets.Mods.DamServiceGate.Scripts
 		#region IInitializableEntity
 		public void InitializeEntity()
 		{
+			_ScheduleStateUpdate();
+			Close();
+		}
+		#endregion
+
+		#region IGateLike
+		public bool IsClosed { get; private set; }
+		public Vector3Int PathStart { get; private set; }
+		public Vector3Int PathEnd { get; private set; }
+		public Vector3Int PathCenter { get; private set; }
+
+		public void Close()
+		{
+			IsClosed = true;
 			_UpdateState();
+		}
+
+		public void Open()
+		{
+			IsClosed = false;
+			_UpdateState();
+		}
+
+		public void EnableConflict()
+		{
+			IsConflict = true;
+			_NotifyStateChanged();
+		}
+
+		public void DisableConflict()
+		{
+			IsConflict = false;
+			_NotifyStateChanged();
+		}
+		#endregion
+		#region IPreInitializableEntity
+		public void PreInitializeEntity()
+		{
+			PathStart = _blockObject.TransformCoordinates(_spec.PathStart);
+			PathEnd = _blockObject.TransformCoordinates(_spec.PathEnd);
+			PathCenter = _blockObject.TransformCoordinates(_spec.PathCenter);
 		}
 		#endregion
 
 		private bool _WantOpen => _mode == EMode.Open || _IsOpenByAutomation;
-		private bool _isActuallyOpen;
-		private void _UpdateState()
+		private void _ScheduleStateUpdate()
 		{
-			if (!_WantOpen || _gateConflictDetector.CanOpenGateWithoutConflict(
-				_blockObject.TransformCoordinates(_spec.PathStart),
-				_blockObject.TransformCoordinates(_spec.PathEnd),
-				_blockObject.TransformCoordinates(_spec.PathCenter),
-				_gateUpdater._openGateCrossings
-			))
-			{
-				IsConflict = false;
-				_isActuallyOpen = _WantOpen;
-				_NotifyStateChanged();
-				_AddToOpenGateCrossings();
-			}
-			else
-			{
-				IsConflict = true;
-				_isActuallyOpen = false;
-				_NotifyStateChanged();
-			}
-
 			if (_blockObject.IsFinished)
 			{
-				_navMeshBlocker.NavMeshBlocked = !_isActuallyOpen;
-				_waterBlocker.Height = _isActuallyOpen ? 0 : 1;
+				this.Log("Scheduling gate for desired {0}", _WantOpen ? "open" : "close");
+				if (_WantOpen)
+				{
+					_gateLikeUpdater.ScheduleToOpen(this);
+				}
+				else
+				{
+					_gateLikeUpdater.ScheduleToClose(this);
+				}
 			}
-			_SetAnchorTransform(_isActuallyOpen ? _spec.OpenTransform : _spec.CloseTransform);
 		}
+		private void _UpdateState()
+		{
+			this.Log("Set gate {0}, desired {1}", IsClosed ? "close" : "open", _WantOpen ? "open" : "close");
+			_navMeshBlocker.NavMeshBlocked = IsClosed;
+			if (_blockObject.IsFinished)
+			{
+				_waterBlocker.Height = IsClosed ? 1 : 0;
+			}
+			_SetAnchorTransform(IsClosed ? _spec.CloseTransform : _spec.OpenTransform);
+		}
+
 		private void _SetAnchorTransform(GateTransformSpec transform)
 		{
 			_anchor.transform.SetLocalPositionAndRotation(transform.Position, Quaternion.Euler(transform.Rotation));
@@ -173,11 +195,6 @@ namespace GerkinDev.DamServiceGate.Assets.Mods.DamServiceGate.Scripts
 		private void _NotifyStateChanged()
 		{
 			StateChanged?.Invoke(this, EventArgs.Empty);
-		}
-		private void _AddToOpenGateCrossings()
-		{
-			_gateUpdater._openGateCrossings[_blockObject.TransformCoordinates(_spec.PathStart)] = _blockObject.TransformCoordinates(_spec.PathEnd);
-			_gateUpdater._openGateCrossings[_blockObject.TransformCoordinates(_spec.PathEnd)] = _blockObject.TransformCoordinates(_spec.PathStart);
 		}
 	}
 }

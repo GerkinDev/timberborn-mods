@@ -2,7 +2,6 @@
 using Timberborn.BaseComponentSystem;
 using Timberborn.BlockObjectModelSystem;
 using Timberborn.BlockSystem;
-using Timberborn.Buildings;
 using Timberborn.Common;
 using Timberborn.Coordinates;
 using Timberborn.GameFactionSystem;
@@ -14,31 +13,18 @@ namespace GerkinDev.DamServiceGate.Assets.Mods.DamServiceGate.Scripts
 {
 	public class CustomDynamicPathModel : BaseComponent, IAwakableComponent, IModelUpdater
 	{
-		public readonly IConnectionService _connectionService;
-
-		public readonly FactionService _factionService;
-
-		public readonly StackableBlockService _stackableBlockService;
-
-		public readonly IBlockService _blockService;
-
-		public readonly PreviewBlockService _previewBlockService;
-
-		public readonly ITerrainService _terrainService;
-
-		public BuildingSpec _buildingSpec;
-
-		public BlockObject _blockObject;
-
-		public CustomDynamicPathModelSpec _dynamicPathModelSpec;
-
-		public GameObject _currentModel;
-
-		public Orientation _currentModelOrientation;
-
-		public readonly NeighboredValues4<GameObject> _groundModels = new NeighboredValues4<GameObject>();
-
-		public readonly NeighboredValues4<GameObject> _roofModels = new NeighboredValues4<GameObject>();
+		private readonly IConnectionService _connectionService;
+		private readonly FactionService _factionService;
+		private readonly StackableBlockService _stackableBlockService;
+		private readonly IBlockService _blockService;
+		private readonly PreviewBlockService _previewBlockService;
+		private readonly ITerrainService _terrainService;
+		private BlockObject _blockObject;
+		private CustomDynamicPathModelSpec _dynamicPathModelSpec;
+		private GameObject _currentModel;
+		private Orientation _currentModelOrientation;
+		private readonly NeighboredValues4<GameObject> _groundModels = new NeighboredValues4<GameObject>();
+		private readonly NeighboredValues4<GameObject> _roofModels = new NeighboredValues4<GameObject>();
 
 		public CustomDynamicPathModel(IConnectionService connectionService, FactionService factionService, StackableBlockService stackableBlockService, IBlockService blockService, PreviewBlockService previewBlockService, ITerrainService terrainService)
 		{
@@ -52,7 +38,6 @@ namespace GerkinDev.DamServiceGate.Assets.Mods.DamServiceGate.Scripts
 
 		public void Awake()
 		{
-			_buildingSpec = GetComponent<BuildingSpec>();
 			_blockObject = GetComponent<BlockObject>();
 			_dynamicPathModelSpec = GetComponent<CustomDynamicPathModelSpec>();
 			InitializeModels();
