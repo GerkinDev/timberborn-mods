@@ -1,8 +1,11 @@
-﻿using Timberborn.BaseComponentSystem;
+﻿using System;
+using Timberborn.AutomationBuildingsUI;
+using Timberborn.BaseComponentSystem;
 using Timberborn.CoreUI;
 using Timberborn.EntityPanelSystem;
 using Timberborn.SingletonSystem;
 using Timberborn.SliderToggleSystem;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace GerkinDev.DamServiceGate.Assets.Mods.DamServiceGate.Scripts.UI
@@ -11,12 +14,12 @@ namespace GerkinDev.DamServiceGate.Assets.Mods.DamServiceGate.Scripts.UI
 	{
 		private readonly VisualElementLoader _visualElementLoader;
 		private readonly SliderToggleFactory _sliderToggleFactory;
-		private VisualElement _root;
-		private SliderToggle _toggle;
 		private DamServiceGate? _target;
 
-		private Label? _label;
-		private VisualElement? _modeToggleContainer;
+		private VisualElement _root;
+		private EnumSliderToggle<DamServiceGate.EActivationMode> _activationModeToggle;
+		private EnumSliderToggle<DamServiceGate.EGateMode> _activeStateToggle;
+		private EnumSliderToggle<DamServiceGate.EGateMode> _inactiveStateToggle;
 
 		public DamServiceGateFragment(VisualElementLoader visualElementLoader, SliderToggleFactory sliderToggleFactory)
 		{
@@ -24,54 +27,46 @@ namespace GerkinDev.DamServiceGate.Assets.Mods.DamServiceGate.Scripts.UI
 			_sliderToggleFactory = sliderToggleFactory;
 		}
 
+		private float? _activeWidth;
+		private float? _inactiveWidth;
+		private Label _activeDesc;
+		private Label _inactiveDesc;
+		private void _SetLabelSizes(Rect? active = null, Rect? inactive = null)
+		{
+			if (active.HasValue)
+			{
+				_activeWidth = active.Value.width;
+				Debug.LogFormat("Active width: {0}", _activeWidth);
+			}
+			if (inactive.HasValue)
+			{
+				_inactiveWidth = inactive.Value.width;
+				Debug.LogFormat("Inactive width: {0}", _inactiveWidth);
+			}
+			if (_activeWidth.HasValue && _inactiveWidth.HasValue)
+			{
+				var width = Mathf.Max(_activeWidth.Value, _inactiveWidth.Value);
+				_activeDesc.style.width = width;
+				_inactiveDesc.style.width = width;
+			}
+		}
+
+		#region IEntityPanelFragment
 		public VisualElement InitializeFragment()
 		{
-			// Delegates bellow are ran only on update, thus only if the target is set
-			var sliderToggleItemOpen = _CreateToggleItem(DamServiceGate.EMode.Open);
-			var sliderToggleItemClose = _CreateToggleItem(DamServiceGate.EMode.Close);
-			var sliderToggleItemPass = _CreateToggleItem(DamServiceGate.EMode.Pass);
-			var sliderToggleItemAutomated = _CreateToggleItem(DamServiceGate.EMode.Automated);
-			_toggle = _sliderToggleFactory.Create(_modeToggleContainer, sliderToggleItemOpen, sliderToggleItemClose, sliderToggleItemPass, sliderToggleItemAutomated);
+			ClearFragment();
+			_activeDesc = _root.Q<Label>("ActiveStateDesc");
+			_inactiveDesc = _root.Q<Label>("InactiveStateDesc");
+			_activeDesc.RegisterCallbackOnce<GeometryChangedEvent>(evt =>
+			{
+				_SetLabelSizes(active: evt.newRect);
+			});
+			_inactiveDesc.RegisterCallbackOnce<GeometryChangedEvent>(evt =>
+			{
+				_SetLabelSizes(inactive: evt.newRect);
+			});
 
 			return _root;
-		}
-
-		private SliderToggleItem _CreateToggleItem(DamServiceGate.EMode mode)
-		{
-			var name = mode.ToString();
-			return SliderToggleItem.Create(
-				() => name,
-				$"is-{name}",
-				() => _TargetMode = mode,
-				() => _TargetMode == mode
-			);
-		}
-
-		private DamServiceGate.EMode _TargetMode
-		{
-			get
-			{
-				if (_target is null)
-				{
-					return DamServiceGate.EMode.Open;
-				}
-				return _target.Mode;
-			}
-
-			set
-			{
-				if (_target is null)
-				{
-					return;
-				}
-				_target.Mode = value;
-				_UpdateLabel();
-			}
-		}
-
-		private void _UpdateLabel()
-		{
-			_label.text = _TargetMode.ToString();
 		}
 
 		public void ShowFragment(BaseComponent entity)
@@ -80,7 +75,7 @@ namespace GerkinDev.DamServiceGate.Assets.Mods.DamServiceGate.Scripts.UI
 			if (component is not null)
 			{
 				_target = component;
-				_UpdateLabel();
+				UpdateFragment();
 				_root.ToggleDisplayStyle(true);
 			}
 		}
@@ -97,15 +92,57 @@ namespace GerkinDev.DamServiceGate.Assets.Mods.DamServiceGate.Scripts.UI
 			{
 				return;
 			}
-			_toggle.Update();
+			_activationModeToggle.Update();
+			_activeStateToggle.Update();
+			_inactiveStateToggle.Update();
 		}
+		#endregion
 
+		#region ILoadableSingleton
 		public void Load()
 		{
 			_root = _visualElementLoader.LoadVisualElement("EntityPanel/DamServiceGate");
-			_label = _root.Q<Label>("ModeLabel");
-			_modeToggleContainer = _root.Q<VisualElement>("ModeToggle");
-			_modeToggleContainer.Clear();
+			_activationModeToggle = new(
+				_sliderToggleFactory,
+				_root.Q<VisualElement>("ActivationModeToggle"),
+				_root.Q<Label>("ActivationModeLabel"),
+				() => _target.ActivationMode,
+				value => _target.ActivationMode = value)
+			{
+				IconClassGetter = (value) => (value switch
+				{
+					DamServiceGate.EActivationMode.Active => "dam-service-gate-fragment__activation-mode-active",
+					DamServiceGate.EActivationMode.Inactive => "dam-service-gate-fragment__activation-mode-inactive",
+					DamServiceGate.EActivationMode.Automated => GateToggle.AutomatedClass,
+					_ => throw new Exception($"Invalid value {value}")
+				})
+			};
+			_activationModeToggle.Initialize();
+
+			static string getModeClass(DamServiceGate.EGateMode value) => (value switch
+			{
+				DamServiceGate.EGateMode.Open => GateToggle.OpenedClass,
+				DamServiceGate.EGateMode.Close => GateToggle.ClosedClass,
+				DamServiceGate.EGateMode.Pass => "dam-service-gate-fragment__gate-mode-pass",
+				_ => throw new Exception($"Invalid value {value}")
+			});
+			_activeStateToggle = new(
+				_sliderToggleFactory,
+				_root.Q<VisualElement>("ActiveStateToggle"),
+				_root.Q<Label>("ActiveStateLabel"),
+				() => _target.ActiveGateMode,
+				value => _target.ActiveGateMode = value)
+			{ IconClassGetter = getModeClass };
+			_activeStateToggle.Initialize();
+			_inactiveStateToggle = new(
+				_sliderToggleFactory,
+				_root.Q<VisualElement>("InactiveStateToggle"),
+				_root.Q<Label>("InactiveStateLabel"),
+				() => _target.InactiveGateMode,
+				value => _target.InactiveGateMode = value)
+			{ IconClassGetter = getModeClass };
+			_inactiveStateToggle.Initialize();
 		}
+		#endregion
 	}
 }

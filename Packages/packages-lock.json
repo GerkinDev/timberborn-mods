@@ -14,6 +14,13 @@
       "dependencies": {},
       "hash": "586955698b4ebc48d32fcf855222c9e72ce1a779"
     },
+    "com.unity.assetbundlebrowser": {
+      "version": "https://github.com/Unity-Technologies/AssetBundles-Browser.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "c7923746fa5e95916bf1a4087eceadb72305d5b5"
+    },
     "com.unity.bindings.openimageio": {
       "version": "1.0.2",
       "depth": 1,

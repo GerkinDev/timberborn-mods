@@ -13,32 +13,71 @@ namespace GerkinDev.DamServiceGate.Assets.Mods.DamServiceGate.Scripts
 {
 	internal class DamServiceGate : BaseComponent, IAwakableComponent, IPersistentEntity, IFinishedStateListener, IAutomatableNeeder, ITerminal, IInitializableEntity, IGateLike, IPreInitializableEntity
 	{
-		internal enum EMode
+		internal enum EActivationMode
 		{
-			Open = 0b01,
-			Close = 0b10,
-			Pass = Open | Close,
-			Automated = 0b00,
+			Active,
+			Inactive,
+			Automated,
 		}
-		private EMode _mode = EMode.Open;
-		public EMode Mode
+		internal enum EGateMode
 		{
-			get => _mode; set
+			Open,
+			Close,
+			Pass,
+		}
+		private EActivationMode _activationMode = EActivationMode.Active;
+		public EActivationMode ActivationMode
+		{
+			get => _activationMode;
+			set
 			{
-				if (_mode != value)
+				if (_activationMode == value)
 				{
-					_mode = value;
-					_ScheduleStateUpdate();
+					return;
 				}
+				_activationMode = value;
+				_ScheduleStateUpdate();
+			}
+		}
+		private EGateMode _activeGateMode = EGateMode.Open;
+		public EGateMode ActiveGateMode
+		{
+			get => _activeGateMode; set
+			{
+				if (_activeGateMode == value)
+				{
+					return;
+				}
+				_activeGateMode = value;
+				_ScheduleStateUpdate();
+			}
+		}
+		private EGateMode _inactiveGateMode = EGateMode.Close;
+		public EGateMode InactiveGateMode
+		{
+			get => _inactiveGateMode; set
+			{
+				if (_inactiveGateMode == value)
+				{
+					return;
+				}
+				_inactiveGateMode = value;
+				_ScheduleStateUpdate();
 			}
 		}
 		private bool _IsOpenByAutomation
 		{
 			get
 			{
-				if (Mode == EMode.Automated)
+				if (_activationMode == EActivationMode.Automated)
 				{
-					return _automatable.State != ConnectionState.Off;
+					return _automatable.State switch
+					{
+						ConnectionState.Disconnected => InactiveGateMode != EGateMode.Pass,
+						ConnectionState.Off => InactiveGateMode != EGateMode.Pass,
+						ConnectionState.On => ActiveGateMode != EGateMode.Open,
+						_ => throw new Exception($"Unexpected state {_automatable.State}"),
+					};
 				}
 
 				return false;
@@ -75,16 +114,23 @@ namespace GerkinDev.DamServiceGate.Assets.Mods.DamServiceGate.Scripts
 
 		#region IPersistentEntity
 		private static readonly ComponentKey _persistenceKey = new("DamServiceGate");
-		private static readonly PropertyKey<EMode> _modeKey = new(nameof(_mode));
+		private static readonly PropertyKey<EActivationMode> _activationModeKey = new(nameof(_activationMode));
+		private static readonly PropertyKey<EGateMode> _activeGateModeKey = new(nameof(_activeGateMode));
+		private static readonly PropertyKey<EGateMode> _inactiveGateModeKey = new(nameof(_inactiveGateMode));
 
 		public void Load(IEntityLoader entityLoader)
 		{
-			Mode = entityLoader.GetOrDefault(_persistenceKey, _modeKey, EMode.Open);
+			_activationMode = entityLoader.GetOrDefault(_persistenceKey, _activationModeKey, EActivationMode.Active);
+			ActiveGateMode = entityLoader.GetOrDefault(_persistenceKey, _activeGateModeKey, EGateMode.Open);
+			InactiveGateMode = entityLoader.GetOrDefault(_persistenceKey, _inactiveGateModeKey, EGateMode.Close);
 		}
 
 		public void Save(IEntitySaver entitySaver)
 		{
-			entitySaver.GetComponent(_persistenceKey).Set(_modeKey, _mode);
+			var objectSaver = entitySaver.GetComponent(_persistenceKey);
+			objectSaver.Set(_activationModeKey, _activationMode);
+			objectSaver.Set(_activeGateModeKey, ActiveGateMode);
+			objectSaver.Set(_inactiveGateModeKey, InactiveGateMode);
 		}
 		#endregion
 
@@ -100,7 +146,7 @@ namespace GerkinDev.DamServiceGate.Assets.Mods.DamServiceGate.Scripts
 		#endregion
 
 		#region IAutomatableNeeder
-		public bool NeedsAutomatable => Mode == EMode.Automated;
+		public bool NeedsAutomatable => _activationMode == EActivationMode.Automated;
 		#endregion
 
 		#region ITerminal
@@ -160,7 +206,14 @@ namespace GerkinDev.DamServiceGate.Assets.Mods.DamServiceGate.Scripts
 		}
 		#endregion
 
-		private bool _WantOpen => _mode == EMode.Open || _IsOpenByAutomation;
+		private bool _WantOpen => _activationMode switch
+		{
+			EActivationMode.Active => ActiveGateMode != EGateMode.Close,
+			EActivationMode.Inactive => InactiveGateMode != EGateMode.Close,
+			EActivationMode.Automated => _IsOpenByAutomation,
+			_ => throw new Exception($"Invalid activation mode {_activationMode}"),
+		};
+
 		private void _ScheduleStateUpdate()
 		{
 			if (_blockObject.IsFinished)
