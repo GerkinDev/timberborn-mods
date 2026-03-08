@@ -16,6 +16,7 @@ namespace GerkinDev.DamServiceGate.Assets.Mods.DamServiceGate.Scripts
 			Bind<DamServiceGate>().AsTransient();
 			Bind<NavMeshBlocker>().AsTransient();
 			Bind<WaterBlocker>().AsTransient();
+			Bind<DamServiceGateConflictStatus>().AsTransient();
 			Bind<CustomDynamicPathModel>().AsTransient();
 			MultiBind<TemplateModule>().ToProvider(_ProvideTemplateModule).AsSingleton();
 		}
@@ -26,6 +27,7 @@ namespace GerkinDev.DamServiceGate.Assets.Mods.DamServiceGate.Scripts
 			builder.AddDecorator<DamServiceGateSpec, DamServiceGate>();
 			builder.AddDecorator<DamServiceGate, NavMeshBlocker>();
 			builder.AddDecorator<DamServiceGate, WaterBlocker>();
+			builder.AddDecorator<DamServiceGate, DamServiceGateConflictStatus>();
 			builder.AddDecorator<CustomDynamicPathModelSpec, CustomDynamicPathModel>();
 			return builder.Build();
 		}
