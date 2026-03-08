@@ -5,5 +5,9 @@
   "MinimumGameVersion": "1.0.0",
   "Description": "TODO",
   "RequiredMods": [
+        {
+            "Id": "Harmony",
+            "MinimumVersion": "2.4.1"
+        }
   ]
 }
