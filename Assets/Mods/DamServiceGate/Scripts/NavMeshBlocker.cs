@@ -1,4 +1,6 @@
-﻿using Timberborn.BaseComponentSystem;
+﻿using GerkinDev.DamServiceGate.Assets.Mods.DamServiceGate.Scripts.Extensions;
+using System;
+using Timberborn.BaseComponentSystem;
 using Timberborn.BlockSystem;
 using Timberborn.BuildingsNavigation;
 using Timberborn.Coordinates;
@@ -18,19 +20,18 @@ namespace GerkinDev.DamServiceGate.Assets.Mods.DamServiceGate.Scripts
 		private readonly INavMeshService _navMeshService;
 		private readonly NavMeshGroupService _navMeshGroupService;
 		private readonly IPathService _pathService;
-		private bool _navMeshBlocked;
-		public bool NavMeshBlocked
+		private DamServiceGate.EGateMode _gateMode;
+		public DamServiceGate.EGateMode GateMode
 		{
-			get => _navMeshBlocked; set
+			get => _gateMode; set
 			{
-				if (value == _navMeshBlocked)
+				if (value == _gateMode)
 				{
 					return;
 				}
-
-				_SetPathBlockage(isBlocked: value);
-				_SetTraverseCost(isExpensive: value);
-				_navMeshBlocked = value;
+				_SetPathBlockage(previousValue: _gateMode, value: value);
+				_SetTraverseCost(previousValue: _gateMode, value: value);
+				_gateMode = value;
 			}
 		}
 		private bool _expensiveTraverseCostSet;
@@ -57,7 +58,7 @@ namespace GerkinDev.DamServiceGate.Assets.Mods.DamServiceGate.Scripts
 		#region IDeletableEntity
 		public void DeleteEntity()
 		{
-			NavMeshBlocked = true;
+			GateMode = DamServiceGate.EGateMode.Close;
 		}
 		#endregion
 
@@ -83,53 +84,40 @@ namespace GerkinDev.DamServiceGate.Assets.Mods.DamServiceGate.Scripts
 		}
 		#endregion
 
-		private void _SetPathBlockage(bool isBlocked)
+		private void _SetPathBlockage(DamServiceGate.EGateMode previousValue, DamServiceGate.EGateMode value)
 		{
-			if (isBlocked)
+			switch ((previousValue, value))
 			{
-				_buildingNavMesh.BlockAndRemoveFromNavMesh();
-			}
-			else
-			{
-				_buildingNavMesh.UnblockAndAddToNavMesh();
-			}
-		}
-
-		private void _SetTraverseCost(bool isExpensive)
-		{
-			if (isExpensive != _expensiveTraverseCostSet)
-			{
-				var start = _blockObject.TransformCoordinates(_spec.PathStart);
-				var end = _blockObject.TransformCoordinates(_spec.PathEnd);
-				var center = _blockObject.TransformCoordinates(_spec.PathCenter);
-				if (isExpensive)
-				{
-					_navMeshService.RemoveEdge(_GetNormalEdge(center, start));
-					_navMeshService.RemoveEdge(_GetNormalEdge(center, end));
-					_navMeshService.AddEdge(_GetExpensiveEdge(center, start));
-					_navMeshService.AddEdge(_GetExpensiveEdge(center, end));
-				}
-				else
-				{
-					_navMeshService.AddEdge(_GetNormalEdge(center, start));
-					_navMeshService.AddEdge(_GetNormalEdge(center, end));
-					_navMeshService.RemoveEdge(_GetExpensiveEdge(center, start));
-					_navMeshService.RemoveEdge(_GetExpensiveEdge(center, end));
-				}
-
-				_expensiveTraverseCostSet = isExpensive;
+				case (DamServiceGate.EGateMode.Close, DamServiceGate.EGateMode.Open or DamServiceGate.EGateMode.Pass):
+					_buildingNavMesh.UnblockAndAddToNavMesh();
+					break;
+				case (DamServiceGate.EGateMode.Open or DamServiceGate.EGateMode.Pass, DamServiceGate.EGateMode.Close):
+					_buildingNavMesh.BlockAndRemoveFromNavMesh();
+					break;
 			}
 		}
 
-		private NavMeshEdge _GetNormalEdge(Vector3Int start, Vector3Int end)
+		private void _SetTraverseCost(DamServiceGate.EGateMode previousValue, DamServiceGate.EGateMode value)
 		{
-			return _GetEdge(start, end, 1f);
+			var start = _blockObject.TransformCoordinates(_spec.PathStart);
+			var end = _blockObject.TransformCoordinates(_spec.PathEnd);
+			var center = _blockObject.TransformCoordinates(_spec.PathCenter);
+			var prevCost = _GetCost(previousValue);
+			var cost = _GetCost(value);
+			this.Log("Updating cost from {0} to {1}", prevCost, cost);
+			_navMeshService.RemoveEdge(_GetEdge(center, start, prevCost));
+			_navMeshService.RemoveEdge(_GetEdge(center, end, prevCost));
+			_navMeshService.AddEdge(_GetEdge(center, start, cost));
+			_navMeshService.AddEdge(_GetEdge(center, end, cost));
 		}
 
-		private NavMeshEdge _GetExpensiveEdge(Vector3Int start, Vector3Int end)
+		private float _GetCost(DamServiceGate.EGateMode gateMode) => gateMode switch
 		{
-			return _GetEdge(start, end, WalkerLimits.BlockingEdgeCost);
-		}
+			DamServiceGate.EGateMode.Open => 1,
+			DamServiceGate.EGateMode.Close => WalkerLimits.BlockingEdgeCost,
+			DamServiceGate.EGateMode.Pass => WalkerLimits.BlockingEdgeCost,
+			_ => throw new Exception($"Invalid mode {gateMode}"),
+		};
 
 		private NavMeshEdge _GetEdge(Vector3Int start, Vector3Int end, float cost)
 		{

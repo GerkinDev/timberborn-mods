@@ -65,24 +65,21 @@ namespace GerkinDev.DamServiceGate.Assets.Mods.DamServiceGate.Scripts
 				_ScheduleStateUpdate();
 			}
 		}
-		private bool _IsOpenByAutomation
+		private EGateMode _CurrentGateMode
 		{
 			get
 			{
-				if (_activationMode == EActivationMode.Automated)
+				bool isActive = _activationMode switch
 				{
-					return _automatable.State switch
-					{
-						ConnectionState.Disconnected => InactiveGateMode != EGateMode.Pass,
-						ConnectionState.Off => InactiveGateMode != EGateMode.Pass,
-						ConnectionState.On => ActiveGateMode != EGateMode.Open,
-						_ => throw new Exception($"Unexpected state {_automatable.State}"),
-					};
-				}
-
-				return false;
+					EActivationMode.Automated => _automatable.State != ConnectionState.Off,
+					EActivationMode.Active => true,
+					EActivationMode.Inactive => false,
+					_ => throw new Exception($"Unexpected activation mode {_activationMode}"),
+				};
+				return isActive ? _activeGateMode : _inactiveGateMode;
 			}
 		}
+
 		public bool IsConflict { get; private set; }
 		public event EventHandler StateChanged;
 
@@ -206,20 +203,12 @@ namespace GerkinDev.DamServiceGate.Assets.Mods.DamServiceGate.Scripts
 		}
 		#endregion
 
-		private bool _WantOpen => _activationMode switch
-		{
-			EActivationMode.Active => ActiveGateMode != EGateMode.Close,
-			EActivationMode.Inactive => InactiveGateMode != EGateMode.Close,
-			EActivationMode.Automated => _IsOpenByAutomation,
-			_ => throw new Exception($"Invalid activation mode {_activationMode}"),
-		};
-
 		private void _ScheduleStateUpdate()
 		{
 			if (_blockObject.IsFinished)
 			{
-				this.Log("Scheduling gate for desired {0}", _WantOpen ? "open" : "close");
-				if (_WantOpen)
+				this.Log("Scheduling gate for desired {0}", _CurrentGateMode);
+				if (_CurrentGateMode != EGateMode.Close)
 				{
 					_gateLikeUpdater.ScheduleToOpen(this);
 				}
@@ -231,13 +220,14 @@ namespace GerkinDev.DamServiceGate.Assets.Mods.DamServiceGate.Scripts
 		}
 		private void _UpdateState()
 		{
-			this.Log("Set gate {0}, desired {1}", IsClosed ? "close" : "open", _WantOpen ? "open" : "close");
-			_navMeshBlocker.NavMeshBlocked = IsClosed;
+			var actualGateMode = IsClosed ? EGateMode.Close : _CurrentGateMode;
+			this.Log("Set gate closed {0}, desired {1}, actual {2}", IsClosed, _CurrentGateMode, actualGateMode);
+			_navMeshBlocker.GateMode = actualGateMode;
 			if (_blockObject.IsFinished)
 			{
-				_waterBlocker.Height = IsClosed ? 1 : 0;
+				_waterBlocker.Height = actualGateMode == EGateMode.Open ? 0 : 1;
 			}
-			_SetAnchorTransform(IsClosed ? _spec.CloseTransform : _spec.OpenTransform);
+			_SetAnchorTransform(actualGateMode == EGateMode.Open ? _spec.OpenTransform : _spec.CloseTransform);
 		}
 
 		private void _SetAnchorTransform(GateTransformSpec transform)
