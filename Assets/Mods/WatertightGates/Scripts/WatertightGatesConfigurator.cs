@@ -1,4 +1,4 @@
-﻿using Bindito.Core;
+using Bindito.Core;
 using GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.UI;
 using Timberborn.EntityPanelSystem;
 using Timberborn.TemplateInstantiation;
@@ -19,7 +19,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 			Bind<NavMeshBlocker>().AsTransient();
 			Bind<WaterBlocker>().AsTransient();
 			Bind<WatertightGateConflictStatus>().AsTransient();
-			Bind<CustomDynamicPathModel>().AsTransient();
+			Bind<FreePositionedDynamicPathModel>().AsTransient();
 			MultiBind<TemplateModule>().ToProvider(_ProvideTemplateModule).AsSingleton();
 		}
 
@@ -30,7 +30,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 			builder.AddDecorator<WatertightGate, NavMeshBlocker>();
 			builder.AddDecorator<WatertightGate, WaterBlocker>();
 			builder.AddDecorator<WatertightGate, WatertightGateConflictStatus>();
-			builder.AddDecorator<CustomDynamicPathModelSpec, CustomDynamicPathModel>();
+			builder.AddDecorator<FreePositionedDynamicPathModelSpec, FreePositionedDynamicPathModel>();
 			return builder.Build();
 		}
 	}

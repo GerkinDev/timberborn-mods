@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 {
-	public record CustomDynamicPathModelSpec : ComponentSpec
+	public record FreePositionedDynamicPathModelSpec : ComponentSpec
 	{
 		[Serialize]
 		public string GroundModelPrefix { get; init; }

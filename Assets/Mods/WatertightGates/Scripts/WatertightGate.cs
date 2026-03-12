@@ -1,4 +1,4 @@
-﻿using GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Extensions;
+using GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Extensions;
 using System;
 using Timberborn.Automation;
 using Timberborn.BaseComponentSystem;
@@ -163,8 +163,8 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 		#region IInitializableEntity
 		public void InitializeEntity()
 		{
-			_ScheduleStateUpdate();
 			Close();
+			_ScheduleStateUpdate();
 		}
 		#endregion
 
@@ -221,6 +221,10 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 					_gateLikeUpdater.ScheduleToClose(this);
 				}
 			}
+			else
+			{
+				_SetAnchorTransform(_CurrentGateMode);
+			}
 		}
 		private void _UpdateState()
 		{
@@ -231,11 +235,12 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 			{
 				_waterBlocker.Height = actualGateMode == EGateMode.Open ? 0 : 1;
 			}
-			_SetAnchorTransform(actualGateMode == EGateMode.Open ? _spec.OpenTransform : _spec.CloseTransform);
+			_SetAnchorTransform(actualGateMode);
 		}
 
-		private void _SetAnchorTransform(GateTransformSpec transform)
+		private void _SetAnchorTransform(EGateMode gateMode)
 		{
+			var transform = gateMode == EGateMode.Open ? _spec.OpenTransform : _spec.CloseTransform;
 			_anchor.transform.SetLocalPositionAndRotation(transform.Position + _anchorInitialPosition, Quaternion.Euler(transform.Rotation + _anchorInitialRotation));
 		}
 

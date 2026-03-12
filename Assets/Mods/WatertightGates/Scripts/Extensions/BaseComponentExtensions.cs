@@ -1,4 +1,5 @@
-﻿using Timberborn.BaseComponentSystem;
+﻿using System;
+using Timberborn.BaseComponentSystem;
 using Timberborn.BlockSystem;
 using UnityEngine;
 
@@ -9,11 +10,18 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Extensio
 		public static void Log(this BaseComponent component, string format, params object[] args)
 		{
 			var logStr = string.Format(format, args);
-			var who = component.Name;
-			who += "@" + component.GameObject.name;
-			if (component.TryGetComponent<BlockObject>(out var blockObject))
+			string who;
+			try
 			{
-				who += "@" + blockObject.Placement.Coordinates;
+				who = component.Name;
+				if (component.TryGetComponent<BlockObject>(out var blockObject))
+				{
+					who += "@" + blockObject.Placement.Coordinates;
+				}
+			}
+			catch (NullReferenceException)
+			{
+				who = "Unknown";
 			}
 			logStr = $"[{who}] {logStr}";
 			Debug.Log(logStr);

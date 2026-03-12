@@ -43,7 +43,7 @@
     "Blocks": [
       {
         "MatterBelow": "GroundOrStackable",
-        "Occupations": "Bottom, Path, Middle",
+        "Occupations": "Bottom, Top, Path, Middle",
         "Stackable": "None",
         "OccupyAllBelow": false,
         "Underground": false
@@ -70,7 +70,7 @@
   },
   "BlockObjectNavMeshSettingsSpec": {
     "NoAutoWalls": true,
-    "GenerateFloorsOnStackable": false,
+    "GenerateFloorsOnStackable": false, 
     "EdgeGroups": [
       {
         "Cost": 0.0,
@@ -222,7 +222,7 @@
       "Z": 0
     }
   },
-  "CustomDynamicPathModelSpec": {
+  "FreePositionedDynamicPathModelSpec": {
     "GroundModelPrefix": "DirtPath",
     "RoofModelPrefix": "",
     "Position": {

@@ -1,4 +1,4 @@
-﻿using GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Extensions;
+using GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Extensions;
 using System;
 using Timberborn.BaseComponentSystem;
 using Timberborn.BlockSystem;
@@ -34,7 +34,6 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 				_gateMode = value;
 			}
 		}
-		private bool _expensiveTraverseCostSet;
 		public NavMeshBlocker(INavMeshService navMeshService, NavMeshGroupService navMeshGroupService, IPathService pathService)
 		{
 			_navMeshService = navMeshService;
@@ -71,14 +70,19 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 			{
 				return false;
 			}
-			// Check if there is some path at positions
-			if (_blockObject.IsIntersecting(Block.FullFrom(origin)))
+			var pathStart = _blockObject.TransformCoordinates(_spec.PathStart);
+			var pathCenter = _blockObject.TransformCoordinates(_spec.PathCenter);
+			var pathEnd = _blockObject.TransformCoordinates(_spec.PathEnd);
+			foreach (var (a, b) in new[] { (origin, target), (target, origin) })
 			{
-				return _pathService.IsPath(target);
-			}
-			if (_blockObject.IsIntersecting(Block.FullFrom(target)))
-			{
-				return _pathService.IsPath(origin);
+				if (_blockObject.IsIntersecting(Block.FullFrom(a)))
+				{
+					if (b != pathStart && b != pathEnd)
+					{
+						return false;
+					}
+					return (b == pathStart || b == pathEnd) && _pathService.IsPath(b);
+				}
 			}
 			return false;
 		}

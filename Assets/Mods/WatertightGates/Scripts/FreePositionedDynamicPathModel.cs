@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 {
-	public class CustomDynamicPathModel : BaseComponent, IAwakableComponent, IModelUpdater
+	public class FreePositionedDynamicPathModel : BaseComponent, IAwakableComponent, IModelUpdater
 	{
 		private readonly IConnectionService _connectionService;
 		private readonly FactionService _factionService;
@@ -20,13 +20,13 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 		private readonly PreviewBlockService _previewBlockService;
 		private readonly ITerrainService _terrainService;
 		private BlockObject _blockObject;
-		private CustomDynamicPathModelSpec _dynamicPathModelSpec;
+		private FreePositionedDynamicPathModelSpec _pathModelSpec;
 		private GameObject _currentModel;
 		private Orientation _currentModelOrientation;
 		private readonly NeighboredValues4<GameObject> _groundModels = new NeighboredValues4<GameObject>();
 		private readonly NeighboredValues4<GameObject> _roofModels = new NeighboredValues4<GameObject>();
 
-		public CustomDynamicPathModel(IConnectionService connectionService, FactionService factionService, StackableBlockService stackableBlockService, IBlockService blockService, PreviewBlockService previewBlockService, ITerrainService terrainService)
+		public FreePositionedDynamicPathModel(IConnectionService connectionService, FactionService factionService, StackableBlockService stackableBlockService, IBlockService blockService, PreviewBlockService previewBlockService, ITerrainService terrainService)
 		{
 			_connectionService = connectionService;
 			_factionService = factionService;
@@ -36,44 +36,48 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 			_terrainService = terrainService;
 		}
 
+		#region IAwakableComponent
 		public void Awake()
 		{
 			_blockObject = GetComponent<BlockObject>();
-			_dynamicPathModelSpec = GetComponent<CustomDynamicPathModelSpec>();
-			InitializeModels();
-			SetMatchingModel(down: false, left: false, up: false, right: false);
+			_pathModelSpec = GetComponent<FreePositionedDynamicPathModelSpec>();
+			_InitializeModels();
+			_SetMatchingModel(down: false, left: false, up: false, right: false);
 		}
 
+		private void _InitializeModels()
+		{
+			_AddModel("0000", down: false, left: false, up: false, right: false);
+			_AddModel("0010", down: false, left: false, up: true, right: false);
+			_AddModel("1010", down: true, left: false, up: true, right: false);
+			_AddModel("0011", down: false, left: false, up: true, right: true);
+			_AddModel("0111", down: false, left: true, up: true, right: true);
+			_AddModel("1111", down: true, left: true, up: true, right: true);
+		}
+		#endregion
+
+		#region IModelUpdater
 		public void UpdateModel()
 		{
-			Vector3Int pathOrigin = GetPathOrigin();
-			SetMatchingModel(CanConnectInDirection(pathOrigin, Direction2D.Down), CanConnectInDirection(pathOrigin, Direction2D.Left), CanConnectInDirection(pathOrigin, Direction2D.Up), CanConnectInDirection(pathOrigin, Direction2D.Right));
+			Vector3Int pathOrigin = _GetPathOrigin();
+			_SetMatchingModel(_CanConnectInDirection(pathOrigin, Direction2D.Down), _CanConnectInDirection(pathOrigin, Direction2D.Left), _CanConnectInDirection(pathOrigin, Direction2D.Up), _CanConnectInDirection(pathOrigin, Direction2D.Right));
 		}
+		#endregion
 
-		public void InitializeModels()
+		private void _AddModel(string variant, bool down, bool left, bool up, bool right)
 		{
-			AddModel("0000", down: false, left: false, up: false, right: false);
-			AddModel("0010", down: false, left: false, up: true, right: false);
-			AddModel("1010", down: true, left: false, up: true, right: false);
-			AddModel("0011", down: false, left: false, up: true, right: true);
-			AddModel("0111", down: false, left: true, up: true, right: true);
-			AddModel("1111", down: true, left: true, up: true, right: true);
-		}
-
-		public void AddModel(string variant, bool down, bool left, bool up, bool right)
-		{
-			if (!string.IsNullOrWhiteSpace(_dynamicPathModelSpec.GroundModelPrefix))
+			if (!string.IsNullOrWhiteSpace(_pathModelSpec.GroundModelPrefix))
 			{
-				_groundModels.AddVariants(GetModelVariant(_dynamicPathModelSpec.GroundModelPrefix, variant, _factionService.Current.PathMaterial.Asset), down, left, up, right);
+				_groundModels.AddVariants(_GetModelVariant(_pathModelSpec.GroundModelPrefix, variant, _factionService.Current.PathMaterial.Asset), down, left, up, right);
 			}
 
-			if (!string.IsNullOrWhiteSpace(_dynamicPathModelSpec.RoofModelPrefix))
+			if (!string.IsNullOrWhiteSpace(_pathModelSpec.RoofModelPrefix))
 			{
-				_roofModels.AddVariants(GetModelVariant(_dynamicPathModelSpec.RoofModelPrefix, variant, _factionService.Current.BaseWoodMaterial.Asset), down, left, up, right);
+				_roofModels.AddVariants(_GetModelVariant(_pathModelSpec.RoofModelPrefix, variant, _factionService.Current.BaseWoodMaterial.Asset), down, left, up, right);
 			}
 		}
 
-		public GameObject GetModelVariant(string prefix, string variant, Material material)
+		private GameObject _GetModelVariant(string prefix, string variant, Material material)
 		{
 			string childName = prefix + variant;
 			GameObject gameObject = base.GameObject.FindChild(childName);
@@ -82,13 +86,13 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 			return gameObject;
 		}
 
-		public void SetMatchingModel(bool down, bool left, bool up, bool right)
+		private void _SetMatchingModel(bool down, bool left, bool up, bool right)
 		{
-			NeighboredValues4<GameObject> neighboredValues = (IsValidForGroundModel() ? _groundModels : _roofModels);
+			NeighboredValues4<GameObject> neighboredValues = (_IsValidForGroundModel() ? _groundModels : _roofModels);
 			if (!neighboredValues.IsEmpty)
 			{
 				var (model, orientation2) = (OrientedValue<GameObject>)(neighboredValues.GetMatch(down, left, up, right));
-				SetCurrentModel(model, orientation2);
+				_SetCurrentModel(model, orientation2);
 			}
 			else if ((bool)_currentModel)
 			{
@@ -96,21 +100,21 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 			}
 		}
 
-		public bool IsValidForGroundModel()
+		private bool _IsValidForGroundModel()
 		{
-			Vector3Int coordinates = _blockObject.TransformCoordinates(_dynamicPathModelSpec.Position);
-			if (!IsEnforced(coordinates, PathModelType.Roof))
+			Vector3Int coordinates = _blockObject.TransformCoordinates(_pathModelSpec.Position);
+			if (!_IsEnforced(coordinates, PathModelType.Roof))
 			{
 				Vector3Int vector3Int = coordinates - new Vector3Int(0, 0, 1);
 				bool num = _terrainService.OnGround(coordinates) || _stackableBlockService.IsUnfinishedGroundBlockAt(vector3Int);
-				bool flag = IsEnforced(vector3Int, PathModelType.Ground);
+				bool flag = _IsEnforced(vector3Int, PathModelType.Ground);
 				return num || flag;
 			}
 
 			return false;
 		}
 
-		public bool IsEnforced(Vector3Int coordinates, PathModelType modelType)
+		private bool _IsEnforced(Vector3Int coordinates, PathModelType modelType)
 		{
 			PathModelTypeEnforcer pathModelTypeEnforcer = _blockService.GetObjectsWithComponentAt<PathModelTypeEnforcer>(coordinates).FirstOrDefault() ?? _previewBlockService.GetObjectsWithComponentAt<PathModelTypeEnforcer>(coordinates).FirstOrDefault();
 			if (pathModelTypeEnforcer != null)
@@ -121,7 +125,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 			return false;
 		}
 
-		public void SetCurrentModel(GameObject model, Orientation orientation)
+		private void _SetCurrentModel(GameObject model, Orientation orientation)
 		{
 			if (!(_currentModel != model) && _currentModelOrientation == orientation)
 			{
@@ -145,12 +149,12 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 			_currentModel.SetActive(value: true);
 		}
 
-		public Vector3Int GetPathOrigin()
+		private Vector3Int _GetPathOrigin()
 		{
-			return _blockObject.TransformCoordinates(_dynamicPathModelSpec.Position);
+			return _blockObject.TransformCoordinates(_pathModelSpec.Position);
 		}
 
-		public bool CanConnectInDirection(Vector3Int origin, Direction2D direction2D)
+		private bool _CanConnectInDirection(Vector3Int origin, Direction2D direction2D)
 		{
 			Direction2D direction2D2 = _blockObject.Orientation.Transform(direction2D);
 			return _connectionService.CanConnectInDirection(origin, direction2D2);
