@@ -1,0 +1,30 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:cui="Timberborn.CoreUI" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <cui:NineSliceVisualElement name="WatertightGateWrapper" class="entity-sub-panel WatertightGate-fragment bg-sub-box--green" style="align-items: flex-start; align-self: stretch; flex-direction: column;">
+        <Style src="project://database/Assets/Mods/WatertightGates/AssetBundles/Resources/UI/Styles/EntityPanel/WatertightGate.uss"/>
+        <ui:VisualElement name="ActivationModeContainer" class="WatertightGate-fragment__row">
+            <ui:VisualElement name="ActivationModeToggle" class="WatertightGate-fragment__toggle-container">
+                <ui:Toggle label=""/>
+                <ui:Toggle label=""/>
+            </ui:VisualElement>
+            <ui:Label name="ActivationModeLabel" text="Open" class="entity-panel__text WatertightGate-fragment__right-label"/>
+        </ui:VisualElement>
+        <ui:VisualElement name="ActiveStateContainer" class="WatertightGate-fragment__row">
+            <ui:Image name="Icon" class="slider-toggle__icon WatertightGate-fragment__activation-mode-active"/>
+            <ui:Label name="ActiveStateDesc" text="When active" class="entity-panel__text WatertightGate-fragment__left-label"/>
+            <ui:VisualElement name="ActiveStateToggle" class="WatertightGate-fragment__toggle-container">
+                <ui:Toggle label=""/>
+                <ui:Toggle label=""/>
+            </ui:VisualElement>
+            <ui:Label name="ActiveStateLabel" text="Open" class="entity-panel__text WatertightGate-fragment__right-label"/>
+        </ui:VisualElement>
+        <ui:VisualElement name="InactiveStateContainer" class="WatertightGate-fragment__row">
+            <ui:Image name="Icon" class="slider-toggle__icon WatertightGate-fragment__activation-mode-inactive"/>
+            <ui:Label name="InactiveStateDesc" text="When inactive" class="entity-panel__text WatertightGate-fragment__left-label"/>
+            <ui:VisualElement name="InactiveStateToggle" class="WatertightGate-fragment__toggle-container">
+                <ui:Toggle label=""/>
+                <ui:Toggle label=""/>
+            </ui:VisualElement>
+            <ui:Label name="InactiveStateLabel" text="Open" class="entity-panel__text WatertightGate-fragment__right-label"/>
+        </ui:VisualElement>
+    </cui:NineSliceVisualElement>
+</ui:UXML>

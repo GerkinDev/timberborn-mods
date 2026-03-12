@@ -1,0 +1,42 @@
+﻿using System;
+using Timberborn.AutomationBuildingsUI;
+using Timberborn.BaseComponentSystem;
+using Timberborn.Localization;
+using Timberborn.StatusSystem;
+
+namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.UI
+{
+	internal class WatertightGateConflictStatus : BaseComponent, IAwakableComponent, IStartableComponent
+	{
+		private static string _ConflictLocKey => GateConflictStatus.ConflictLocKey;
+		private static string _ConflictShortLocKey => GateConflictStatus.ConflictShortLocKey;
+
+		private readonly ILoc _loc;
+
+		private WatertightGate _gate;
+
+		private StatusToggle _statusToggle;
+
+		public WatertightGateConflictStatus(ILoc loc)
+		{
+			_loc = loc;
+		}
+
+		public void Awake()
+		{
+			_gate = GetComponent<WatertightGate>();
+			_statusToggle = StatusToggle.CreateNormalStatusWithAlertAndFloatingIcon("GateConflict", _loc.T(_ConflictLocKey), _loc.T(_ConflictShortLocKey));
+			_gate.StateChanged += OnStateChanged;
+		}
+
+		public void Start()
+		{
+			GetComponent<StatusSubject>().RegisterStatus(_statusToggle);
+		}
+
+		public void OnStateChanged(object sender, EventArgs e)
+		{
+			_statusToggle.Toggle(_gate.IsConflict);
+		}
+	}
+}
