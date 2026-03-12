@@ -97,6 +97,8 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 		private NavMeshBlocker _navMeshBlocker;
 		private WaterBlocker _waterBlocker;
 		private Transform _anchor;
+		private Vector3 _anchorInitialRotation;
+		private Vector3 _anchorInitialPosition;
 
 		public void Awake()
 		{
@@ -106,6 +108,8 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 			_navMeshBlocker = GetComponent<NavMeshBlocker>();
 			_waterBlocker = GetComponent<WaterBlocker>();
 			_anchor = GameObject.FindChildTransform(_spec.Anchor);
+			_anchorInitialRotation = _anchor.transform.rotation.eulerAngles;
+			_anchorInitialPosition = _anchor.transform.position;
 		}
 		#endregion
 
@@ -232,7 +236,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 
 		private void _SetAnchorTransform(GateTransformSpec transform)
 		{
-			_anchor.transform.SetLocalPositionAndRotation(transform.Position, Quaternion.Euler(transform.Rotation));
+			_anchor.transform.SetLocalPositionAndRotation(transform.Position + _anchorInitialPosition, Quaternion.Euler(transform.Rotation + _anchorInitialRotation));
 		}
 
 		private void _NotifyStateChanged()

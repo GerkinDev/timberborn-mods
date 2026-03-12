@@ -2,7 +2,8 @@
   "TemplateCollectionSpec": {
     "CollectionId": "Buildings.Folktails",
     "Blueprints#append": [
-      "Buildings/Paths/WatertightGate/WatertightGate.Flat.Folktails.blueprint"
+      "Buildings/Paths/WatertightGate/WatertightGate.Flat.Folktails.blueprint",
+      "Buildings/Paths/WatertightGate/WatertightGate.Stairs.Folktails.blueprint"
     ]
   }
 }

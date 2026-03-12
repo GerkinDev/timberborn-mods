@@ -1,10 +1,7 @@
 {
   "TemplateSpec": {
-    "TemplateName": "GerkinDev.WatertightGate.Flat.Folktails",
-    "BackwardCompatibleTemplateNames": [
-      "GerkinDev.DamWalkway.DamWalkway",
-      "GerkinDev.DamServiceGate.DamServiceGate"
-    ],
+    "TemplateName": "GerkinDev.WatertightGate.Stairs.Folktails",
+    "BackwardCompatibleTemplateNames": [],
     "RequiredFeatureToggle": "",
     "DisablingFeatureToggle": ""
   },
@@ -167,15 +164,15 @@
     ]
   },
   "WatertightGateSpec": {
-    "Anchor": "#WatertightGate.Flat.Folktails.GateAnchor",
+    "Anchor": "#WatertightGate.Stairs.Folktails.GateAnchor",
     "OpenTransform": {
       "Position": {
         "X": 0.0,
-        "Y": 1.0,
+        "Y": 0.0,
         "Z": 0.0
       },
       "Rotation": {
-        "X": 0.0,
+        "X": 72.0,
         "Y": 0.0,
         "Z": 0.0
       }
@@ -207,28 +204,19 @@
     "PathEnd": {
       "X": 0,
       "Y": 1,
-      "Z": 0
+      "Z": 1
     },
     "WaterBlockingPositions": [
       {
         "X": 0,
         "Y": 0,
-        "Z": 1
+        "Z": 0
       }
     ],
     "WaterDynamicPosition": {
       "X": 0,
       "Y": 0,
-      "Z": 0
-    }
-  },
-  "CustomDynamicPathModelSpec": {
-    "GroundModelPrefix": "DirtPath",
-    "RoofModelPrefix": "",
-    "Position": {
-      "X": 0,
-      "Y": 0,
-      "Z": 0
+      "Z": 1
     }
   },
   "PathSpec": {
@@ -243,7 +231,7 @@
   "Children": {
     "#Finished": {
       "TimbermeshSpec": {
-        "Model": "Buildings/Paths/WatertightGate/WatertightGate.Flat.Folktails.Model"
+        "Model": "Buildings/Paths/WatertightGate/WatertightGate.Stairs.Folktails.Model"
       },
       "CollidersSpec": {
         "BoxColliders": [
@@ -262,38 +250,6 @@
         ],
         "SphereColliders": [],
         "CapsuleColliders": []
-      },
-      "Children": {
-        "DirtPath0000": {
-          "TimbermeshSpec": {
-            "Model": "Buildings/Paths/Path/DirtPath0000.Model"
-          }
-        },
-        "DirtPath0010": {
-          "TimbermeshSpec": {
-            "Model": "Buildings/Paths/Path/DirtPath0010.Model"
-          }
-        },
-        "DirtPath0011": {
-          "TimbermeshSpec": {
-            "Model": "Buildings/Paths/Path/DirtPath0011.Model"
-          }
-        },
-        "DirtPath0111": {
-          "TimbermeshSpec": {
-            "Model": "Buildings/Paths/Path/DirtPath0111.Model"
-          }
-        },
-        "DirtPath1010": {
-          "TimbermeshSpec": {
-            "Model": "Buildings/Paths/Path/DirtPath1010.Model"
-          }
-        },
-        "DirtPath1111": {
-          "TimbermeshSpec": {
-            "Model": "Buildings/Paths/Path/DirtPath1111.Model"
-          }
-        }
       }
     },
     "#Unfinished": {
@@ -303,7 +259,7 @@
         },
         "ConstructionStage0": {
           "TimbermeshSpec": {
-            "Model": "Buildings/Paths/WatertightGate/WatertightGate.Flat.Folktails.Model"
+            "Model": "Buildings/Paths/WatertightGate/WatertightGate.Stairs.Folktails.Model"
           },
           "CollidersSpec": {
             "BoxColliders": [
