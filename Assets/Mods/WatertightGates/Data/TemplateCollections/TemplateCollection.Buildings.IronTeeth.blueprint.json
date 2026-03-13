@@ -1,0 +1,9 @@
+{
+  "TemplateCollectionSpec": {
+    "CollectionId": "Buildings.IronTeeth",
+    "Blueprints#append": [
+      "Buildings/Paths/WatertightGate/WatertightGate.Flat.IronTeeth.blueprint",
+      "Buildings/Paths/WatertightGate/WatertightGate.Stairs.IronTeeth.blueprint"
+    ]
+  }
+}
