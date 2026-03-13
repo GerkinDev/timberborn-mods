@@ -5,6 +5,7 @@ using Timberborn.BaseComponentSystem;
 using Timberborn.BlockSystem;
 using Timberborn.Common;
 using Timberborn.EntitySystem;
+using Timberborn.Illumination;
 using Timberborn.Persistence;
 using Timberborn.WorldPersistence;
 using UnityEngine;
@@ -95,6 +96,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 		private BlockObject _blockObject;
 		private NavMeshBlocker _navMeshBlocker;
 		private WaterBlocker _waterBlocker;
+		private Illuminator _illuminator;
 		private Transform _anchor;
 		private Vector3 _anchorInitialRotation;
 		private Vector3 _anchorInitialPosition;
@@ -106,6 +108,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 			_blockObject = GetComponent<BlockObject>(); /// Position is not initialized yet. See <see cref="PreInitializeEntity"/> for transforms
 			_navMeshBlocker = GetComponent<NavMeshBlocker>();
 			_waterBlocker = GetComponent<WaterBlocker>();
+			_illuminator = GetComponent<Illuminator>();
 			_anchor = GameObject.FindChildTransform(_spec.Anchor);
 			_anchorInitialRotation = _anchor.transform.rotation.eulerAngles;
 			_anchorInitialPosition = _anchor.transform.position;
@@ -223,7 +226,23 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 			_navMeshBlocker.GateMode = actualGateMode;
 			if (_blockObject.IsFinished)
 			{
-				_waterBlocker.Height = actualGateMode == EGateMode.Open ? 0 : 1;
+				switch (actualGateMode)
+				{
+					case EGateMode.Close:
+						_illuminator.Toggle(false);
+						_waterBlocker.Height = 1;
+						break;
+					case EGateMode.Open:
+						_illuminator.ClearColor(1);
+						_illuminator.Toggle(true);
+						_waterBlocker.Height = 0;
+						break;
+					case EGateMode.Pass:
+						_illuminator.SetColor(1, Color.red);
+						_illuminator.Toggle(true);
+						_waterBlocker.Height = 1;
+						break;
+				}
 			}
 			_SetAnchorTransform(actualGateMode);
 		}

@@ -1,6 +1,7 @@
 using Bindito.Core;
 using GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.UI;
 using Timberborn.EntityPanelSystem;
+using Timberborn.Illumination;
 using Timberborn.TemplateInstantiation;
 
 namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
@@ -30,6 +31,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 			builder.AddDecorator<WatertightGate, NavMeshBlocker>();
 			builder.AddDecorator<WatertightGate, WaterBlocker>();
 			builder.AddDecorator<WatertightGate, WatertightGateConflictStatus>();
+			builder.AddDecorator<WatertightGate, Illuminator>();
 			builder.AddDecorator<FreePositionedDynamicPathModelSpec, FreePositionedDynamicPathModel>();
 			return builder.Build();
 		}
