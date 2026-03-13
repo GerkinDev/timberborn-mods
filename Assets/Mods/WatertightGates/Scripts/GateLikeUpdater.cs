@@ -23,7 +23,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 
 
 	[HarmonyPatch(typeof(GateUpdater), nameof(GateUpdater.LateUpdateSingleton))]
-	public static class ConstructionSiteBuildTimeCalculatorPatch
+	public static class GateUpdaterPatch
 	{
 		/// <summary>
 		/// Full copy of <see cref="GateUpdater.LateUpdateSingleton"/> except it does not flush <see cref="GateUpdater._openGateCrossings"/>: we'll flush it in <see cref="GateLikeUpdater.LateUpdateSingleton"/>.

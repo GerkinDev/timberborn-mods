@@ -1,4 +1,4 @@
-﻿# Remove the line below if you want to inherit .editorconfig settings from higher directories
+# Remove the line below if you want to inherit .editorconfig settings from higher directories
 root = true
 
 # C# files
@@ -223,6 +223,14 @@ dotnet_naming_rule.types_should_be_pascalcase.severity = warning
 dotnet_naming_rule.types_should_be_pascalcase.symbols = types
 dotnet_naming_rule.types_should_be_pascalcase.style = pascalcase
 
+dotnet_naming_rule.private_or_protected___const_should_be__upper_snake.severity = warning
+dotnet_naming_rule.private_or_protected___const_should_be__upper_snake.symbols = private_or_protected___const
+dotnet_naming_rule.private_or_protected___const_should_be__upper_snake.style = _upper_snake
+
+dotnet_naming_rule.const_should_be_upper_snake.severity = warning
+dotnet_naming_rule.const_should_be_upper_snake.symbols = const
+dotnet_naming_rule.const_should_be_upper_snake.style = upper_snake
+
 dotnet_naming_rule.private_or_internal___field_should_be__camelcase.severity = warning
 dotnet_naming_rule.private_or_internal___field_should_be__camelcase.symbols = private_or_internal___field
 dotnet_naming_rule.private_or_internal___field_should_be__camelcase.style = _camelcase
@@ -273,6 +281,14 @@ dotnet_naming_symbols.type_parameter.applicable_kinds = type_parameter
 dotnet_naming_symbols.type_parameter.applicable_accessibilities = *
 dotnet_naming_symbols.type_parameter.required_modifiers = 
 
+dotnet_naming_symbols.const.applicable_kinds = property, field, local
+dotnet_naming_symbols.const.applicable_accessibilities = *
+dotnet_naming_symbols.const.required_modifiers = const
+
+dotnet_naming_symbols.private_or_protected___const.applicable_kinds = field
+dotnet_naming_symbols.private_or_protected___const.applicable_accessibilities = private, protected, protected_internal, private_protected, local
+dotnet_naming_symbols.private_or_protected___const.required_modifiers = const
+
 # Naming styles
 
 dotnet_naming_style.pascalcase.required_prefix = 
@@ -309,3 +325,13 @@ dotnet_naming_style.tpascalcase.required_prefix = T
 dotnet_naming_style.tpascalcase.required_suffix = 
 dotnet_naming_style.tpascalcase.word_separator = 
 dotnet_naming_style.tpascalcase.capitalization = pascal_case
+
+dotnet_naming_style.upper_snake.required_prefix = 
+dotnet_naming_style.upper_snake.required_suffix = 
+dotnet_naming_style.upper_snake.word_separator = _
+dotnet_naming_style.upper_snake.capitalization = all_upper
+
+dotnet_naming_style._upper_snake.required_prefix = _
+dotnet_naming_style._upper_snake.required_suffix = 
+dotnet_naming_style._upper_snake.word_separator = _
+dotnet_naming_style._upper_snake.capitalization = all_upper

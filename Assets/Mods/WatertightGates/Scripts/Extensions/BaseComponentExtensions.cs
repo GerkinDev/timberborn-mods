@@ -24,7 +24,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Extensio
 			{
 				who = "Unknown";
 			}
-			logStr = $"[{who}] {logStr}";
+			logStr = $"[{WatertightGatesModStarter.MOD_ID}:{who}] {logStr}";
 			Debug.Log(logStr);
 		}
 	}
