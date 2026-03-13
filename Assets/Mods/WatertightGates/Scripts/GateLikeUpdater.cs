@@ -156,10 +156,8 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 
 		private EGateState _TryOpenGate(IGateLike gate, GateLikeUpdate update)
 		{
-			Debug.LogFormat("[LateUpdateSingleton] Check if can open {0} => {1} => {2}", gate.PathStart, gate.PathCenter, gate.PathEnd);
 			if ((update.CurrentState == EGateState.Open && update.Force) || _gateConflictDetector.CanOpenGateWithoutConflict(gate.PathStart, gate.PathEnd, gate.PathCenter, _OpenGateCrossings))
 			{
-				Debug.LogFormat("[LateUpdateSingleton] Yes");
 				gate.CurrentGateState = EGateState.Open;
 				_gatesWithConflict.Remove(gate);
 				_AddToOpenGateCrossings(gate);
@@ -167,7 +165,6 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 			}
 			else
 			{
-				Debug.LogFormat("[LateUpdateSingleton] No");
 				gate.CurrentGateState = EGateState.OpenConflict;
 				_gatesWithConflict[gate] = update;
 				return EGateState.OpenConflict;
@@ -180,25 +177,18 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 			{
 				return;
 			}
-			Debug.LogFormat("[_TryOpenConflictedGates] Start with {0} conflicts", _gatesWithConflict.Count);
 
-			var i = 0;
 			foreach (var (gate, update) in _gatesWithConflict)
 			{
-				Debug.LogFormat("[_TryOpenConflictedGates] Copy conflict {0}, current {1}, desired {2}, force {3}", i++, update.CurrentState, update.DesiredState, update.Force);
 				_gatesWithConflictCache.Add(gate, update);
 			}
 			_gatesWithConflict.Clear();
-			i = 0;
 			foreach (var (gate, update) in _gatesWithConflictCache)
 			{
-				Debug.LogFormat("[_TryOpenConflictedGates] Running check for conflict {0}, current {1}, desired {2}, force {3}", i, update.CurrentState, update.DesiredState, update.Force);
 				var result = _TryUpdateGate(gate, update);
-				Debug.LogFormat("[_TryOpenConflictedGates] For item {0}, end with result {1}", i++, result);
 			}
 
 			_gatesWithConflictCache.Clear();
-			Debug.LogFormat("[_TryOpenConflictedGates] Finish with {0} conflicts", _gatesWithConflict.Count);
 		}
 
 		private void _AddToOpenGateCrossings(GatePlacement gatePlacement)

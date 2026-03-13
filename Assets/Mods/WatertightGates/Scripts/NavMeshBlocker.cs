@@ -1,4 +1,3 @@
-using GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Extensions;
 using System;
 using Timberborn.BaseComponentSystem;
 using Timberborn.BlockSystem;
@@ -108,7 +107,6 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 			var center = _blockObject.TransformCoordinates(_spec.PathCenter);
 			var prevCost = _GetCost(previousValue);
 			var cost = _GetCost(value);
-			this.Log("Updating cost from {0} to {1}", prevCost, cost);
 			_navMeshService.RemoveEdge(_GetEdge(center, start, prevCost));
 			_navMeshService.RemoveEdge(_GetEdge(center, end, prevCost));
 			_navMeshService.AddEdge(_GetEdge(center, start, cost));

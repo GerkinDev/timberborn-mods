@@ -204,7 +204,6 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 		{
 			if (_blockObject.IsFinished)
 			{
-				this.Log("Scheduling gate for desired {0}", _CurrentGateMode);
 				if (_CurrentGateMode != EGateMode.Close)
 				{
 					_gateLikeUpdater.ScheduleToOpen(this);
@@ -222,7 +221,6 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 		private void _UpdateState()
 		{
 			var actualGateMode = _currentGateState != EGateState.Open ? EGateMode.Close : _CurrentGateMode;
-			this.Log("Set gate state {0}, desired {1}, actual {2}", _currentGateState, _CurrentGateMode, actualGateMode);
 			_navMeshBlocker.GateMode = actualGateMode;
 			if (_blockObject.IsFinished)
 			{
