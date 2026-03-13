@@ -26,7 +26,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.UI
 		{
 			_gate = GetComponent<WatertightGate>();
 			_statusToggle = StatusToggle.CreateNormalStatusWithAlertAndFloatingIcon("GateConflict", _loc.T(_ConflictLocKey), _loc.T(_ConflictShortLocKey));
-			_gate.StateChanged += OnStateChanged;
+			_gate.ConflictStateChanged += OnStateChanged;
 		}
 
 		public void Start()
@@ -36,7 +36,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.UI
 
 		public void OnStateChanged(object sender, EventArgs e)
 		{
-			_statusToggle.Toggle(_gate.IsConflict);
+			_statusToggle.Toggle(_gate.CurrentGateState == EGateState.OpenConflict);
 		}
 	}
 }

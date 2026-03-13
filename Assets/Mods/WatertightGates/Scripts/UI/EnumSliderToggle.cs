@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Timberborn.SliderToggleSystem;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.UI

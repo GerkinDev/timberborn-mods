@@ -14,6 +14,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Extensio
 			try
 			{
 				who = component.Name;
+				who += "@" + component.GameObject.GetEntityId();
 				if (component.TryGetComponent<BlockObject>(out var blockObject))
 				{
 					who += "@" + blockObject.Placement.Coordinates;

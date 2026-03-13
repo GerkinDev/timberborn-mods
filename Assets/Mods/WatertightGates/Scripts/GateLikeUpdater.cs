@@ -7,17 +7,18 @@ using UnityEngine;
 
 namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 {
+	public enum EGateState
+	{
+		Open,
+		Closed,
+		OpenConflict
+	}
 	public interface IGateLike
 	{
-		public bool IsClosed { get; }
+		public EGateState CurrentGateState { get; set; }
 		public Vector3Int PathStart { get; }
 		public Vector3Int PathEnd { get; }
 		public Vector3Int PathCenter { get; }
-
-		public void Close();
-		public void Open();
-		public void EnableConflict();
-		public void DisableConflict();
 	}
 
 
@@ -51,12 +52,17 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 	/// </summary>
 	public class GateLikeUpdater : IUpdatableSingleton, ILateUpdatableSingleton, ISingletonNavMeshListener
 	{
+		private record GateLikeUpdate
+		{
+			public EGateState CurrentState { get; init; }
+			public EGateState DesiredState { get; init; }
+			public bool Force { get; init; }
+		}
+		private readonly Dictionary<IGateLike, GateLikeUpdate> _gateChangeOperations = new();
 		private readonly GateConflictDetector _gateConflictDetector;
 		private readonly GateUpdater _baseGameGateUpdater;
-		private readonly HashSet<IGateLike> _gatesScheduledToOpen = new();
-		private readonly HashSet<IGateLike> _gatesScheduledToClose = new();
-		private readonly HashSet<IGateLike> _gatesWithConflict = new();
-		private readonly List<IGateLike> _gatesWithConflictCache = new();
+		private readonly Dictionary<IGateLike, GateLikeUpdate> _gatesWithConflict = new();
+		private readonly Dictionary<IGateLike, GateLikeUpdate> _gatesWithConflictCache = new();
 		private Dictionary<Vector3Int, Vector3Int> _OpenGateCrossings => _baseGameGateUpdater._openGateCrossings;
 		private bool _hasScheduledGates;
 		private bool _hasScheduledUnblocking;
@@ -88,8 +94,11 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 			}
 			if (_hasScheduledGates)
 			{
-				_CloseScheduledGates();
-				_OpenScheduledGates();
+				foreach (var kvp in _gateChangeOperations)
+				{
+					_TryUpdateGate(kvp.Key, kvp.Value);
+				}
+				_gateChangeOperations.Clear();
 				_hasScheduledUnblocking = true;
 				_hasScheduledGates = false;
 			}
@@ -107,97 +116,62 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 		#region ISingletonNavMeshListener
 		public void OnNavMeshUpdated(NavMeshUpdate navMeshUpdate)
 		{
+			Debug.LogFormat("[OnNavMeshUpdated] NavMesh updated");
 			_hasScheduledUnblocking = true;
 		}
 		#endregion
 
-		public void ScheduleToOpen(IGateLike gate)
-		{
-			_gatesScheduledToOpen.Add(gate);
-			_gatesScheduledToClose.Remove(gate);
-			_hasScheduledGates = true;
-		}
 
-		public void ScheduleToClose(IGateLike gate)
+		public void ScheduleGateUpdate(IGateLike gate, EGateState desired, bool force = false)
 		{
-			_gatesScheduledToClose.Add(gate);
-			_gatesScheduledToOpen.Remove(gate);
+			_gateChangeOperations[gate] = new GateLikeUpdate { CurrentState = gate.CurrentGateState, DesiredState = desired, Force = force };
+			_gatesWithConflict.Remove(gate);
 			_hasScheduledGates = true;
 		}
+		public void ScheduleToOpen(IGateLike gate) => ScheduleGateUpdate(gate, EGateState.Open);
+
+		public void ScheduleToClose(IGateLike gate) => ScheduleGateUpdate(gate, EGateState.Closed);
 
 		public void Remove(IGateLike gate)
 		{
-			_gatesScheduledToClose.Remove(gate);
-			_gatesScheduledToOpen.Remove(gate);
-			_RemoveGateFromConflicted(gate);
+			_gateChangeOperations.Remove(gate);
+			_gatesWithConflict.Remove(gate);
 		}
 
-		private void _CloseScheduledGates()
-		{
-			foreach (var item in _gatesScheduledToClose)
-			{
-				_TryCloseGate(item);
-			}
+		private EGateState _TryUpdateGate(IGateLike gate, GateLikeUpdate update) =>
+			update.DesiredState == EGateState.Closed ?
+				_TryCloseGate(gate, update) :
+				_TryOpenGate(gate, update);
 
-			_gatesScheduledToClose.Clear();
+		private EGateState _TryCloseGate(IGateLike gate, GateLikeUpdate update)
+		{
+			if (update.CurrentState != EGateState.Closed || update.Force)
+			{
+				gate.CurrentGateState = EGateState.Closed;
+				_gatesWithConflict.Remove(gate);
+				return EGateState.Closed;
+			}
+			return EGateState.Open;
 		}
 
-		private void _OpenScheduledGates()
+		private EGateState _TryOpenGate(IGateLike gate, GateLikeUpdate update)
 		{
-			foreach (var item in _gatesScheduledToOpen)
-			{
-				_TryOpenGate(item);
-			}
-
-			_gatesScheduledToOpen.Clear();
-		}
-
-		private void _TryCloseGate(IGateLike gate)
-		{
-			if (!gate.IsClosed)
-			{
-				gate.Close();
-			}
-
-			_RemoveGateFromConflicted(gate);
-		}
-
-		private void _TryOpenGate(IGateLike gate)
-		{
-			if (!gate.IsClosed)
-			{
-				return;
-			}
-
 			Debug.LogFormat("[LateUpdateSingleton] Check if can open {0} => {1} => {2}", gate.PathStart, gate.PathCenter, gate.PathEnd);
-			if (_gateConflictDetector.CanOpenGateWithoutConflict(gate.PathStart, gate.PathEnd, gate.PathCenter, _OpenGateCrossings))
+			if ((update.CurrentState == EGateState.Open && update.Force) || _gateConflictDetector.CanOpenGateWithoutConflict(gate.PathStart, gate.PathEnd, gate.PathCenter, _OpenGateCrossings))
 			{
 				Debug.LogFormat("[LateUpdateSingleton] Yes");
-				gate.Open();
-				_RemoveGateFromConflicted(gate);
+				gate.CurrentGateState = EGateState.Open;
+				_gatesWithConflict.Remove(gate);
 				_AddToOpenGateCrossings(gate);
-				return;
+				return EGateState.Open;
 			}
-			Debug.LogFormat("[LateUpdateSingleton] No");
-
-			if (!gate.IsClosed)
+			else
 			{
-				gate.Close();
+				Debug.LogFormat("[LateUpdateSingleton] No");
+				gate.CurrentGateState = EGateState.OpenConflict;
+				_gatesWithConflict[gate] = update;
+				return EGateState.OpenConflict;
 			}
-
-			_AddGateToConflicted(gate);
-		}
-
-		private void _AddGateToConflicted(IGateLike gate)
-		{
-			gate.EnableConflict();
-			_gatesWithConflict.Add(gate);
-		}
-
-		private void _RemoveGateFromConflicted(IGateLike gate)
-		{
-			gate.DisableConflict();
-			_gatesWithConflict.Remove(gate);
 		}
 
 		private void _TryOpenConflictedGates()
@@ -206,15 +180,25 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 			{
 				return;
 			}
+			Debug.LogFormat("[_TryOpenConflictedGates] Start with {0} conflicts", _gatesWithConflict.Count);
 
-			_gatesWithConflictCache.AddRange(_gatesWithConflict);
-			_gatesWithConflict.Clear();
-			foreach (var item in _gatesWithConflictCache)
+			var i = 0;
+			foreach (var (gate, update) in _gatesWithConflict)
 			{
-				_TryOpenGate(item);
+				Debug.LogFormat("[_TryOpenConflictedGates] Copy conflict {0}, current {1}, desired {2}, force {3}", i++, update.CurrentState, update.DesiredState, update.Force);
+				_gatesWithConflictCache.Add(gate, update);
+			}
+			_gatesWithConflict.Clear();
+			i = 0;
+			foreach (var (gate, update) in _gatesWithConflictCache)
+			{
+				Debug.LogFormat("[_TryOpenConflictedGates] Running check for conflict {0}, current {1}, desired {2}, force {3}", i, update.CurrentState, update.DesiredState, update.Force);
+				var result = _TryUpdateGate(gate, update);
+				Debug.LogFormat("[_TryOpenConflictedGates] For item {0}, end with result {1}", i++, result);
 			}
 
 			_gatesWithConflictCache.Clear();
+			Debug.LogFormat("[_TryOpenConflictedGates] Finish with {0} conflicts", _gatesWithConflict.Count);
 		}
 
 		private void _AddToOpenGateCrossings(GatePlacement gatePlacement)

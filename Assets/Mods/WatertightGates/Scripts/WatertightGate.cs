@@ -80,8 +80,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 			}
 		}
 
-		public bool IsConflict { get; private set; }
-		public event EventHandler StateChanged;
+		public event EventHandler ConflictStateChanged;
 
 		private readonly GateLikeUpdater _gateLikeUpdater;
 
@@ -163,41 +162,32 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 		#region IInitializableEntity
 		public void InitializeEntity()
 		{
-			Close();
+			CurrentGateState = EGateState.Closed;
 			_ScheduleStateUpdate();
 		}
 		#endregion
 
 		#region IGateLike
-		public bool IsClosed { get; private set; }
+		private EGateState _currentGateState;
+		public EGateState CurrentGateState
+		{
+			get => _currentGateState;
+			set
+			{
+				var prevState = _currentGateState;
+				_currentGateState = value;
+				_UpdateState();
+				if (prevState != _currentGateState && (prevState == EGateState.OpenConflict || _currentGateState == EGateState.OpenConflict))
+				{
+					_NotifyConflictStateChanged();
+				}
+			}
+		}
 		public Vector3Int PathStart { get; private set; }
 		public Vector3Int PathEnd { get; private set; }
 		public Vector3Int PathCenter { get; private set; }
-
-		public void Close()
-		{
-			IsClosed = true;
-			_UpdateState();
-		}
-
-		public void Open()
-		{
-			IsClosed = false;
-			_UpdateState();
-		}
-
-		public void EnableConflict()
-		{
-			IsConflict = true;
-			_NotifyStateChanged();
-		}
-
-		public void DisableConflict()
-		{
-			IsConflict = false;
-			_NotifyStateChanged();
-		}
 		#endregion
+
 		#region IPreInitializableEntity
 		public void PreInitializeEntity()
 		{
@@ -228,8 +218,8 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 		}
 		private void _UpdateState()
 		{
-			var actualGateMode = IsClosed ? EGateMode.Close : _CurrentGateMode;
-			this.Log("Set gate closed {0}, desired {1}, actual {2}", IsClosed, _CurrentGateMode, actualGateMode);
+			var actualGateMode = _currentGateState != EGateState.Open ? EGateMode.Close : _CurrentGateMode;
+			this.Log("Set gate state {0}, desired {1}, actual {2}", _currentGateState, _CurrentGateMode, actualGateMode);
 			_navMeshBlocker.GateMode = actualGateMode;
 			if (_blockObject.IsFinished)
 			{
@@ -244,9 +234,9 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 			_anchor.transform.SetLocalPositionAndRotation(transform.Position + _anchorInitialPosition, Quaternion.Euler(transform.Rotation + _anchorInitialRotation));
 		}
 
-		private void _NotifyStateChanged()
+		private void _NotifyConflictStateChanged()
 		{
-			StateChanged?.Invoke(this, EventArgs.Empty);
+			ConflictStateChanged?.Invoke(this, EventArgs.Empty);
 		}
 	}
 }
