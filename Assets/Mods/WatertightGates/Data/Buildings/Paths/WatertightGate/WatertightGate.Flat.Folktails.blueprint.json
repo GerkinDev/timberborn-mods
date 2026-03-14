@@ -18,10 +18,18 @@
       },
       {
         "Id": "Plank",
-        "Amount": 5
+        "Amount": 6
+      },
+      {
+        "Id": "Gear",
+        "Amount": 6
+      },
+      {
+        "Id": "ScrapMetal",
+        "Amount": 6
       }
     ],
-    "ScienceCost": 150,
+    "ScienceCost": 400,
     "PlaceFinished": false,
     "FinishableWithBeaversOnSite": false,
     "DrawRangeBoundsOnIt": false

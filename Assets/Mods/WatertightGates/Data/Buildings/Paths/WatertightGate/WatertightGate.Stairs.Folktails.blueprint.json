@@ -11,14 +11,22 @@
     "BuildingCost": [
       {
         "Id": "Log",
-        "Amount": 10
+        "Amount": 8
       },
       {
         "Id": "Plank",
-        "Amount": 5
+        "Amount": 10
+      },
+      {
+        "Id": "Gear",
+        "Amount": 6
+      },
+      {
+        "Id": "ScrapMetal",
+        "Amount": 6
       }
     ],
-    "ScienceCost": 150,
+    "ScienceCost": 600,
     "PlaceFinished": false,
     "FinishableWithBeaversOnSite": false,
     "DrawRangeBoundsOnIt": false
