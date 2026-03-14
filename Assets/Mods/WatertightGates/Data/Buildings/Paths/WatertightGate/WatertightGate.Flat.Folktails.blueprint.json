@@ -70,7 +70,7 @@
   },
   "BlockObjectNavMeshSettingsSpec": {
     "NoAutoWalls": true,
-    "GenerateFloorsOnStackable": false, 
+    "GenerateFloorsOnStackable": false,
     "EdgeGroups": [
       {
         "Cost": 0.0,
@@ -141,7 +141,7 @@
   },
   "PlaceableBlockObjectSpec": {
     "ToolGroupId": "Paths",
-    "ToolOrder": 30,
+    "ToolOrder": 61,
     "ToolShape": "Square",
     "Layout": "Single",
     "CustomPivot": {
@@ -159,7 +159,7 @@
     "DisplayNameLocKey": "GerkinDev.WatertightGates.Building.WatertightGate.Flat.DisplayName",
     "DescriptionLocKey": "GerkinDev.WatertightGates.Building.WatertightGate.Flat.Description",
     "FlavorDescriptionLocKey": "GerkinDev.WatertightGates.Building.WatertightGate.Flat.FlavorDescription",
-    "Icon": "Buildings/Landscaping/Floodgate/FloodgateIcon"
+    "Icon": "Buildings/Paths/WatertightGate/WatertightGate.Flat"
   },
   "ConstructionSiteProgressVisualizerSpec": {
     "ProgressThresholds": [

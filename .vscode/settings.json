@@ -1,7 +1,7 @@
 {
 		"explorer.fileNesting.enabled": true,
 		"explorer.fileNesting.patterns": {
-			"*": "${capture}.meta",
+			"*": "${capture}.meta*",
 		},
 		"search.useIgnoreFiles": false,
 		"dotnet.preferCSharpExtension": true

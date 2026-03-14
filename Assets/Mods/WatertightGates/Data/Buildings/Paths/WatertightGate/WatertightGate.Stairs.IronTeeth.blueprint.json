@@ -134,7 +134,7 @@
   },
   "PlaceableBlockObjectSpec": {
     "ToolGroupId": "Paths",
-    "ToolOrder": 30,
+    "ToolOrder": 62,
     "ToolShape": "Square",
     "Layout": "Single",
     "CustomPivot": {
@@ -152,7 +152,7 @@
     "DisplayNameLocKey": "GerkinDev.WatertightGates.Building.WatertightGate.Stairs.DisplayName",
     "DescriptionLocKey": "GerkinDev.WatertightGates.Building.WatertightGate.Stairs.Description",
     "FlavorDescriptionLocKey": "GerkinDev.WatertightGates.Building.WatertightGate.Stairs.FlavorDescription",
-    "Icon": "Buildings/Landscaping/Floodgate/FloodgateIcon"
+    "Icon": "Buildings/Paths/WatertightGate/WatertightGate.Stairs"
   },
   "ConstructionSiteProgressVisualizerSpec": {
     "ProgressThresholds": [
