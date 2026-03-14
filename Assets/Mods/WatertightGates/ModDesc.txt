@@ -1,0 +1,15 @@
+Gates for dams, pipes, and other water infrastructures. Warranty void if left open.
+
+Adds 2 watertight gates variants (flat and stairs), that you can use to forbid access to your underground pipes or reservoirs. They can be automated, and has 3 opening modes:
+- Open
+- Closed
+- Pass, that will open quickly when a beaver need to pass through (partially implemented, for now it acts as an "airlock").
+
+Supports being placed between districts
+
+---
+
+This mod was originally done as a replacement to [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3493733195]Luke's broken gate mod[/url], especially for the new "Pressure" map where I needed a way to control access to pipes. I hope it will serve you.
+
+I'm very bad at texturing/art, so if you feel like you can help in any way, feel free to reach out ! https://github.com/GerkinDev/timberborn-mods/tree/main/Assets/Mods/WatertightGates
+

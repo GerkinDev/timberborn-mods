@@ -5,6 +5,7 @@ using UnityEngine.UIElements;
 
 namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.UI
 {
+	/// <see cref="Timberborn.AutomationBuildingsUI.GateToggle"/>
 	internal class EnumSliderToggle<T> where T : struct, Enum
 	{
 		private readonly SliderToggleFactory _sliderToggleFactory;

@@ -3,7 +3,7 @@
   "Version": "1.0.0.1",
   "Id": "GerkinDev.WatertightGates",
   "MinimumGameVersion": "1.0.0",
-  "Description": "TODO",
+  "Description": "Gates for dams, pipes, and other water infrastructures. Warranty void if left open.",
   "RequiredMods": [
         {
             "Id": "Harmony",
