@@ -149,9 +149,9 @@
     "DevModeTool": false
   },
   "LabeledEntitySpec": {
-    "DisplayNameLocKey": "GerkinDev.WatertightGates.Building.WatertightGate.DisplayName",
-    "DescriptionLocKey": "GerkinDev.WatertightGates.Building.WatertightGate.Description",
-    "FlavorDescriptionLocKey": "GerkinDev.WatertightGates.Building.WatertightGate.FlavorDescription",
+    "DisplayNameLocKey": "GerkinDev.WatertightGates.Building.WatertightGate.Stairs.DisplayName",
+    "DescriptionLocKey": "GerkinDev.WatertightGates.Building.WatertightGate.Stairs.Description",
+    "FlavorDescriptionLocKey": "GerkinDev.WatertightGates.Building.WatertightGate.Stairs.FlavorDescription",
     "Icon": "Buildings/Landscaping/Floodgate/FloodgateIcon"
   },
   "ConstructionSiteProgressVisualizerSpec": {

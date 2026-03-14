@@ -3,6 +3,7 @@ using Timberborn.AutomationBuildingsUI;
 using Timberborn.BaseComponentSystem;
 using Timberborn.CoreUI;
 using Timberborn.EntityPanelSystem;
+using Timberborn.Localization;
 using Timberborn.SingletonSystem;
 using Timberborn.SliderToggleSystem;
 using UnityEngine;
@@ -14,6 +15,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.UI
 	{
 		private readonly VisualElementLoader _visualElementLoader;
 		private readonly SliderToggleFactory _sliderToggleFactory;
+		private readonly ILoc _loc;
 		private WatertightGate? _target;
 
 		private VisualElement _root;
@@ -21,10 +23,11 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.UI
 		private EnumSliderToggle<WatertightGate.EGateMode> _activeStateToggle;
 		private EnumSliderToggle<WatertightGate.EGateMode> _inactiveStateToggle;
 
-		public WatertightGateFragment(VisualElementLoader visualElementLoader, SliderToggleFactory sliderToggleFactory)
+		public WatertightGateFragment(VisualElementLoader visualElementLoader, SliderToggleFactory sliderToggleFactory, ILoc loc)
 		{
 			_visualElementLoader = visualElementLoader;
 			_sliderToggleFactory = sliderToggleFactory;
+			_loc = loc;
 		}
 
 		private float? _activeWidth;
@@ -115,7 +118,21 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.UI
 					WatertightGate.EActivationMode.Inactive => "WatertightGate-fragment__activation-mode-inactive",
 					WatertightGate.EActivationMode.Automated => GateToggle.AutomatedClass,
 					_ => throw new Exception($"Invalid value {value}")
-				})
+				}),
+				LabelGetter = value => _loc.T(value switch
+				{
+					WatertightGate.EActivationMode.Active => "GerkinDev.WatertightGates.UI.WatertightGate.ActivationMode.Active.Label",
+					WatertightGate.EActivationMode.Inactive => "GerkinDev.WatertightGates.UI.WatertightGate.ActivationMode.Inactive.Label",
+					WatertightGate.EActivationMode.Automated => "GerkinDev.WatertightGates.UI.WatertightGate.ActivationMode.Automated.Label",
+					_ => throw new Exception($"Invalid value {value}")
+				}),
+				TooltipGetter = value => _loc.T(value switch
+				{
+					WatertightGate.EActivationMode.Active => "GerkinDev.WatertightGates.UI.WatertightGate.ActivationMode.Active.Tooltip",
+					WatertightGate.EActivationMode.Inactive => "GerkinDev.WatertightGates.UI.WatertightGate.ActivationMode.Inactive.Tooltip",
+					WatertightGate.EActivationMode.Automated => "GerkinDev.WatertightGates.UI.WatertightGate.ActivationMode.Automated.Tooltip",
+					_ => throw new Exception($"Invalid value {value}")
+				}),
 			};
 			_activationModeToggle.Initialize();
 
@@ -126,13 +143,27 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.UI
 				WatertightGate.EGateMode.Pass => "WatertightGate-fragment__gate-mode-pass",
 				_ => throw new Exception($"Invalid value {value}")
 			});
+			string getModeLabel(WatertightGate.EGateMode value) => _loc.T(value switch
+			{
+				WatertightGate.EGateMode.Open => "GerkinDev.WatertightGates.UI.WatertightGate.GateMode.Open.Label",
+				WatertightGate.EGateMode.Close => "GerkinDev.WatertightGates.UI.WatertightGate.GateMode.Close.Label",
+				WatertightGate.EGateMode.Pass => "GerkinDev.WatertightGates.UI.WatertightGate.GateMode.Pass.Label",
+				_ => throw new Exception($"Invalid value {value}")
+			});
+			string getModeTooltip(WatertightGate.EGateMode value) => _loc.T(value switch
+			{
+				WatertightGate.EGateMode.Open => "GerkinDev.WatertightGates.UI.WatertightGate.GateMode.Open.Tooltip",
+				WatertightGate.EGateMode.Close => "GerkinDev.WatertightGates.UI.WatertightGate.GateMode.Close.Tooltip",
+				WatertightGate.EGateMode.Pass => "GerkinDev.WatertightGates.UI.WatertightGate.GateMode.Pass.Tooltip",
+				_ => throw new Exception($"Invalid value {value}")
+			});
 			_activeStateToggle = new(
 				_sliderToggleFactory,
 				_root.Q<VisualElement>("ActiveStateToggle"),
 				_root.Q<Label>("ActiveStateLabel"),
 				() => _target.ActiveGateMode,
 				value => _target.ActiveGateMode = value)
-			{ IconClassGetter = getModeClass };
+			{ IconClassGetter = getModeClass, LabelGetter = getModeLabel, TooltipGetter = getModeTooltip };
 			_activeStateToggle.Initialize();
 			_inactiveStateToggle = new(
 				_sliderToggleFactory,
@@ -140,7 +171,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.UI
 				_root.Q<Label>("InactiveStateLabel"),
 				() => _target.InactiveGateMode,
 				value => _target.InactiveGateMode = value)
-			{ IconClassGetter = getModeClass };
+			{ IconClassGetter = getModeClass, LabelGetter = getModeLabel, TooltipGetter = getModeTooltip };
 			_inactiveStateToggle.Initialize();
 		}
 		#endregion

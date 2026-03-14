@@ -10,7 +10,7 @@
         </ui:VisualElement>
         <ui:VisualElement name="ActiveStateContainer" class="WatertightGate-fragment__row">
             <ui:Image name="Icon" class="slider-toggle__icon WatertightGate-fragment__activation-mode-active"/>
-            <ui:Label name="ActiveStateDesc" text="When active" class="entity-panel__text WatertightGate-fragment__left-label"/>
+            <cui:LocalizableLabel name="ActiveStateDesc" text="When active" text-loc-key="GerkinDev.WatertightGates.UI.WatertightGate.GateMode.ActiveState" class="entity-panel__text WatertightGate-fragment__left-label"/>
             <ui:VisualElement name="ActiveStateToggle" class="WatertightGate-fragment__toggle-container">
                 <ui:Toggle label=""/>
                 <ui:Toggle label=""/>
@@ -19,7 +19,7 @@
         </ui:VisualElement>
         <ui:VisualElement name="InactiveStateContainer" class="WatertightGate-fragment__row">
             <ui:Image name="Icon" class="slider-toggle__icon WatertightGate-fragment__activation-mode-inactive"/>
-            <ui:Label name="InactiveStateDesc" text="When inactive" class="entity-panel__text WatertightGate-fragment__left-label"/>
+            <cui:LocalizableLabel name="InactiveStateDesc" text="When inactive" text-loc-key="GerkinDev.WatertightGates.UI.WatertightGate.GateMode.InactiveState" class="entity-panel__text WatertightGate-fragment__left-label"/>
             <ui:VisualElement name="InactiveStateToggle" class="WatertightGate-fragment__toggle-container">
                 <ui:Toggle label=""/>
                 <ui:Toggle label=""/>
