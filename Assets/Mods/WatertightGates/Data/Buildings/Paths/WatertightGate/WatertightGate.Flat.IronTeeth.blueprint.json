@@ -75,7 +75,7 @@
   },
   "BlockObjectNavMeshSettingsSpec": {
     "NoAutoWalls": true,
-    "GenerateFloorsOnStackable": false, 
+    "GenerateFloorsOnStackable": false,
     "EdgeGroups": [
       {
         "Cost": 0.0,
@@ -255,13 +255,37 @@
           {
             "Center": {
               "X": 0.5,
-              "Y": 0.95,
+              "Y": 1.45,
               "Z": 0.5
             },
             "Size": {
+              "X": 1.0,
+              "Y": 1.1,
+              "Z": 1.0
+            }
+          },
+          {
+            "Center": {
+              "X": 0.1,
+              "Y": 0.45,
+              "Z": 0.5
+            },
+            "Size": {
+              "X": 0.2,
+              "Y": 0.9,
+              "Z": 1.0
+            }
+          },
+          {
+            "Center": {
               "X": 0.9,
-              "Y": 1.9,
-              "Z": 0.9
+              "Y": 0.45,
+              "Z": 0.5
+            },
+            "Size": {
+              "X": 0.2,
+              "Y": 0.9,
+              "Z": 1.0
             }
           }
         ],
