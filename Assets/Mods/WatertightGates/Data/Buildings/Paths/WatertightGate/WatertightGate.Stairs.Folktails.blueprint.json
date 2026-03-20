@@ -1,242 +1,142 @@
 {
-  "TemplateSpec": {
-    "TemplateName": "GerkinDev.WatertightGate.Stairs.Folktails",
-    "BackwardCompatibleTemplateNames": [],
-    "RequiredFeatureToggle": "",
-    "DisablingFeatureToggle": ""
-  },
-  "BuildingSpec": {
-    "SelectionSoundName": "Floodgate",
-    "LoopingSoundName": "",
-    "BuildingCost": [
-      {
-        "Id": "Log",
-        "Amount": 8
-      },
-      {
-        "Id": "Plank",
-        "Amount": 10
-      },
-      {
-        "Id": "Gear",
-        "Amount": 6
-      },
-      {
-        "Id": "ScrapMetal",
-        "Amount": 6
-      }
-    ],
-    "ScienceCost": 600,
-    "PlaceFinished": false,
-    "FinishableWithBeaversOnSite": false,
-    "DrawRangeBoundsOnIt": false
-  },
-  "BuildingModelSpec": {
-    "FinishedModelName": "#Finished",
-    "UnfinishedModelName": "#Unfinished",
-    "FinishedUncoveredModelName": "",
-    "UndergroundModelName": "",
-    "ConstructionModeModel": "Finished",
-    "UndergroundModelDepth": 0
-  },
-  "BlockObjectSpec": {
-    "Size": {
-      "X": 1,
-      "Y": 1,
-      "Z": 2
-    },
-    "Blocks": [
-      {
-        "MatterBelow": "GroundOrStackable",
-        "Occupations": "Bottom, Top, Path, Middle",
-        "Stackable": "None",
-        "OccupyAllBelow": false,
-        "Underground": false
-      },
-      {
-        "MatterBelow": "Any",
-        "Occupations": "Floor, Bottom, Path",
-        "Stackable": "BlockObject",
-        "OccupyAllBelow": false,
-        "Underground": false
-      }
-    ],
-    "Entrance": {
-      "HasEntrance": false,
-      "Coordinates": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      }
-    },
-    "BaseZ": 0,
-    "Overridable": false,
-    "Flippable": false
-  },
   "BlockObjectNavMeshSettingsSpec": {
-    "NoAutoWalls": false,
-    "GenerateFloorsOnStackable": false,
+    "BlockedEdges": [],
     "EdgeGroups": [
       {
-        "Cost": 1.0,
-        "Group": {
-          "UseGroup": false,
-          "GroupName": ""
-        },
-        "IsPath": true,
         "AddedEdges": [
           {
-            "Start": {
-              "X": 0,
-              "Y": 0,
-              "Z": 0
-            },
             "End": {
               "X": 0,
               "Y": 1,
               "Z": 0
             },
-            "IsTwoWay": false
-          },
-          {
+            "IsTwoWay": false,
             "Start": {
               "X": 0,
               "Y": 0,
-              "Z": 1
-            },
+              "Z": 0
+            }
+          },
+          {
             "End": {
               "X": 0,
               "Y": -1,
               "Z": 1
             },
-            "IsTwoWay": false
-          }
-        ]
-      },
-      {
-        "Cost": 0.4,
-        "Group": {
-          "UseGroup": false,
-          "GroupName": ""
-        },
-        "IsPath": true,
-        "AddedEdges": [
-          {
+            "IsTwoWay": false,
             "Start": {
               "X": 0,
               "Y": 0,
-              "Z": 0
-            },
+              "Z": 1
+            }
+          }
+        ],
+        "Cost": 1,
+        "Group": {
+          "GroupName": "",
+          "UseGroup": false
+        },
+        "IsPath": true
+      },
+      {
+        "AddedEdges": [
+          {
             "End": {
               "X": 0,
               "Y": 0,
               "Z": 1
             },
-            "IsTwoWay": true
+            "IsTwoWay": true,
+            "Start": {
+              "X": 0,
+              "Y": 0,
+              "Z": 0
+            }
           }
-        ]
+        ],
+        "Cost": 0.4,
+        "Group": {
+          "GroupName": "",
+          "UseGroup": false
+        },
+        "IsPath": true
       }
     ],
-    "UnblockedCoordinates": [],
-    "BlockedEdges": []
+    "GenerateFloorsOnStackable": false,
+    "NoAutoWalls": false,
+    "UnblockedCoordinates": []
   },
-  "PlaceableBlockObjectSpec": {
-    "ToolGroupId": "Paths",
-    "ToolOrder": 62,
-    "ToolShape": "Square",
-    "Layout": "Single",
-    "CustomPivot": {
-      "HasCustomPivot": false,
-      "Coordinates": {
-        "X": 0.0,
-        "Y": 0.0,
-        "Z": 0.0
-      }
-    },
-    "CanBeAttachedToTerrainSide": false,
-    "DevModeTool": false
-  },
-  "LabeledEntitySpec": {
-    "DisplayNameLocKey": "GerkinDev.WatertightGates.Building.WatertightGate.Stairs.DisplayName",
-    "DescriptionLocKey": "GerkinDev.WatertightGates.Building.WatertightGate.Stairs.Description",
-    "FlavorDescriptionLocKey": "GerkinDev.WatertightGates.Building.WatertightGate.Stairs.FlavorDescription",
-    "Icon": "Buildings/Paths/WatertightGate/WatertightGate.Stairs"
-  },
-  "ConstructionSiteProgressVisualizerSpec": {
-    "ProgressThresholds": [
-      0.0
-    ]
-  },
-  "WatertightGateSpec": {
-    "Anchor": "#WatertightGate.Stairs.Folktails.GateAnchor",
-    "OpenTransform": {
-      "Position": {
-        "X": 0.0,
-        "Y": 0.0,
-        "Z": 0.0
-      },
-      "Rotation": {
-        "X": 72.0,
-        "Y": 0.0,
-        "Z": 0.0
-      }
-    },
-    "CloseTransform": {
-      "Position": {
-        "X": 0.0,
-        "Y": 0.0,
-        "Z": 0.0
-      },
-      "Rotation": {
-        "X": 0.0,
-        "Y": 0.0,
-        "Z": 0.0
-      }
-    },
-    "OpenTime": 0.0,
-    "CloseTime": 0.0,
-    "PathStart": {
-      "X": 0,
-      "Y": 1,
-      "Z": 0
-    },
-    "PathCenter": {
-      "X": 0,
-      "Y": 0,
-      "Z": 0
-    },
-    "PathEnd": {
-      "X": 0,
-      "Y": -1,
-      "Z": 1
-    },
-    "WaterBlockingPositions": [
+  "BlockObjectSpec": {
+    "BaseZ": 0,
+    "Blocks": [
       {
+        "MatterBelow": "GroundOrStackable",
+        "Occupations": "Bottom, Top, Path, Middle",
+        "OccupyAllBelow": false,
+        "Stackable": "None",
+        "Underground": false
+      },
+      {
+        "MatterBelow": "Any",
+        "Occupations": "Floor, Bottom, Path",
+        "OccupyAllBelow": false,
+        "Stackable": "BlockObject",
+        "Underground": false
+      }
+    ],
+    "Entrance": {
+      "Coordinates": {
         "X": 0,
         "Y": 0,
         "Z": 0
-      }
-    ],
-    "WaterDynamicPosition": {
-      "X": 0,
-      "Y": 0,
-      "Z": 1
-    }
-  },
-  "PathSpec": {
-    "MainPathCoordinates": {
-      "X": 0,
-      "Y": 0,
-      "Z": 0
+      },
+      "HasEntrance": false
+    },
+    "Flippable": false,
+    "Overridable": false,
+    "Size": {
+      "X": 1,
+      "Y": 1,
+      "Z": 2
     }
   },
   "BlockObjectWithPathRangeSpec": {},
-  "MergeableObjectModelEnforcerSpec": {},
+  "BuildingModelSpec": {
+    "ConstructionModeModel": "Finished",
+    "FinishedModelName": "#Finished",
+    "FinishedUncoveredModelName": "",
+    "UndergroundModelDepth": 0,
+    "UndergroundModelName": "",
+    "UnfinishedModelName": "#Unfinished"
+  },
+  "BuildingSpec": {
+    "BuildingCost": [
+      {
+        "Amount": 8,
+        "Id": "Log"
+      },
+      {
+        "Amount": 10,
+        "Id": "Plank"
+      },
+      {
+        "Amount": 6,
+        "Id": "Gear"
+      },
+      {
+        "Amount": 6,
+        "Id": "ScrapMetal"
+      }
+    ],
+    "DrawRangeBoundsOnIt": false,
+    "FinishableWithBeaversOnSite": false,
+    "LoopingSoundName": "",
+    "PlaceFinished": false,
+    "ScienceCost": 600,
+    "SelectionSoundName": "Floodgate"
+  },
   "Children": {
     "#Finished": {
-      "TimbermeshSpec": {
-        "Model": "Buildings/Paths/WatertightGate/WatertightGate.Stairs.Folktails.Model"
-      },
       "CollidersSpec": {
         "BoxColliders": [
           {
@@ -246,33 +146,33 @@
               "Z": 0.5
             },
             "Size": {
-              "X": 1.0,
+              "X": 1,
               "Y": 0.15,
-              "Z": 1.0
+              "Z": 1
             }
           },
           {
             "Center": {
               "X": 0.1,
-              "Y": 1.0,
+              "Y": 1,
               "Z": 0.5
             },
             "Size": {
               "X": 0.2,
-              "Y": 2.0,
-              "Z": 1.0
+              "Y": 2,
+              "Z": 1
             }
           },
           {
             "Center": {
               "X": 0.9,
-              "Y": 1.0,
+              "Y": 1,
               "Z": 0.5
             },
             "Size": {
               "X": 0.2,
-              "Y": 2.0,
-              "Z": 1.0
+              "Y": 2,
+              "Z": 1
             }
           },
           {
@@ -324,8 +224,11 @@
             }
           }
         ],
-        "SphereColliders": [],
-        "CapsuleColliders": []
+        "CapsuleColliders": [],
+        "SphereColliders": []
+      },
+      "TimbermeshSpec": {
+        "Model": "Buildings/Paths/WatertightGate/WatertightGate.Stairs.Folktails.Model"
       }
     },
     "#Unfinished": {
@@ -334,9 +237,6 @@
           "BlueprintPath": "ConstructionBases/ConstructionBase1x1/ConstructionBase1x1.blueprint"
         },
         "ConstructionStage0": {
-          "TimbermeshSpec": {
-            "Model": "Buildings/Paths/WatertightGate/WatertightGate.Stairs.Folktails.Model"
-          },
           "CollidersSpec": {
             "BoxColliders": [
               {
@@ -352,11 +252,111 @@
                 }
               }
             ],
-            "SphereColliders": [],
-            "CapsuleColliders": []
+            "CapsuleColliders": [],
+            "SphereColliders": []
+          },
+          "TimbermeshSpec": {
+            "Model": "Buildings/Paths/WatertightGate/WatertightGate.Stairs.Folktails.Model"
           }
         }
       }
+    }
+  },
+  "ConstructionSiteProgressVisualizerSpec": {
+    "ProgressThresholds": [
+      0
+    ]
+  },
+  "LabeledEntitySpec": {
+    "DescriptionLocKey": "GerkinDev.WatertightGates.Building.WatertightGate.Stairs.Description",
+    "DisplayNameLocKey": "GerkinDev.WatertightGates.Building.WatertightGate.Stairs.DisplayName",
+    "FlavorDescriptionLocKey": "GerkinDev.WatertightGates.Building.WatertightGate.Stairs.FlavorDescription",
+    "Icon": "Buildings/Paths/WatertightGate/WatertightGate.Stairs"
+  },
+  "MergeableObjectModelEnforcerSpec": {},
+  "PathSpec": {
+    "MainPathCoordinates": {
+      "X": 0,
+      "Y": 0,
+      "Z": 0
+    }
+  },
+  "PlaceableBlockObjectSpec": {
+    "CanBeAttachedToTerrainSide": false,
+    "CustomPivot": {
+      "Coordinates": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "HasCustomPivot": false
+    },
+    "DevModeTool": false,
+    "Layout": "Single",
+    "ToolGroupId": "Paths",
+    "ToolOrder": 62,
+    "ToolShape": "Square"
+  },
+  "TemplateSpec": {
+    "BackwardCompatibleTemplateNames": [],
+    "DisablingFeatureToggle": "",
+    "RequiredFeatureToggle": "",
+    "TemplateName": "GerkinDev.WatertightGate.Stairs.Folktails"
+  },
+  "WatertightGateSpec": {
+    "Anchor": "#WatertightGate.Stairs.Folktails.GateAnchor",
+    "CloseTime": 0,
+    "CloseTransform": {
+      "Position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "Rotation": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      }
+    },
+    "OpenTime": 0,
+    "OpenTransform": {
+      "Position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "Rotation": {
+        "X": 72,
+        "Y": 0,
+        "Z": 0
+      }
+    },
+    "PathCenter": {
+      "X": 0,
+      "Y": 0,
+      "Z": 0
+    },
+    "PathEnd": {
+      "X": 0,
+      "Y": -1,
+      "Z": 1
+    },
+    "PathStart": {
+      "X": 0,
+      "Y": 1,
+      "Z": 0
+    },
+    "WaterBlockingPositions": [
+      {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      }
+    ],
+    "WaterDynamicPosition": {
+      "X": 0,
+      "Y": 0,
+      "Z": 1
     }
   }
 }

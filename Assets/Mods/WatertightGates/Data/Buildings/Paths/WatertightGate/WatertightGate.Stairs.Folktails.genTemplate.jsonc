@@ -1,0 +1,29 @@
+{
+  "@extends": "./WatertightGate.Stairs._Base.genTemplate.jsonc",
+  "@output": "./WatertightGate.Stairs.Folktails.blueprint.json",
+  "TemplateSpec": {
+    "TemplateName": "GerkinDev.WatertightGate.Stairs.Folktails",
+    "BackwardCompatibleTemplateNames": [],
+    "RequiredFeatureToggle": "",
+    "DisablingFeatureToggle": ""
+  },
+  "WatertightGateSpec": {
+    "Anchor": "#WatertightGate.Stairs.Folktails.GateAnchor"
+  },
+  "Children": {
+    "#Finished": {
+      "TimbermeshSpec": {
+        "Model": "Buildings/Paths/WatertightGate/WatertightGate.Stairs.Folktails.Model"
+      }
+    },
+    "#Unfinished": {
+      "Children": {
+        "ConstructionStage0": {
+          "TimbermeshSpec": {
+            "Model": "Buildings/Paths/WatertightGate/WatertightGate.Stairs.Folktails.Model"
+          }
+        }
+      }
+    }
+  }
+}

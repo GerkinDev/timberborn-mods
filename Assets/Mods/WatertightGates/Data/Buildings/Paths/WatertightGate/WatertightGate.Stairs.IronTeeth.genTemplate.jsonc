@@ -1,0 +1,29 @@
+{
+  "@extends": "./WatertightGate.Stairs._Base.genTemplate.jsonc",
+  "@output": "./WatertightGate.Stairs.IronTeeth.blueprint.json",
+  "TemplateSpec": {
+    "TemplateName": "GerkinDev.WatertightGate.Stairs.IronTeeth",
+    "BackwardCompatibleTemplateNames": [],
+    "RequiredFeatureToggle": "",
+    "DisablingFeatureToggle": ""
+  },
+  "WatertightGateSpec": {
+    "Anchor": "#WatertightGate.Stairs.IronTeeth.GateAnchor"
+  },
+  "Children": {
+    "#Finished": {
+      "TimbermeshSpec": {
+        "Model": "Buildings/Paths/WatertightGate/WatertightGate.Stairs.IronTeeth.Model"
+      }
+    },
+    "#Unfinished": {
+      "Children": {
+        "ConstructionStage0": {
+          "TimbermeshSpec": {
+            "Model": "Buildings/Paths/WatertightGate/WatertightGate.Stairs.IronTeeth.Model"
+          }
+        }
+      }
+    }
+  }
+}

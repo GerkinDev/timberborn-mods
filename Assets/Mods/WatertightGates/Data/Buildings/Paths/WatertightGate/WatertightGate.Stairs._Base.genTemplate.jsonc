@@ -1,0 +1,349 @@
+{
+  "BuildingSpec": {
+    "SelectionSoundName": "Floodgate",
+    "LoopingSoundName": "",
+    "BuildingCost": [
+      {
+        "Id": "Log",
+        "Amount": 8
+      },
+      {
+        "Id": "Plank",
+        "Amount": 10
+      },
+      {
+        "Id": "Gear",
+        "Amount": 6
+      },
+      {
+        "Id": "ScrapMetal",
+        "Amount": 6
+      }
+    ],
+    "ScienceCost": 600,
+    "PlaceFinished": false,
+    "FinishableWithBeaversOnSite": false,
+    "DrawRangeBoundsOnIt": false
+  },
+  "BuildingModelSpec": {
+    "FinishedModelName": "#Finished",
+    "UnfinishedModelName": "#Unfinished",
+    "FinishedUncoveredModelName": "",
+    "UndergroundModelName": "",
+    "ConstructionModeModel": "Finished",
+    "UndergroundModelDepth": 0
+  },
+  "BlockObjectSpec": {
+    "Size": {
+      "X": 1,
+      "Y": 1,
+      "Z": 2
+    },
+    "Blocks": [
+      {
+        "MatterBelow": "GroundOrStackable",
+        "Occupations": "Bottom, Top, Path, Middle",
+        "Stackable": "None",
+        "OccupyAllBelow": false,
+        "Underground": false
+      },
+      {
+        "MatterBelow": "Any",
+        "Occupations": "Floor, Bottom, Path",
+        "Stackable": "BlockObject",
+        "OccupyAllBelow": false,
+        "Underground": false
+      }
+    ],
+    "Entrance": {
+      "HasEntrance": false,
+      "Coordinates": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      }
+    },
+    "BaseZ": 0,
+    "Overridable": false,
+    "Flippable": false
+  },
+  "BlockObjectNavMeshSettingsSpec": {
+    "NoAutoWalls": false,
+    "GenerateFloorsOnStackable": false,
+    "EdgeGroups": [
+      {
+        "Cost": 1.0,
+        "Group": {
+          "UseGroup": false,
+          "GroupName": ""
+        },
+        "IsPath": true,
+        "AddedEdges": [
+          {
+            "Start": {
+              "X": 0,
+              "Y": 0,
+              "Z": 0
+            },
+            "End": {
+              "X": 0,
+              "Y": 1,
+              "Z": 0
+            },
+            "IsTwoWay": false
+          },
+          {
+            "Start": {
+              "X": 0,
+              "Y": 0,
+              "Z": 1
+            },
+            "End": {
+              "X": 0,
+              "Y": -1,
+              "Z": 1
+            },
+            "IsTwoWay": false
+          }
+        ]
+      },
+      {
+        "Cost": 0.4,
+        "Group": {
+          "UseGroup": false,
+          "GroupName": ""
+        },
+        "IsPath": true,
+        "AddedEdges": [
+          {
+            "Start": {
+              "X": 0,
+              "Y": 0,
+              "Z": 0
+            },
+            "End": {
+              "X": 0,
+              "Y": 0,
+              "Z": 1
+            },
+            "IsTwoWay": true
+          }
+        ]
+      }
+    ],
+    "UnblockedCoordinates": [],
+    "BlockedEdges": []
+  },
+  "PlaceableBlockObjectSpec": {
+    "ToolGroupId": "Paths",
+    "ToolOrder": 62,
+    "ToolShape": "Square",
+    "Layout": "Single",
+    "CustomPivot": {
+      "HasCustomPivot": false,
+      "Coordinates": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      }
+    },
+    "CanBeAttachedToTerrainSide": false,
+    "DevModeTool": false
+  },
+  "LabeledEntitySpec": {
+    "DisplayNameLocKey": "GerkinDev.WatertightGates.Building.WatertightGate.Stairs.DisplayName",
+    "DescriptionLocKey": "GerkinDev.WatertightGates.Building.WatertightGate.Stairs.Description",
+    "FlavorDescriptionLocKey": "GerkinDev.WatertightGates.Building.WatertightGate.Stairs.FlavorDescription",
+    "Icon": "Buildings/Paths/WatertightGate/WatertightGate.Stairs"
+  },
+  "ConstructionSiteProgressVisualizerSpec": {
+    "ProgressThresholds": [
+      0.0
+    ]
+  },
+  "WatertightGateSpec": {
+    "OpenTransform": {
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Rotation": {
+        "X": 72.0,
+        "Y": 0.0,
+        "Z": 0.0
+      }
+    },
+    "CloseTransform": {
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Rotation": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      }
+    },
+    "OpenTime": 0.0,
+    "CloseTime": 0.0,
+    "PathStart": {
+      "X": 0,
+      "Y": 1,
+      "Z": 0
+    },
+    "PathCenter": {
+      "X": 0,
+      "Y": 0,
+      "Z": 0
+    },
+    "PathEnd": {
+      "X": 0,
+      "Y": -1,
+      "Z": 1
+    },
+    "WaterBlockingPositions": [
+      {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      }
+    ],
+    "WaterDynamicPosition": {
+      "X": 0,
+      "Y": 0,
+      "Z": 1
+    }
+  },
+  "PathSpec": {
+    "MainPathCoordinates": {
+      "X": 0,
+      "Y": 0,
+      "Z": 0
+    }
+  },
+  "BlockObjectWithPathRangeSpec": {},
+  "MergeableObjectModelEnforcerSpec": {},
+  "Children": {
+    "#Finished": {
+      "CollidersSpec": {
+        "BoxColliders": [
+          {
+            "Center": {
+              "X": 0.5,
+              "Y": 1.925,
+              "Z": 0.5
+            },
+            "Size": {
+              "X": 1.0,
+              "Y": 0.15,
+              "Z": 1.0
+            }
+          },
+          {
+            "Center": {
+              "X": 0.1,
+              "Y": 1.0,
+              "Z": 0.5
+            },
+            "Size": {
+              "X": 0.2,
+              "Y": 2.0,
+              "Z": 1.0
+            }
+          },
+          {
+            "Center": {
+              "X": 0.9,
+              "Y": 1.0,
+              "Z": 0.5
+            },
+            "Size": {
+              "X": 0.2,
+              "Y": 2.0,
+              "Z": 1.0
+            }
+          },
+          {
+            "Center": {
+              "X": 0.5,
+              "Y": 0.125,
+              "Z": 0.4
+            },
+            "Size": {
+              "X": 0.65,
+              "Y": 0.25,
+              "Z": 0.8
+            }
+          },
+          {
+            "Center": {
+              "X": 0.5,
+              "Y": 0.375,
+              "Z": 0.3
+            },
+            "Size": {
+              "X": 0.65,
+              "Y": 0.25,
+              "Z": 0.6
+            }
+          },
+          {
+            "Center": {
+              "X": 0.5,
+              "Y": 0.625,
+              "Z": 0.2
+            },
+            "Size": {
+              "X": 0.65,
+              "Y": 0.25,
+              "Z": 0.4
+            }
+          },
+          {
+            "Center": {
+              "X": 0.5,
+              "Y": 0.875,
+              "Z": 0.1
+            },
+            "Size": {
+              "X": 0.65,
+              "Y": 0.25,
+              "Z": 0.2
+            }
+          }
+        ],
+        "SphereColliders": [],
+        "CapsuleColliders": []
+      }
+    },
+    "#Unfinished": {
+      "Children": {
+        "ConstructionBase1x1#nested": {
+          "BlueprintPath": "ConstructionBases/ConstructionBase1x1/ConstructionBase1x1.blueprint"
+        },
+        "ConstructionStage0": {
+          "CollidersSpec": {
+            "BoxColliders": [
+              {
+                "Center": {
+                  "X": 0.5,
+                  "Y": 0.05,
+                  "Z": 0.5
+                },
+                "Size": {
+                  "X": 0.9,
+                  "Y": 0.1,
+                  "Z": 0.9
+                }
+              }
+            ],
+            "SphereColliders": [],
+            "CapsuleColliders": []
+          }
+        }
+      }
+    }
+  }
+}

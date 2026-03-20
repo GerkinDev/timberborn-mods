@@ -1,0 +1,32 @@
+{
+  "@extends": "./WatertightGate.Flat._Base.genTemplate.jsonc",
+  "@output": "./WatertightGate.Flat.Folktails.blueprint.json",
+  "TemplateSpec": {
+    "TemplateName": "GerkinDev.WatertightGate.Flat.Folktails",
+    "BackwardCompatibleTemplateNames": [
+      "GerkinDev.DamWalkway.DamWalkway",
+      "GerkinDev.DamServiceGate.DamServiceGate"
+    ],
+    "RequiredFeatureToggle": "",
+    "DisablingFeatureToggle": ""
+  },
+  "WatertightGateSpec": {
+    "Anchor": "#WatertightGate.Flat.Folktails.GateAnchor"
+  },
+  "Children": {
+    "#Finished": {
+      "TimbermeshSpec": {
+        "Model": "Buildings/Paths/WatertightGate/WatertightGate.Flat.Folktails.Model"
+      }
+    },
+    "#Unfinished": {
+      "Children": {
+        "ConstructionStage0": {
+          "TimbermeshSpec": {
+            "Model": "Buildings/Paths/WatertightGate/WatertightGate.Flat.Folktails.Model"
+          }
+        }
+      }
+    }
+  }
+}

@@ -4,5 +4,6 @@
 			"*": "${capture}.meta*",
 		},
 		"search.useIgnoreFiles": false,
-		"dotnet.preferCSharpExtension": true
+		"dotnet.preferCSharpExtension": true,
+		"deno.enable": true
 }

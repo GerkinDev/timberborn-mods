@@ -1,0 +1,29 @@
+{
+  "@extends": "./WatertightGate.Flat._Base.genTemplate.jsonc",
+  "@output": "./WatertightGate.Flat.IronTeeth.blueprint.json",
+  "TemplateSpec": {
+    "TemplateName": "GerkinDev.WatertightGate.Flat.IronTeeth",
+    "BackwardCompatibleTemplateNames": [],
+    "RequiredFeatureToggle": "",
+    "DisablingFeatureToggle": ""
+  },
+  "WatertightGateSpec": {
+    "Anchor": "#WatertightGate.Flat.IronTeeth.GateAnchor"
+  },
+  "Children": {
+    "#Finished": {
+      "TimbermeshSpec": {
+        "Model": "Buildings/Paths/WatertightGate/WatertightGate.Flat.IronTeeth.Model"
+      }
+    },
+    "#Unfinished": {
+      "Children": {
+        "ConstructionStage0": {
+          "TimbermeshSpec": {
+            "Model": "Buildings/Paths/WatertightGate/WatertightGate.Flat.IronTeeth.Model"
+          }
+        }
+      }
+    }
+  }
+}
