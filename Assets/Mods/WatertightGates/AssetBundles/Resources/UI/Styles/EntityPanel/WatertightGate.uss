@@ -28,13 +28,13 @@
     flex-direction: row;
 }
 
-.WatertightGate-fragment__gate-mode-pass {
+.WatertightGate-fragment__icon-pass {
     background-image: url("project://database/Assets/Mods/WatertightGates/AssetBundles/Images/ico-gate-pass.png");
 }
 
-.WatertightGate-fragment__activation-mode-active {
+.WatertightGate-fragment__icon-active {
     background-image: url("project://database/Assets/Mods/WatertightGates/AssetBundles/Images/automation-state-on-large.png");
 }
-.WatertightGate-fragment__activation-mode-inactive {
+.WatertightGate-fragment__icon-inactive {
     background-image: url("project://database/Assets/Mods/WatertightGates/AssetBundles/Images/automation-state-off-large.png");
 }

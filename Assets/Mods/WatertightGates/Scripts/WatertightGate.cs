@@ -7,6 +7,7 @@ using Timberborn.Common;
 using Timberborn.EntitySystem;
 using Timberborn.Illumination;
 using Timberborn.Persistence;
+using Timberborn.QuickNotificationSystem;
 using Timberborn.WorldPersistence;
 using UnityEngine;
 
@@ -14,20 +15,35 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 {
 	internal class WatertightGate : BaseComponent, IAwakableComponent, IPersistentEntity, IFinishedStateListener, IAutomatableNeeder, ITerminal, IInitializableEntity, IGateLike, IPreInitializableEntity
 	{
-		internal enum EActivationMode
-		{
-			Active,
-			Inactive,
-			Automated,
-		}
 		internal enum EGateMode
 		{
 			Open,
 			Close,
 			Pass,
 		}
-		private EActivationMode _activationMode = EActivationMode.Active;
-		public EActivationMode ActivationMode
+		internal enum EGateControlMode
+		{
+			Open,
+			Close,
+			Pass,
+			Automated,
+		}
+		private static EGateControlMode _GateModeToControl(EGateMode mode) => mode switch
+		{
+			EGateMode.Open => EGateControlMode.Open,
+			EGateMode.Close => EGateControlMode.Close,
+			EGateMode.Pass => EGateControlMode.Pass,
+			_ => throw new Exception($"Unexpected gate mode {mode}"),
+		};
+		private static EGateMode _GateControlToMode(EGateControlMode mode) => mode switch
+		{
+			EGateControlMode.Open => EGateMode.Open,
+			EGateControlMode.Close => EGateMode.Close,
+			EGateControlMode.Pass => EGateMode.Pass,
+			_ => throw new Exception($"Unexpected gate control {mode}"),
+		};
+		private EGateControlMode _activationMode = EGateControlMode.Open;
+		public EGateControlMode ActivationMode
 		{
 			get => _activationMode;
 			set
@@ -66,28 +82,22 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 				_ScheduleStateUpdate();
 			}
 		}
-		private EGateMode _CurrentGateMode
+		private EGateMode _CurrentGateMode => _activationMode switch
 		{
-			get
-			{
-				bool isActive = _activationMode switch
-				{
-					EActivationMode.Automated => _automatable.State != ConnectionState.Off,
-					EActivationMode.Active => true,
-					EActivationMode.Inactive => false,
-					_ => throw new Exception($"Unexpected activation mode {_activationMode}"),
-				};
-				return isActive ? _activeGateMode : _inactiveGateMode;
-			}
-		}
+			EGateControlMode.Automated => _automatable.State != ConnectionState.Off ? _activeGateMode : _inactiveGateMode,
+			EGateControlMode.Open or EGateControlMode.Close or EGateControlMode.Pass => _GateControlToMode(_activationMode),
+			_ => throw new Exception($"Unexpected activation mode {_activationMode}"),
+		};
 
 		public event EventHandler ConflictStateChanged;
 
 		private readonly GateLikeUpdater _gateLikeUpdater;
+		private readonly QuickNotificationService _quickNotificationService;
 
-		public WatertightGate(GateLikeUpdater gateLikeUpdater)
+		public WatertightGate(GateLikeUpdater gateLikeUpdater, QuickNotificationService quickNotificationService)
 		{
 			_gateLikeUpdater = gateLikeUpdater;
+			_quickNotificationService = quickNotificationService;
 		}
 
 		#region IAwakableComponent
@@ -117,15 +127,40 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 
 		#region IPersistentEntity
 		private static readonly ComponentKey _persistenceKey = new("WatertightGate");
-		private static readonly PropertyKey<EActivationMode> _activationModeKey = new(nameof(_activationMode));
+		private static readonly PropertyKey<EGateControlMode> _activationModeKey = new(nameof(_activationMode));
 		private static readonly PropertyKey<EGateMode> _activeGateModeKey = new(nameof(_activeGateMode));
 		private static readonly PropertyKey<EGateMode> _inactiveGateModeKey = new(nameof(_inactiveGateMode));
 
 		public void Load(IEntityLoader entityLoader)
 		{
-			_activationMode = entityLoader.GetOrDefault(_persistenceKey, _activationModeKey, EActivationMode.Active);
 			ActiveGateMode = entityLoader.GetOrDefault(_persistenceKey, _activeGateModeKey, EGateMode.Open);
 			InactiveGateMode = entityLoader.GetOrDefault(_persistenceKey, _inactiveGateModeKey, EGateMode.Close);
+			try
+			{
+				_activationMode = entityLoader.GetOrDefault(_persistenceKey, _activationModeKey, EGateControlMode.Open);
+			}
+			catch (ArgumentException ex)
+			{
+				this.Log("Failed to parse value: {0}", ex);
+				var mode = entityLoader.GetOrDefaultAsString(_persistenceKey, _activationModeKey, "Active").ToLower();
+				switch (mode)
+				{
+					case "active":
+						_activationMode = _GateModeToControl(ActiveGateMode);
+						_quickNotificationService.SendNotification("Gate mode updated.");
+						break;
+					case "inactive":
+						_activationMode = _GateModeToControl(InactiveGateMode);
+						_quickNotificationService.SendNotification("Gate mode updated.");
+						break;
+					default:
+						this.Log("Invalid loaded value {0}, falling back to open");
+						_quickNotificationService.SendWarningNotification("Failed to load previous watertight gate mode. It has been opened as a default. Please verify your watertight gates to avoid leakage.");
+						_activationMode = EGateControlMode.Open;
+						break;
+				}
+				;
+			}
 		}
 
 		public void Save(IEntitySaver entitySaver)
@@ -149,7 +184,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 		#endregion
 
 		#region IAutomatableNeeder
-		public bool NeedsAutomatable => _activationMode == EActivationMode.Automated;
+		public bool NeedsAutomatable => _activationMode == EGateControlMode.Automated;
 		#endregion
 
 		#region ITerminal

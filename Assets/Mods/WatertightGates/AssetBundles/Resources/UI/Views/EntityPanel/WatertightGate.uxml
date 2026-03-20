@@ -8,23 +8,25 @@
             </ui:VisualElement>
             <ui:Label name="ActivationModeLabel" text="Open" class="entity-panel__text WatertightGate-fragment__right-label"/>
         </ui:VisualElement>
-        <ui:VisualElement name="ActiveStateContainer" class="WatertightGate-fragment__row">
-            <ui:Image name="Icon" class="slider-toggle__icon WatertightGate-fragment__activation-mode-active"/>
-            <cui:LocalizableLabel name="ActiveStateDesc" text="When active" text-loc-key="GerkinDev.WatertightGates.UI.WatertightGate.GateMode.ActiveState" class="entity-panel__text WatertightGate-fragment__left-label"/>
-            <ui:VisualElement name="ActiveStateToggle" class="WatertightGate-fragment__toggle-container">
-                <ui:Toggle label=""/>
-                <ui:Toggle label=""/>
+        <ui:VisualElement name="AutomatedContainer">
+            <ui:VisualElement name="ActiveStateContainer" class="WatertightGate-fragment__row">
+                <ui:Image name="Icon" class="slider-toggle__icon WatertightGate-fragment__icon-active"/>
+                <cui:LocalizableLabel name="ActiveStateDesc" text="When active" text-loc-key="GerkinDev.WatertightGates.UI.WatertightGate.Modes.ActiveState" class="entity-panel__text WatertightGate-fragment__left-label"/>
+                <ui:VisualElement name="ActiveStateToggle" class="WatertightGate-fragment__toggle-container">
+                    <ui:Toggle label=""/>
+                    <ui:Toggle label=""/>
+                </ui:VisualElement>
+                <ui:Label name="ActiveStateLabel" text="Open" class="entity-panel__text WatertightGate-fragment__right-label"/>
             </ui:VisualElement>
-            <ui:Label name="ActiveStateLabel" text="Open" class="entity-panel__text WatertightGate-fragment__right-label"/>
-        </ui:VisualElement>
-        <ui:VisualElement name="InactiveStateContainer" class="WatertightGate-fragment__row">
-            <ui:Image name="Icon" class="slider-toggle__icon WatertightGate-fragment__activation-mode-inactive"/>
-            <cui:LocalizableLabel name="InactiveStateDesc" text="When inactive" text-loc-key="GerkinDev.WatertightGates.UI.WatertightGate.GateMode.InactiveState" class="entity-panel__text WatertightGate-fragment__left-label"/>
-            <ui:VisualElement name="InactiveStateToggle" class="WatertightGate-fragment__toggle-container">
-                <ui:Toggle label=""/>
-                <ui:Toggle label=""/>
+            <ui:VisualElement name="InactiveStateContainer" class="WatertightGate-fragment__row">
+                <ui:Image name="Icon" class="slider-toggle__icon WatertightGate-fragment__icon-inactive"/>
+                <cui:LocalizableLabel name="InactiveStateDesc" text="When inactive" text-loc-key="GerkinDev.WatertightGates.UI.WatertightGate.Modes.InactiveState" class="entity-panel__text WatertightGate-fragment__left-label"/>
+                <ui:VisualElement name="InactiveStateToggle" class="WatertightGate-fragment__toggle-container">
+                    <ui:Toggle label=""/>
+                    <ui:Toggle label=""/>
+                </ui:VisualElement>
+                <ui:Label name="InactiveStateLabel" text="Open" class="entity-panel__text WatertightGate-fragment__right-label"/>
             </ui:VisualElement>
-            <ui:Label name="InactiveStateLabel" text="Open" class="entity-panel__text WatertightGate-fragment__right-label"/>
         </ui:VisualElement>
     </cui:NineSliceVisualElement>
 </ui:UXML>
