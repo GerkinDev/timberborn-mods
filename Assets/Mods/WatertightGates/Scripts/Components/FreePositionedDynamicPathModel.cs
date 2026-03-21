@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Components.Specs;
+using System.Linq;
 using Timberborn.BaseComponentSystem;
 using Timberborn.BlockObjectModelSystem;
 using Timberborn.BlockSystem;
@@ -9,7 +10,7 @@ using Timberborn.PathSystem;
 using Timberborn.TerrainSystem;
 using UnityEngine;
 
-namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
+namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Components
 {
 	public class FreePositionedDynamicPathModel : BaseComponent, IAwakableComponent, IModelUpdater
 	{
@@ -80,7 +81,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 		private GameObject _GetModelVariant(string prefix, string variant, Material material)
 		{
 			string childName = prefix + variant;
-			GameObject gameObject = base.GameObject.FindChild(childName);
+			GameObject gameObject = GameObject.FindChild(childName);
 			gameObject.SetActive(value: false);
 			gameObject.GetComponentInChildren<Renderer>().sharedMaterial = material;
 			return gameObject;
@@ -88,10 +89,10 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 
 		private void _SetMatchingModel(bool down, bool left, bool up, bool right)
 		{
-			NeighboredValues4<GameObject> neighboredValues = (_IsValidForGroundModel() ? _groundModels : _roofModels);
+			NeighboredValues4<GameObject> neighboredValues = _IsValidForGroundModel() ? _groundModels : _roofModels;
 			if (!neighboredValues.IsEmpty)
 			{
-				var (model, orientation2) = (OrientedValue<GameObject>)(neighboredValues.GetMatch(down, left, up, right));
+				var (model, orientation2) = neighboredValues.GetMatch(down, left, up, right);
 				_SetCurrentModel(model, orientation2);
 			}
 			else if ((bool)_currentModel)

@@ -1,10 +1,11 @@
-﻿using System;
+﻿using GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Services;
+using System;
 using Timberborn.AutomationBuildingsUI;
 using Timberborn.BaseComponentSystem;
 using Timberborn.Localization;
 using Timberborn.StatusSystem;
 
-namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.UI
+namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Components.UI
 {
 	internal class WatertightGateConflictStatus : BaseComponent, IAwakableComponent, IStartableComponent
 	{

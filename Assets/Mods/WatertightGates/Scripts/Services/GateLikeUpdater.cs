@@ -5,7 +5,7 @@ using Timberborn.Navigation;
 using Timberborn.SingletonSystem;
 using UnityEngine;
 
-namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
+namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Services
 {
 	public enum EGateState
 	{
@@ -156,7 +156,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 
 		private EGateState _TryOpenGate(IGateLike gate, GateLikeUpdate update)
 		{
-			if ((update.CurrentState == EGateState.Open && update.Force) || _gateConflictDetector.CanOpenGateWithoutConflict(gate.PathStart, gate.PathEnd, gate.PathCenter, _OpenGateCrossings))
+			if (update.CurrentState == EGateState.Open && update.Force || _gateConflictDetector.CanOpenGateWithoutConflict(gate.PathStart, gate.PathEnd, gate.PathCenter, _OpenGateCrossings))
 			{
 				gate.CurrentGateState = EGateState.Open;
 				_gatesWithConflict.Remove(gate);

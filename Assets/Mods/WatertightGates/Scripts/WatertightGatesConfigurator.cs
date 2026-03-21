@@ -1,4 +1,8 @@
 using Bindito.Core;
+using GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Components;
+using GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Components.Specs;
+using GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Components.UI;
+using GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Services;
 using GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.UI;
 using Timberborn.EntityPanelSystem;
 using Timberborn.Illumination;
