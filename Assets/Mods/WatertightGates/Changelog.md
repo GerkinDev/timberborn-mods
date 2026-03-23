@@ -1,3 +1,7 @@
+[h1] v1.0.1.1 (23/03/2026) [/h1]
+
+Use correct open/close icon.
+
 [h1] v1.0.1.0 (20/03/2026) [/h1]
 
 [list]
