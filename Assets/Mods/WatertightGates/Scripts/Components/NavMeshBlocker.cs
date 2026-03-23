@@ -1,10 +1,10 @@
 using GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Components.Specs;
+using GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Utils;
 using System;
 using Timberborn.BaseComponentSystem;
 using Timberborn.BlockSystem;
 using Timberborn.BuildingsNavigation;
 using Timberborn.Coordinates;
-using Timberborn.EntitySystem;
 using Timberborn.Navigation;
 using Timberborn.PathSystem;
 using Timberborn.WalkingSystem;
@@ -15,11 +15,13 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 	/// <summary>
 	/// Extracted from <see cref="Timberborn.AutomationBuildings.GateNavMeshBlocker"/>
 	/// </summary>
-	internal class NavMeshBlocker : BaseComponent, IAwakableComponent, IDeletableEntity, IPathConnectionEnforcer
+	internal class NavMeshBlocker : BaseComponent, IAwakableComponent, IFinishedStateListener, IPathConnectionEnforcer
 	{
 		private readonly INavMeshService _navMeshService;
 		private readonly NavMeshGroupService _navMeshGroupService;
 		private readonly IPathService _pathService;
+		private CommitableState<bool> _pathBlocked;
+		private CommitableState<WatertightGate.EGateMode> _traverseCost;
 		private WatertightGate.EGateMode _gateMode;
 		public WatertightGate.EGateMode GateMode
 		{
@@ -29,9 +31,10 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 				{
 					return;
 				}
-				_SetPathBlockage(previousValue: _gateMode, value: value);
-				_SetTraverseCost(previousValue: _gateMode, value: value);
+				_pathBlocked.DesiredValue = value == WatertightGate.EGateMode.Close;
+				_traverseCost.DesiredValue = value;
 				_gateMode = value;
+				_UpdateState();
 			}
 		}
 		public NavMeshBlocker(INavMeshService navMeshService, NavMeshGroupService navMeshGroupService, IPathService pathService)
@@ -54,8 +57,12 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 		}
 		#endregion
 
-		#region IDeletableEntity
-		public void DeleteEntity()
+		#region IFinishedStateListener
+		public void OnEnterFinishedState()
+		{
+			_UpdateState();
+		}
+		public void OnExitFinishedState()
 		{
 			GateMode = WatertightGate.EGateMode.Close;
 		}
@@ -88,30 +95,45 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 		}
 		#endregion
 
-		private void _SetPathBlockage(WatertightGate.EGateMode previousValue, WatertightGate.EGateMode value)
+		private void _UpdateState()
 		{
-			switch ((previousValue, value))
-			{
-				case (WatertightGate.EGateMode.Close, WatertightGate.EGateMode.Open or WatertightGate.EGateMode.Pass):
-					_buildingNavMesh.UnblockAndAddToNavMesh();
-					break;
-				case (WatertightGate.EGateMode.Open or WatertightGate.EGateMode.Pass, WatertightGate.EGateMode.Close):
-					_buildingNavMesh.BlockAndRemoveFromNavMesh();
-					break;
-			}
+			_UpdateTraverseCost();
+			_UpdatePathBlockage();
 		}
 
-		private void _SetTraverseCost(WatertightGate.EGateMode previousValue, WatertightGate.EGateMode value)
+		private void _UpdatePathBlockage()
 		{
+			if (!_blockObject.IsFinished || !_pathBlocked.HasChange)
+			{
+				return;
+			}
+			if (_pathBlocked.DesiredValue)
+			{
+				_buildingNavMesh.BlockAndRemoveFromNavMesh();
+			}
+			else
+			{
+				_buildingNavMesh.UnblockAndAddToNavMesh();
+			}
+			_pathBlocked.Commit();
+		}
+
+		private void _UpdateTraverseCost()
+		{
+			if (!_blockObject.IsFinished || !_traverseCost.HasChange)
+			{
+				return;
+			}
 			var start = _blockObject.TransformCoordinates(_spec.PathStart);
 			var end = _blockObject.TransformCoordinates(_spec.PathEnd);
 			var center = _blockObject.TransformCoordinates(_spec.PathCenter);
-			var prevCost = _GetCost(previousValue);
-			var cost = _GetCost(value);
+			var prevCost = _GetCost(_traverseCost.Value);
+			var cost = _GetCost(_traverseCost.DesiredValue);
 			_navMeshService.RemoveEdge(_GetEdge(center, start, prevCost));
 			_navMeshService.RemoveEdge(_GetEdge(center, end, prevCost));
 			_navMeshService.AddEdge(_GetEdge(center, start, cost));
 			_navMeshService.AddEdge(_GetEdge(center, end, cost));
+			_traverseCost.Commit();
 		}
 
 		private float _GetCost(WatertightGate.EGateMode gateMode) => gateMode switch
