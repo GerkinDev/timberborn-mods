@@ -119,8 +119,8 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.UI
 			{
 				IconClassGetter = (value) => value switch
 				{
-					WatertightGate.EGateControlMode.Open => GateToggle.ClosedClass,
-					WatertightGate.EGateControlMode.Close => GateToggle.OpenedClass,
+					WatertightGate.EGateControlMode.Open => GateToggle.OpenedClass,
+					WatertightGate.EGateControlMode.Close => GateToggle.ClosedClass,
 					WatertightGate.EGateControlMode.Pass => "WatertightGate-fragment__icon-pass",
 					WatertightGate.EGateControlMode.Automated => GateToggle.AutomatedClass,
 					_ => throw new Exception($"Invalid value {value}")
