@@ -1,0 +1,29 @@
+{
+    "name": "GerkinDev.Tests",
+    "rootNamespace": "GerkinDev.Tests",
+    "references": [
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner",
+        "GerkinDev.WatertightGates"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll",
+        "Timberborn.BaseComponentSystem.dll",
+        "Timberborn.BlockSystem.dll",
+        "Timberborn.EntitySystem.dll",
+        "Timberborn.SingletonSystem.dll",
+        "Moq.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
