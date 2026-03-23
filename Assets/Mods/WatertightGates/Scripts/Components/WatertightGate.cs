@@ -107,11 +107,8 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 		private Automatable _automatable;
 		private BlockObject _blockObject;
 		private NavMeshBlocker _navMeshBlocker;
-		private WaterBlocker _waterBlocker;
 		private Illuminator _illuminator;
-		private Transform _anchor;
-		private Vector3 _anchorInitialRotation;
-		private Vector3 _anchorInitialPosition;
+		private WatertightGateTransformController _gateTransformController;
 
 		public void Awake()
 		{
@@ -119,11 +116,8 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 			_automatable = GetComponent<Automatable>();
 			_blockObject = GetComponent<BlockObject>(); /// Position is not initialized yet. See <see cref="PreInitializeEntity"/> for transforms
 			_navMeshBlocker = GetComponent<NavMeshBlocker>();
-			_waterBlocker = GetComponent<WaterBlocker>();
 			_illuminator = GetComponent<Illuminator>();
-			_anchor = GameObject.FindChildTransform(_spec.Anchor);
-			_anchorInitialRotation = _anchor.transform.rotation.eulerAngles;
-			_anchorInitialPosition = _anchor.transform.position;
+			_gateTransformController = GetComponent<WatertightGateTransformController>();
 		}
 		#endregion
 
@@ -252,40 +246,29 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 			}
 			else
 			{
-				_SetAnchorTransform(_CurrentGateMode);
+				_gateTransformController.IsOpen = _CurrentGateMode == EGateMode.Open;
 			}
 		}
+
 		private void _UpdateState()
 		{
 			var actualGateMode = _currentGateState != EGateState.Open ? EGateMode.Close : _CurrentGateMode;
 			_navMeshBlocker.GateMode = actualGateMode;
-			if (_blockObject.IsFinished)
+			switch (actualGateMode)
 			{
-				switch (actualGateMode)
-				{
-					case EGateMode.Close:
-						_illuminator.Toggle(false);
-						_waterBlocker.Height = 1;
-						break;
-					case EGateMode.Open:
-						_illuminator.ClearColor(1);
-						_illuminator.Toggle(true);
-						_waterBlocker.Height = 0;
-						break;
-					case EGateMode.Pass:
-						_illuminator.SetColor(1, Color.red);
-						_illuminator.Toggle(true);
-						_waterBlocker.Height = 1;
-						break;
-				}
+				case EGateMode.Close:
+					_illuminator.Toggle(false);
+					break;
+				case EGateMode.Open:
+					_illuminator.ClearColor(1);
+					_illuminator.Toggle(true);
+					break;
+				case EGateMode.Pass:
+					_illuminator.SetColor(1, Color.red);
+					_illuminator.Toggle(true);
+					break;
 			}
-			_SetAnchorTransform(actualGateMode);
-		}
-
-		private void _SetAnchorTransform(EGateMode gateMode)
-		{
-			var transform = gateMode == EGateMode.Open ? _spec.OpenTransform : _spec.CloseTransform;
-			_anchor.transform.SetLocalPositionAndRotation(transform.Position + _anchorInitialPosition, Quaternion.Euler(transform.Rotation + _anchorInitialRotation));
+			_gateTransformController.IsOpen = actualGateMode == EGateMode.Open;
 		}
 
 		private void _NotifyConflictStateChanged()

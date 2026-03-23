@@ -1,7 +1,8 @@
 ﻿using GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Components.Specs;
+using GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Extensions;
+using GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Utils;
 using Timberborn.BaseComponentSystem;
 using Timberborn.BlockSystem;
-using Timberborn.EntitySystem;
 using Timberborn.WaterSystem;
 using UnityEngine;
 
@@ -10,19 +11,20 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 	/// <summary>
 	/// Extracted from <see cref="Timberborn.WaterObjects.WaterObstacle"/>
 	/// </summary>
-	internal class WaterBlocker : BaseComponent, IAwakableComponent, IDeletableEntity, IFinishedStateListener
+	internal class WaterBlocker : BaseComponent, IAwakableComponent, IFinishedStateListener
 	{
 		private readonly IWaterService _waterService;
-		private float _height;
+		private CommitableState<float> _height;
 		public float Height
 		{
-			get => _height;
+			get => _height.Value;
 			set
 			{
-				_SetInFlow(value);
-				_height = value;
+				_height.DesiredValue = value;
+				_UpdateState();
 			}
 		}
+
 
 		public WaterBlocker(IWaterService waterService)
 		{
@@ -40,8 +42,18 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 		}
 		#endregion
 
-		#region IDeletableEntity
-		public void DeleteEntity()
+		#region IFinishedStateListener
+		public void OnEnterFinishedState()
+		{
+			foreach (var blocking in _spec.WaterBlockingPositions)
+			{
+				var coordinates = _blockObject.TransformCoordinates(blocking);
+				_waterService.AddFullObstacle(coordinates);
+			}
+			_UpdateState();
+		}
+
+		public void OnExitFinishedState()
 		{
 			foreach (var blocking in _spec.WaterBlockingPositions)
 			{
@@ -51,58 +63,42 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 			Height = 0;
 		}
 		#endregion
-
-		#region IFinishedStateListener
-		public void OnEnterFinishedState()
+		private void _UpdateState()
 		{
-			foreach (var blocking in _spec.WaterBlockingPositions)
+			if (_height.DesiredValue is > 1f or < 0f)
 			{
-				var coordinates = _blockObject.TransformCoordinates(blocking);
-				_waterService.AddFullObstacle(coordinates);
-			}
-			Height = 0;
-		}
-
-		public void OnExitFinishedState()
-		{
-		}
-		#endregion
-
-		private void _SetInFlow(float height)
-		{
-			if (height is > 1f or < 0f)
-			{
-				Debug.LogFormat("Height {0} should be within [0, 1]");
+				this.Warn("Height {0} should be within [0, 1]");
 				// Clamp in range
-				height = Mathf.Clamp(height, 0f, 1f);
+				_height.DesiredValue = Mathf.Clamp(_height.DesiredValue, 0f, 1f);
 			}
-			if (height == _height)
+			if (!_blockObject.IsFinished || !_height.HasChange)
 			{
 				return;
 			}
 			var coordinates = _blockObject.TransformCoordinates(_spec.WaterDynamicPosition);
-			switch (_height)
+			switch (_height.Value)
 			{
 				case 1f:
 					_waterService.RemoveFullObstacle(coordinates);
 					break;
-				case > 0f when height == 0:
+				case > 0f when _height.DesiredValue == 0:
 					_waterService.RemoveInflowLimiter(coordinates);
 					break;
 				default:
 					break;
 			}
-			switch (height)
+			switch (_height.DesiredValue)
 			{
 				case 1f:
 					_waterService.AddFullObstacle(coordinates);
 					break;
 				case > 0f:
-					_waterService.UpdateInflowLimiter(coordinates, height);
+					_waterService.UpdateInflowLimiter(coordinates, _height.DesiredValue);
 					break;
 				default:
 					break;
 			}
+			_height.Commit();
 		}
 	}
 }

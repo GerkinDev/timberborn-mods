@@ -21,6 +21,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 			MultiBind<EntityPanelModule>().ToProvider<WatertightGateEntityPanelModuleProvider>().AsSingleton();
 
 			Bind<WatertightGate>().AsTransient();
+			Bind<WatertightGateTransformController>().AsTransient();
 			Bind<NavMeshBlocker>().AsTransient();
 			Bind<WaterBlocker>().AsTransient();
 			Bind<WatertightGateConflictStatus>().AsTransient();
@@ -31,9 +32,10 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 		private static TemplateModule _ProvideTemplateModule()
 		{
 			var builder = new TemplateModule.Builder();
+			builder.AddDecorator<WatertightGateSpec, WatertightGateTransformController>();
+			builder.AddDecorator<WatertightGateTransformController, WaterBlocker>();
 			builder.AddDecorator<WatertightGateSpec, WatertightGate>();
 			builder.AddDecorator<WatertightGate, NavMeshBlocker>();
-			builder.AddDecorator<WatertightGate, WaterBlocker>();
 			builder.AddDecorator<WatertightGate, WatertightGateConflictStatus>();
 			builder.AddDecorator<WatertightGate, Illuminator>();
 			builder.AddDecorator<FreePositionedDynamicPathModelSpec, FreePositionedDynamicPathModel>();
