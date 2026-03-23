@@ -18,6 +18,7 @@
         "Timberborn.BlockSystem.dll",
         "Timberborn.EntitySystem.dll",
         "Timberborn.SingletonSystem.dll",
+        "Timberborn.TimeSystem.dll",
         "Moq.dll"
     ],
     "autoReferenced": false,

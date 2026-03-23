@@ -16,6 +16,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 		protected override void Configure()
 		{
 			Bind<GateLikeUpdater>().AsSingleton();
+			Bind<OccupantDetectorService>().AsSingleton();
 
 			Bind<WatertightGateFragment>().AsSingleton();
 			MultiBind<EntityPanelModule>().ToProvider<WatertightGateEntityPanelModuleProvider>().AsSingleton();
@@ -25,6 +26,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 			Bind<NavMeshBlocker>().AsTransient();
 			Bind<WaterBlocker>().AsTransient();
 			Bind<WatertightGateConflictStatus>().AsTransient();
+			Bind<GateAutoOpener>().AsTransient();
 			Bind<FreePositionedDynamicPathModel>().AsTransient();
 			MultiBind<TemplateModule>().ToProvider(_ProvideTemplateModule).AsSingleton();
 		}
@@ -38,6 +40,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 			builder.AddDecorator<WatertightGate, NavMeshBlocker>();
 			builder.AddDecorator<WatertightGate, WatertightGateConflictStatus>();
 			builder.AddDecorator<WatertightGate, Illuminator>();
+			builder.AddDecorator<WatertightGate, GateAutoOpener>();
 			builder.AddDecorator<FreePositionedDynamicPathModelSpec, FreePositionedDynamicPathModel>();
 			return builder.Build();
 		}

@@ -116,7 +116,6 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Services
 		#region ISingletonNavMeshListener
 		public void OnNavMeshUpdated(NavMeshUpdate navMeshUpdate)
 		{
-			Debug.LogFormat("[OnNavMeshUpdated] NavMesh updated");
 			_hasScheduledUnblocking = true;
 		}
 		#endregion
