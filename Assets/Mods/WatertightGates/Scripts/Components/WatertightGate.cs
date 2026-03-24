@@ -8,8 +8,8 @@ using Timberborn.BlockSystem;
 using Timberborn.Common;
 using Timberborn.EntitySystem;
 using Timberborn.Illumination;
+using Timberborn.Localization;
 using Timberborn.Persistence;
-using Timberborn.QuickNotificationSystem;
 using Timberborn.WorldPersistence;
 using UnityEngine;
 
@@ -56,7 +56,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 					return;
 				}
 				_mainMode = value;
-				StateNeedCheck = false;
+				BadStateReason = null;
 				_ScheduleStateUpdate();
 				MainModeChanged?.Invoke(this, EventArgs.Empty);
 			}
@@ -97,12 +97,14 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 		public event EventHandler ConflictStateChanged;
 
 		private readonly GateLikeUpdater _gateLikeUpdater;
-		private readonly QuickNotificationService _quickNotificationService;
+		private readonly OptionalDependencies _optionalDependencies;
+		private readonly ILoc _loc;
 
-		public WatertightGate(GateLikeUpdater gateLikeUpdater, QuickNotificationService quickNotificationService)
+		public WatertightGate(GateLikeUpdater gateLikeUpdater, OptionalDependencies optionalDependencies, ILoc loc)
 		{
 			_gateLikeUpdater = gateLikeUpdater;
-			_quickNotificationService = quickNotificationService;
+			_optionalDependencies = optionalDependencies;
+			_loc = loc;
 		}
 
 		#region IAwakableComponent
@@ -131,42 +133,85 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 		private static readonly PropertyKey<EGateMainMode> _mainModeKey = new(nameof(_mainMode));
 		private static readonly PropertyKey<EGateMode> _activeGateModeKey = new(nameof(_activeGateMode));
 		private static readonly PropertyKey<EGateMode> _inactiveGateModeKey = new(nameof(_inactiveGateMode));
-		public bool StateNeedCheck { get; private set; } = false;
+		public string? BadStateReason { get; private set; } = null;
 
 		public void Load(IEntityLoader entityLoader)
 		{
 			ActiveGateMode = entityLoader.GetOrDefault(_persistenceKey, _activeGateModeKey, EGateMode.Open);
 			InactiveGateMode = entityLoader.GetOrDefault(_persistenceKey, _inactiveGateModeKey, EGateMode.Close);
+			_mainMode = _LoadMainModeWithBackwardCompatibility(entityLoader);
+		}
+
+		private EGateMainMode _LoadMainModeWithBackwardCompatibility(IEntityLoader entityLoader)
+		{
+			EGateMainMode mode;
 			try
 			{
-				_mainMode = entityLoader.GetRequired(_persistenceKey, _mainModeKey);
+				mode = entityLoader.GetRequired(_persistenceKey, _mainModeKey);
 			}
 			catch (IEntityLoaderExtensions.PersistenceException ex)
 			{
 				this.Log("Failed to load value: {0}", ex);
-				var mode = entityLoader.GetOrDefaultAsString(
+				var modeStr = entityLoader.GetOrDefaultAsString(
 					_persistenceKey,
 					_mainModeKey,
-					() => entityLoader.GetOrDefaultAsString(_persistenceKey, new PropertyKey<string>("_activationMode"), "Active")
+					() => entityLoader.GetOrDefaultAsString(_persistenceKey, new PropertyKey<string>("_activationMode"), "Pass")
 				).ToLower();
-				switch (mode)
+				switch (modeStr)
 				{
+					case "open":
+						mode = EGateMainMode.Open;
+						break;
+					case "close":
+						mode = EGateMainMode.Close;
+						break;
 					case "active":
-						_mainMode = _GateModeToMainMode(ActiveGateMode);
+						mode = _GateModeToMainMode(ActiveGateMode);
 						break;
 					case "inactive":
-						_mainMode = _GateModeToMainMode(InactiveGateMode);
+						mode = _GateModeToMainMode(InactiveGateMode);
 						break;
 					case "pass":
-						_mainMode = EGateMainMode.Pass;
+						mode = EGateMainMode.Pass;
 						break;
 					default:
-						this.Log("Invalid loaded value {0}, falling back to open");
-						_mainMode = EGateMainMode.Open;
-						StateNeedCheck = true;
+						this.Log("Invalid loaded value {0}, falling back to open", modeStr);
+						mode = EGateMainMode.Open;
+						BadStateReason = _loc.T("GerkinDev.WatertightGates.Status.Buildings.CheckState.Reason.BadValue{0}", modeStr);
 						break;
 				}
+				this.Log("Resolved to {0}", mode);
 			}
+
+			// Check for optional dependency missing but needed by state
+			if (!_optionalDependencies.PressurePlates)
+			{
+				if (mode == EGateMainMode.Pass)
+				{
+					this.Log("Was {0}, but missing dependency", mode);
+					mode = EGateMainMode.Close;
+					BadStateReason = _loc.T("GerkinDev.WatertightGates.Status.Buildings.CheckState.Reason.PassMissDependency");
+				}
+				if (ActiveGateMode == EGateMode.Pass)
+				{
+					this.Log("Was {0}, but missing dependency for active mode", mode);
+					ActiveGateMode = EGateMode.Close;
+					if (mode == EGateMainMode.Automated)
+					{
+						BadStateReason = _loc.T("GerkinDev.WatertightGates.Status.Buildings.CheckState.Reason.PassMissDependency");
+					}
+				}
+				if (InactiveGateMode == EGateMode.Pass)
+				{
+					this.Log("Was {0}, but missing dependency for inactive mode", mode);
+					InactiveGateMode = EGateMode.Close;
+					if (mode == EGateMainMode.Automated)
+					{
+						BadStateReason = _loc.T("GerkinDev.WatertightGates.Status.Buildings.CheckState.Reason.PassMissDependency");
+					}
+				}
+			}
+			return mode;
 		}
 
 		public void Save(IEntitySaver entitySaver)

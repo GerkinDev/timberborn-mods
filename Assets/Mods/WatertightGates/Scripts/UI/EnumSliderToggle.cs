@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Timberborn.SliderToggleSystem;
 using UnityEngine.UIElements;
 
@@ -13,6 +14,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.UI
 		private readonly Label _valueDisplay;
 		private readonly Func<T> _getValue;
 		private readonly Action<T> _setValue;
+		private readonly T[] _allowedValues;
 		private SliderToggle _sliderToggle;
 
 		public Func<T, string> TooltipGetter { get; init; } = (value) => value.ToString();
@@ -20,19 +22,22 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.UI
 		public Func<T, string?> IconClassGetter { get; init; } = (value) => null;
 
 		public EnumSliderToggle(SliderToggleFactory sliderToggleFactory, VisualElement container, Label valueDisplay, Func<T> getValue, Action<T> setValue)
+			: this(sliderToggleFactory, container, valueDisplay, getValue, setValue, Enum.GetValues(typeof(T)).Cast<T>().ToArray()) { }
+		public EnumSliderToggle(SliderToggleFactory sliderToggleFactory, VisualElement container, Label valueDisplay, Func<T> getValue, Action<T> setValue, T[] allowedValues)
 		{
 			_sliderToggleFactory = sliderToggleFactory ?? throw new ArgumentNullException(nameof(sliderToggleFactory));
 			_container = container ?? throw new ArgumentNullException(nameof(container));
 			_valueDisplay = valueDisplay ?? throw new ArgumentNullException(nameof(valueDisplay));
 			_getValue = getValue ?? throw new ArgumentNullException(nameof(getValue));
 			_setValue = setValue ?? throw new ArgumentNullException(nameof(setValue));
+			_allowedValues = allowedValues;
 		}
 
 		public void Initialize()
 		{
 			_container.Clear();
 			var options = new List<SliderToggleItem>();
-			foreach (T value in Enum.GetValues(typeof(T)))
+			foreach (T value in _allowedValues)
 			{
 				options.Add(SliderToggleItem.Create(
 					() => TooltipGetter(value),

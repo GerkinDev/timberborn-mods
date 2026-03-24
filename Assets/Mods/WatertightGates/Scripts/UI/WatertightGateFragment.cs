@@ -1,4 +1,5 @@
 ﻿using GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Components;
+using GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Services;
 using System;
 using Timberborn.AutomationBuildingsUI;
 using Timberborn.BaseComponentSystem;
@@ -17,6 +18,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.UI
 		private readonly VisualElementLoader _visualElementLoader;
 		private readonly SliderToggleFactory _sliderToggleFactory;
 		private readonly ILoc _loc;
+		private readonly OptionalDependencies _optionalDependencies;
 		private WatertightGate? _target;
 
 		private VisualElement _root;
@@ -25,11 +27,12 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.UI
 		private EnumSliderToggle<WatertightGate.EGateMode> _activeStateToggle;
 		private EnumSliderToggle<WatertightGate.EGateMode> _inactiveStateToggle;
 
-		public WatertightGateFragment(VisualElementLoader visualElementLoader, SliderToggleFactory sliderToggleFactory, ILoc loc)
+		public WatertightGateFragment(VisualElementLoader visualElementLoader, SliderToggleFactory sliderToggleFactory, ILoc loc, OptionalDependencies optionalDependencies)
 		{
 			_visualElementLoader = visualElementLoader;
 			_sliderToggleFactory = sliderToggleFactory;
 			_loc = loc;
+			_optionalDependencies = optionalDependencies;
 		}
 
 		private float? _activeWidth;
@@ -113,7 +116,10 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.UI
 				_root.Q<VisualElement>("MainModeToggle"),
 				_root.Q<Label>("MainModeLabel"),
 				() => _target.MainMode,
-				value => _target.MainMode = value
+				value => _target.MainMode = value,
+				_optionalDependencies.PressurePlates
+					? new[] { WatertightGate.EGateMainMode.Open, WatertightGate.EGateMainMode.Close, WatertightGate.EGateMainMode.Pass, WatertightGate.EGateMainMode.Automated }
+					: new[] { WatertightGate.EGateMainMode.Open, WatertightGate.EGateMainMode.Close, WatertightGate.EGateMainMode.Automated }
 			)
 			{
 				IconClassGetter = (value) => value switch

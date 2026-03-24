@@ -4,8 +4,6 @@ using GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Components.S
 using GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Components.UI;
 using GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Services;
 using GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.UI;
-using System;
-using System.Linq;
 using Timberborn.EntityPanelSystem;
 using Timberborn.Illumination;
 using Timberborn.TemplateInstantiation;
@@ -16,12 +14,15 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 	[Context("Game")]
 	internal class WatertightGatesConfigurator : Configurator
 	{
-		private static bool _IsClassLoaded(string className) { return AppDomain.CurrentDomain.GetAssemblies().Any(assembly => assembly.GetType(className) != null); }
+		private OptionalDependencies _optionalDependencies;
+
 		protected override void Configure()
 		{
 			Bind<GateLikeUpdater>().AsSingleton();
 
 			Bind<WatertightGateFragment>().AsSingleton();
+			_optionalDependencies = new();
+			Bind<OptionalDependencies>().ToInstance(_optionalDependencies);
 			MultiBind<EntityPanelModule>().ToProvider<WatertightGateEntityPanelModuleProvider>().AsSingleton();
 
 			Bind<WatertightGate>().AsTransient();
@@ -29,6 +30,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 			Bind<NavMeshBlocker>().AsTransient();
 			Bind<WaterBlocker>().AsTransient();
 			Bind<WatertightGateConflictStatus>().AsTransient();
+			Bind<WatertightGateCheckState>().AsTransient();
 			Bind<FreePositionedDynamicPathModel>().AsTransient();
 			MultiBind<TemplateModule>().ToProvider(_ProvideTemplateModule).AsSingleton();
 		}
@@ -41,15 +43,11 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 			builder.AddDecorator<WatertightGateSpec, WatertightGate>();
 			builder.AddDecorator<WatertightGate, NavMeshBlocker>();
 			builder.AddDecorator<WatertightGate, WatertightGateConflictStatus>();
+			builder.AddDecorator<WatertightGate, WatertightGateCheckState>();
 			builder.AddDecorator<WatertightGate, Illuminator>();
-			if (_IsClassLoaded("GerkinDev.PressurePlates.Assets.Mods.PressurePlates.Scripts.PressurePlatesConfigurator"))
+			if (_optionalDependencies.PressurePlates)
 			{
-				WatertightGates.Log("GerkinDev.PressurePlates mod active");
 				_InitPressurePlateInterop(builder);
-			}
-			else
-			{
-				WatertightGates.Log("GerkinDev.PressurePlates mod missing");
 			}
 			builder.AddDecorator<FreePositionedDynamicPathModelSpec, FreePositionedDynamicPathModel>();
 			return builder.Build();
