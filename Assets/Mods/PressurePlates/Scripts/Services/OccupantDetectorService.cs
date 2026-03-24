@@ -140,6 +140,10 @@ namespace GerkinDev.PressurePlates.Assets.Mods.PressurePlates.Scripts.Services
 				}
 			}
 		}
+
+		public Subscriber Subscribe(object key, BlockObject blockObject) =>
+			Subscribe(key, blockObject.Blocks.GetAllCoordinates().Select(relCoords => blockObject.TransformCoordinates(relCoords)).ToArray());
+
 		public Subscriber Subscribe(object key, params Vector3Int[] position)
 		{
 			var subscriber = new Subscriber { Key = key, Positions = position };
@@ -147,6 +151,7 @@ namespace GerkinDev.PressurePlates.Assets.Mods.PressurePlates.Scripts.Services
 			_RebuildPosToSubscribers();
 			return subscriber;
 		}
+
 		public void Unsubscribe(object key)
 		{
 			_subscribers.Remove(key);

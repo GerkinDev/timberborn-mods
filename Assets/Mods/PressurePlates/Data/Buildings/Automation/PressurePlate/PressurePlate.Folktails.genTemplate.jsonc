@@ -1,0 +1,26 @@
+{
+  "@extends": "./PressurePlate._Base.genTemplate.jsonc",
+  "@output": "./PressurePlate.Folktails.blueprint.json",
+  "TemplateSpec": {
+    "TemplateName": "GerkinDev.PressurePlates.Folktails",
+    "BackwardCompatibleTemplateNames": [],
+    "RequiredFeatureToggle": "",
+    "DisablingFeatureToggle": ""
+  },
+  "Children": {
+    "#Finished": {
+      "TimbermeshSpec": {
+        "Model": "Buildings/Automation/PressurePlate/PressurePlate.Folktails.Model"
+      }
+    },
+    "#Unfinished": {
+      "Children": {
+        "ConstructionStage0": {
+          "TimbermeshSpec": {
+            "Model": "Buildings/Automation/PressurePlate/PressurePlate.Folktails.Model"
+          }
+        }
+      }
+    }
+  }
+}

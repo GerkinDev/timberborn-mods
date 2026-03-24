@@ -1,5 +1,9 @@
 using Bindito.Core;
+using GerkinDev.PressurePlates.Assets.Mods.PressurePlates.Scripts.Components;
+using GerkinDev.PressurePlates.Assets.Mods.PressurePlates.Scripts.Components.Spec;
 using GerkinDev.PressurePlates.Assets.Mods.PressurePlates.Scripts.Services;
+using Timberborn.Illumination;
+using Timberborn.TemplateInstantiation;
 
 namespace GerkinDev.PressurePlates.Assets.Mods.PressurePlates.Scripts
 {
@@ -9,13 +13,14 @@ namespace GerkinDev.PressurePlates.Assets.Mods.PressurePlates.Scripts
 		protected override void Configure()
 		{
 			Bind<OccupantDetectorService>().AsSingleton();
-			//MultiBind<TemplateModule>().ToProvider(_ProvideTemplateModule).AsSingleton();
+			Bind<PressurePlate>().AsTransient();
+			MultiBind<TemplateModule>().ToProvider(() =>
+			{
+				var builder = new TemplateModule.Builder();
+				builder.AddDecorator<PressurePlateSpec, PressurePlate>();
+				builder.AddDecorator<PressurePlate, Illuminator>();
+				return builder.Build();
+			}).AsSingleton();
 		}
-
-		//private static TemplateModule _ProvideTemplateModule()
-		//{
-		//	var builder = new TemplateModule.Builder();
-		//	return builder.Build();
-		//}
 	}
 }
