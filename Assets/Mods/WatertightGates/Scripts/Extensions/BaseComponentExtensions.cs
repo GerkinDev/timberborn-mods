@@ -1,7 +1,6 @@
 ﻿using System;
 using Timberborn.BaseComponentSystem;
 using Timberborn.BlockSystem;
-using UnityEngine;
 
 namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Extensions
 {
@@ -30,17 +29,13 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Extensio
 		}
 		public static void Log(this BaseComponent component, string format, params object[] args)
 		{
-			var logStr = string.Format(format, args);
 			string who = _GetLogPrefix(component);
-			logStr = $"[{WatertightGatesModStarter.MOD_ID}:{who}] {logStr}";
-			Debug.Log(logStr);
+			WatertightGates.Log(who, format, args);
 		}
 		public static void Warn(this BaseComponent component, string format, params object[] args)
 		{
-			var logStr = string.Format(format, args);
 			string who = _GetLogPrefix(component);
-			logStr = $"[{WatertightGatesModStarter.MOD_ID}:{who}] {logStr}";
-			Debug.LogWarning(logStr);
+			WatertightGates.Warn(who, format, args);
 		}
 	}
 }

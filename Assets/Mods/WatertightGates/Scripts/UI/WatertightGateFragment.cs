@@ -41,12 +41,10 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.UI
 			if (active.HasValue)
 			{
 				_activeWidth = active.Value.width;
-				Debug.LogFormat("Active width: {0}", _activeWidth);
 			}
 			if (inactive.HasValue)
 			{
 				_inactiveWidth = inactive.Value.width;
-				Debug.LogFormat("Inactive width: {0}", _inactiveWidth);
 			}
 			if (_activeWidth.HasValue && _inactiveWidth.HasValue)
 			{
@@ -124,7 +122,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.UI
 					WatertightGate.EGateControlMode.Close => GateToggle.ClosedClass,
 					WatertightGate.EGateControlMode.Pass => "WatertightGate-fragment__icon-pass",
 					WatertightGate.EGateControlMode.Automated => GateToggle.AutomatedClass,
-					_ => throw new Exception($"Invalid value {value}")
+					_ => throw new ArgumentException($"Invalid value {value}")
 				},
 				LabelGetter = value => _loc.T(value switch
 				{
@@ -132,7 +130,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.UI
 					WatertightGate.EGateControlMode.Close => "GerkinDev.WatertightGates.UI.WatertightGate.Modes.Close.Label",
 					WatertightGate.EGateControlMode.Pass => "GerkinDev.WatertightGates.UI.WatertightGate.Modes.Pass.Label",
 					WatertightGate.EGateControlMode.Automated => "GerkinDev.WatertightGates.UI.WatertightGate.ActivationMode.Automated.Label",
-					_ => throw new Exception($"Invalid value {value}")
+					_ => throw new ArgumentException($"Invalid value {value}")
 				}),
 				TooltipGetter = value => _loc.T(value switch
 				{
@@ -140,7 +138,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.UI
 					WatertightGate.EGateControlMode.Close => "GerkinDev.WatertightGates.UI.WatertightGate.Modes.Close.Tooltip",
 					WatertightGate.EGateControlMode.Pass => "GerkinDev.WatertightGates.UI.WatertightGate.Modes.Pass.Tooltip",
 					WatertightGate.EGateControlMode.Automated => "GerkinDev.WatertightGates.UI.WatertightGate.ActivationMode.Automated.Tooltip",
-					_ => throw new Exception($"Invalid value {value}")
+					_ => throw new ArgumentException($"Invalid value {value}")
 				}),
 			};
 			_activationModeToggle.Initialize();
@@ -150,21 +148,21 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.UI
 				WatertightGate.EGateMode.Open => GateToggle.OpenedClass,
 				WatertightGate.EGateMode.Close => GateToggle.ClosedClass,
 				WatertightGate.EGateMode.Pass => "WatertightGate-fragment__icon-pass",
-				_ => throw new Exception($"Invalid value {value}")
+				_ => throw new ArgumentException($"Invalid value {value}")
 			};
 			string getModeLabel(WatertightGate.EGateMode value) => _loc.T(value switch
 			{
 				WatertightGate.EGateMode.Open => "GerkinDev.WatertightGates.UI.WatertightGate.Modes.Open.Label",
 				WatertightGate.EGateMode.Close => "GerkinDev.WatertightGates.UI.WatertightGate.Modes.Close.Label",
 				WatertightGate.EGateMode.Pass => "GerkinDev.WatertightGates.UI.WatertightGate.Modes.Pass.Label",
-				_ => throw new Exception($"Invalid value {value}")
+				_ => throw new ArgumentException($"Invalid value {value}")
 			});
 			string getModeTooltip(WatertightGate.EGateMode value) => _loc.T(value switch
 			{
 				WatertightGate.EGateMode.Open => "GerkinDev.WatertightGates.UI.WatertightGate.Modes.Open.Tooltip",
 				WatertightGate.EGateMode.Close => "GerkinDev.WatertightGates.UI.WatertightGate.Modes.Close.Tooltip",
 				WatertightGate.EGateMode.Pass => "GerkinDev.WatertightGates.UI.WatertightGate.Modes.Pass.Tooltip",
-				_ => throw new Exception($"Invalid value {value}")
+				_ => throw new ArgumentException($"Invalid value {value}")
 			});
 			_activeStateToggle = new(
 				_sliderToggleFactory,

@@ -3,16 +3,14 @@ using GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Services;
 using HarmonyLib;
 using System;
 using Timberborn.ModManagerScene;
-using UnityEngine;
 
 namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 {
 	public class WatertightGatesModStarter : IModStarter
 	{
-		public const string MOD_ID = "GerkinDev.WatertightGates";
 		public void StartMod(IModEnvironment modEnvironment)
 		{
-			Debug.Log($"[{MOD_ID}] Checking patches conflicts");
+			WatertightGates.Log("Checking patches conflicts");
 			var patch = typeof(GateUpdaterPatch).GetAttribute<HarmonyPatch>();
 			// get the MethodBase of the original
 			var original = patch.info.declaringType.GetMethod(patch.info.methodName);
@@ -24,8 +22,8 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 				throw new Exception($"Another mod patched {original.DeclaringType.Name}#{original.Name}: {patchers}. To avoid issues, it is considered as a conflict. Please contact the devs for a resolution.");
 			}
 
-			Debug.Log($"[{MOD_ID}] Patching");
-			new Harmony(MOD_ID).PatchAll();
+			WatertightGates.Log("Patching");
+			new Harmony(WatertightGates.MOD_ID).PatchAll();
 		}
 
 	}

@@ -44,12 +44,12 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 			builder.AddDecorator<WatertightGate, Illuminator>();
 			if (_IsClassLoaded("GerkinDev.PressurePlates.Assets.Mods.PressurePlates.Scripts.PressurePlatesConfigurator"))
 			{
-				Debug.Log("GerkinDev.PressurePlates mod active");
+				WatertightGates.Log("GerkinDev.PressurePlates mod active");
 				_InitPressurePlateInterop(builder);
 			}
 			else
 			{
-				Debug.Log("GerkinDev.PressurePlates mod missing");
+				WatertightGates.Log("GerkinDev.PressurePlates mod missing");
 			}
 			builder.AddDecorator<FreePositionedDynamicPathModelSpec, FreePositionedDynamicPathModel>();
 			return builder.Build();

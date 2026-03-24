@@ -58,7 +58,7 @@ namespace GerkinDev.PressurePlates.Assets.Mods.PressurePlates.Scripts.Services
 			stopwatch.Start();
 			if (Scan())
 			{
-				Debug.LogFormat("Scan ended in {0}ms", stopwatch.ElapsedMilliseconds);
+				PressurePlates.Log("Scan ended in {0}ms", stopwatch.ElapsedMilliseconds);
 			}
 			stopwatch.Stop();
 		}
