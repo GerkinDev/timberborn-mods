@@ -9,7 +9,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 		private static string _GetPrefix(string name)
 		{
 			var prefix = MOD_ID;
-			if (!string.IsNullOrEmpty(prefix))
+			if (!string.IsNullOrEmpty(name))
 			{
 				prefix += "::" + name;
 			}
