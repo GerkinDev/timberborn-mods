@@ -6,7 +6,6 @@ using Timberborn.BlockSystem;
 using Timberborn.Common;
 using Timberborn.EntitySystem;
 using Timberborn.TickSystem;
-using Timberborn.TimeSystem;
 using UnityEngine;
 
 namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
@@ -45,17 +44,14 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 		{
 			public HashSet<BlockOccupant> Within { get; set; } = new();
 		}
-		public event EventHandler<OccypancyEvent> OnEnterAnySubscribed;
 		private readonly Dictionary<object, Subscriber> _subscribers = new();
 		private readonly Dictionary<Vector3Int, HashSet<Subscriber>> _posToSubscribers = new();
 		private readonly Dictionary<Subscriber, SubscriberState> _subscribersState = new();
 		private readonly EntityComponentRegistry _entityComponentRegistry;
-		private readonly IDayNightCycle _dayNightCycle;
 
-		public OccupantDetectorService(EntityComponentRegistry entityComponentRegistry, IDayNightCycle dayNightCycle)
+		public OccupantDetectorService(EntityComponentRegistry entityComponentRegistry)
 		{
 			_entityComponentRegistry = entityComponentRegistry;
-			_dayNightCycle = dayNightCycle;
 		}
 
 		#region ITickableSingleton
@@ -140,17 +136,11 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 			var buildDict = new Dictionary<Vector3Int, List<Subscriber>>();
 			foreach (var subscriber in _subscribers.Values)
 			{
-				Debug.LogFormat("Subscriber {0} has {1} cells", subscriber, subscriber.Positions.Length);
 				foreach (var position in subscriber.Positions)
 				{
 					var subscribersAtPos = _posToSubscribers.GetOrAdd(position, () => new HashSet<Subscriber>());
 					subscribersAtPos.Add(subscriber);
 				}
-			}
-			Debug.LogFormat("Subscribed for {0} cells", _posToSubscribers.Count);
-			foreach (var (position, subscribers) in _posToSubscribers)
-			{
-				Debug.LogFormat("{0} => {1}", position, string.Join(", ", subscribers.Select(o => o.ToString())));
 			}
 		}
 		public Subscriber Subscribe(object key, params Vector3Int[] position)

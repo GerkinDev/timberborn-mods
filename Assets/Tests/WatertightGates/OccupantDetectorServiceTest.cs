@@ -5,7 +5,6 @@ using System;
 using Timberborn.BaseComponentSystem;
 using Timberborn.BlockSystem;
 using Timberborn.EntitySystem;
-using Timberborn.TimeSystem;
 using UnityEngine;
 
 namespace GerkinDev.Tests.Assets.Tests.WatertightGates
@@ -15,51 +14,15 @@ namespace GerkinDev.Tests.Assets.Tests.WatertightGates
 		private ComponentCacheService _compCacheService;
 		private RegisteredComponentService _componentRegistry;
 		private EntityComponentRegistry _entityRegistry;
-		private FakeDayNight _dayNight;
 		private OccupantDetectorService _occupantDetectorService;
 
-		class FakeDayNight : IDayNightCycle
-		{
-			public float DayLengthInSeconds => throw new NotImplementedException();
-
-			public int DayNumber => throw new NotImplementedException();
-
-			public float DaytimeLengthInHours => throw new NotImplementedException();
-
-			public float NighttimeLengthInHours => throw new NotImplementedException();
-
-			public float HoursPassedToday => throw new NotImplementedException();
-
-			public float DayProgress => throw new NotImplementedException();
-
-			public float PartialDayNumber => throw new NotImplementedException();
-
-			public bool IsDaytime => throw new NotImplementedException();
-
-			public bool IsNighttime => throw new NotImplementedException();
-
-			public float FixedDeltaTimeInHours => throw new NotImplementedException();
-
-			public float FluidSecondsPassedToday => throw new NotImplementedException();
-
-			public (float start, float end) BoundsInHours(TimeOfDay timeOfDay) => throw new NotImplementedException();
-			public float DayNumberHoursFromNow(float hours) => throw new NotImplementedException();
-			public float FluidHoursToNextStartOf(TimeOfDay timeOfDay) => throw new NotImplementedException();
-			public float HoursToNextStartOf(TimeOfDay timeOfDay) => throw new NotImplementedException();
-			public int HoursToTicks(float hours) => throw new NotImplementedException();
-			public void JumpTimeInHours(float hours) => throw new NotImplementedException();
-			public float SecondsToHours(float seconds) => throw new NotImplementedException();
-			public void SetTimeToNextDay() => throw new NotImplementedException();
-			public float TicksToHours(int ticks) => throw new NotImplementedException();
-		}
 		[SetUp]
 		public void Init()
 		{
 			_compCacheService = new ComponentCacheService();
 			_componentRegistry = new RegisteredComponentService();
 			_entityRegistry = new EntityComponentRegistry(_componentRegistry);
-			_dayNight = new FakeDayNight();
-			_occupantDetectorService = new OccupantDetectorService(_entityRegistry, _dayNight);
+			_occupantDetectorService = new OccupantDetectorService(_entityRegistry);
 		}
 
 		private BlockOccupant _CreateFakeBeaver()
