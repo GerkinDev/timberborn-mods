@@ -32,31 +32,34 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 			Bind<WatertightGateConflictStatus>().AsTransient();
 			Bind<WatertightGateCheckState>().AsTransient();
 			Bind<FreePositionedDynamicPathModel>().AsTransient();
-			MultiBind<TemplateModule>().ToProvider(_ProvideTemplateModule).AsSingleton();
-		}
-
-		private TemplateModule _ProvideTemplateModule()
-		{
-			var builder = new TemplateModule.Builder();
-			builder.AddDecorator<WatertightGateSpec, WatertightGateTransformController>();
-			builder.AddDecorator<WatertightGateTransformController, WaterBlocker>();
-			builder.AddDecorator<WatertightGateSpec, WatertightGate>();
-			builder.AddDecorator<WatertightGate, NavMeshBlocker>();
-			builder.AddDecorator<WatertightGate, WatertightGateConflictStatus>();
-			builder.AddDecorator<WatertightGate, WatertightGateCheckState>();
-			builder.AddDecorator<WatertightGate, Illuminator>();
+			MultiBind<TemplateModule>().ToProvider(() =>
+			{
+				var builder = new TemplateModule.Builder();
+				builder.AddDecorator<WatertightGateSpec, WatertightGateTransformController>();
+				builder.AddDecorator<WatertightGateTransformController, WaterBlocker>();
+				builder.AddDecorator<WatertightGateSpec, WatertightGate>();
+				builder.AddDecorator<WatertightGate, NavMeshBlocker>();
+				builder.AddDecorator<WatertightGate, WatertightGateConflictStatus>();
+				builder.AddDecorator<WatertightGate, WatertightGateCheckState>();
+				builder.AddDecorator<WatertightGate, Illuminator>();
+				builder.AddDecorator<FreePositionedDynamicPathModelSpec, FreePositionedDynamicPathModel>();
+				return builder.Build();
+			}).AsSingleton();
 			if (_optionalDependencies.PressurePlates)
 			{
-				_InitPressurePlateInterop(builder);
+				_ConfigurePressurePlateExtension();
 			}
-			builder.AddDecorator<FreePositionedDynamicPathModelSpec, FreePositionedDynamicPathModel>();
-			return builder.Build();
 		}
 
-		private void _InitPressurePlateInterop(TemplateModule.Builder builder)
+		private void _ConfigurePressurePlateExtension()
 		{
 			Bind<GateAutoOpener>().AsTransient();
-			builder.AddDecorator<WatertightGate, GateAutoOpener>();
+			MultiBind<TemplateModule>().ToProvider(() =>
+			{
+				var builder = new TemplateModule.Builder();
+				builder.AddDecorator<WatertightGate, GateAutoOpener>();
+				return builder.Build();
+			}).AsSingleton();
 		}
 	}
 }
