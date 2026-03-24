@@ -44,6 +44,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 			EGateMainMode.Pass => EGateMode.Pass,
 			_ => throw new ArgumentException($"Unexpected gate main mode {mode}"),
 		};
+		public event EventHandler MainModeChanged;
 		private EGateMainMode _mainMode = EGateMainMode.Open;
 		public EGateMainMode MainMode
 		{
@@ -55,7 +56,9 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 					return;
 				}
 				_mainMode = value;
+				StateNeedCheck = false;
 				_ScheduleStateUpdate();
+				MainModeChanged?.Invoke(this, EventArgs.Empty);
 			}
 		}
 		private EGateMode _activeGateMode = EGateMode.Open;
@@ -125,9 +128,10 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 
 		#region IPersistentEntity
 		private static readonly ComponentKey _persistenceKey = new("WatertightGate");
-		private static readonly PropertyKey<EGateMainMode> __mainModeKey = new(nameof(_mainMode));
+		private static readonly PropertyKey<EGateMainMode> _mainModeKey = new(nameof(_mainMode));
 		private static readonly PropertyKey<EGateMode> _activeGateModeKey = new(nameof(_activeGateMode));
 		private static readonly PropertyKey<EGateMode> _inactiveGateModeKey = new(nameof(_inactiveGateMode));
+		public bool StateNeedCheck { get; private set; } = false;
 
 		public void Load(IEntityLoader entityLoader)
 		{
@@ -135,36 +139,40 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 			InactiveGateMode = entityLoader.GetOrDefault(_persistenceKey, _inactiveGateModeKey, EGateMode.Close);
 			try
 			{
-				_mainMode = entityLoader.GetOrDefault(_persistenceKey, __mainModeKey, EGateMainMode.Open);
+				_mainMode = entityLoader.GetRequired(_persistenceKey, _mainModeKey);
 			}
-			catch (ArgumentException ex)
+			catch (IEntityLoaderExtensions.PersistenceException ex)
 			{
-				this.Log("Failed to parse value: {0}", ex);
-				var mode = entityLoader.GetOrDefaultAsString(_persistenceKey, __mainModeKey, "Active").ToLower();
+				this.Log("Failed to load value: {0}", ex);
+				var mode = entityLoader.GetOrDefaultAsString(
+					_persistenceKey,
+					_mainModeKey,
+					() => entityLoader.GetOrDefaultAsString(_persistenceKey, new PropertyKey<string>("_activationMode"), "Active")
+				).ToLower();
 				switch (mode)
 				{
 					case "active":
 						_mainMode = _GateModeToMainMode(ActiveGateMode);
-						_quickNotificationService.SendNotification("Gate mode updated.");
 						break;
 					case "inactive":
 						_mainMode = _GateModeToMainMode(InactiveGateMode);
-						_quickNotificationService.SendNotification("Gate mode updated.");
+						break;
+					case "pass":
+						_mainMode = EGateMainMode.Pass;
 						break;
 					default:
 						this.Log("Invalid loaded value {0}, falling back to open");
-						_quickNotificationService.SendWarningNotification("Failed to load previous watertight gate mode. It has been opened as a default. Please verify your watertight gates to avoid leakage.");
 						_mainMode = EGateMainMode.Open;
+						StateNeedCheck = true;
 						break;
 				}
-				;
 			}
 		}
 
 		public void Save(IEntitySaver entitySaver)
 		{
 			var objectSaver = entitySaver.GetComponent(_persistenceKey);
-			objectSaver.Set(__mainModeKey, _mainMode);
+			objectSaver.Set(_mainModeKey, _mainMode);
 			objectSaver.Set(_activeGateModeKey, ActiveGateMode);
 			objectSaver.Set(_inactiveGateModeKey, InactiveGateMode);
 		}
