@@ -8,7 +8,7 @@ using Timberborn.EntitySystem;
 using Timberborn.TickSystem;
 using UnityEngine;
 
-namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
+namespace GerkinDev.PressurePlates.Assets.Mods.PressurePlates.Scripts.Services
 {
 	/// <see cref="BlockOccupancyService">
 	public class OccupantDetectorService : ITickableSingleton
@@ -29,10 +29,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 			{
 				OnExit?.Invoke(this, e);
 			}
-			public override string ToString()
-			{
-				return $"Subscriber@{Id}";
-			}
+			public override string ToString() => $"OccupancySubscriber@{Id}{{{string.Join(',', Positions)}}}";
 		}
 		public readonly struct OccypancyEvent
 		{

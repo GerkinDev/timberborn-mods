@@ -1,16 +1,26 @@
-﻿using GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Components.Specs;
+using GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Components.Specs;
 using System.Linq;
 using Timberborn.BaseComponentSystem;
 using Timberborn.BlockSystem;
 using Timberborn.TimeSystem;
+#region Optional dependencies
+using OccupantDetectorService = GerkinDev.PressurePlates.Assets.Mods.PressurePlates.Scripts.Services.OccupantDetectorService;
+using Subscriber = GerkinDev.PressurePlates.Assets.Mods.PressurePlates.Scripts.Services.OccupantDetectorService.Subscriber;
+using OccypancyEvent = GerkinDev.PressurePlates.Assets.Mods.PressurePlates.Scripts.Services.OccupantDetectorService.OccypancyEvent;
+using System.Diagnostics.CodeAnalysis;
+#endregion
 
 namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Components
 {
+	/// <summary>
+	/// Depends on optional <see cref="OccupantDetectorService"/>
+	/// </summary>
 	internal class GateAutoOpener : BaseComponent, IAwakableComponent, IFinishedStateListener
 	{
 		private const float _ONE_HOUR = 1f / 24;
 		private const float _CLOSE_DURATION = _ONE_HOUR / 4;
-		private readonly OccupantDetectorService _occupantDetectorService;
+		private readonly object _occupantDetectorService;
+		private OccupantDetectorService _OccupantDetectorService => (OccupantDetectorService)_occupantDetectorService;
 		private readonly ITimeTriggerFactory _timeTriggerFactory;
 		private readonly ITimeTrigger _closeTrigger;
 
@@ -49,7 +59,9 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 		#endregion
 
 
-		private OccupantDetectorService.Subscriber? _subscriber;
+		private object? _subscriber;
+		[NotNullIfNotNull(nameof(_subscriber))]
+		private Subscriber? _Subscriber => (Subscriber?)_subscriber;
 		private bool _isWatching;
 		public bool IsWatching
 		{
@@ -69,7 +81,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 		}
 
 		private bool _isOpen = false;
-		private void _OnOccupantEnter(object sender, OccupantDetectorService.OccypancyEvent evt)
+		private void _OnOccupantEnter(object sender, OccypancyEvent evt)
 		{
 			_closeTrigger.Reset();
 			if (!_isOpen)
@@ -79,7 +91,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 			}
 		}
 
-		private void _OnOccupantExit(object sender, OccupantDetectorService.OccypancyEvent evt)
+		private void _OnOccupantExit(object sender, OccypancyEvent evt)
 		{
 			if (_isOpen && evt.Within.Length == 0)
 			{
@@ -104,9 +116,9 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 				.Append(_blockObject.TransformCoordinates(_spec.PathStart))
 				.Append(_blockObject.TransformCoordinates(_spec.PathEnd))
 				.ToArray();
-			_subscriber = _occupantDetectorService.Subscribe(this, blocks);
-			_subscriber.OnEnter += _OnOccupantEnter;
-			_subscriber.OnExit += _OnOccupantExit;
+			_subscriber = _OccupantDetectorService.Subscribe(this, blocks);
+			_Subscriber.OnEnter += _OnOccupantEnter;
+			_Subscriber.OnExit += _OnOccupantExit;
 		}
 
 		private void _UnsubscribeToOccupants()
@@ -117,9 +129,9 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 			{
 				return;
 			}
-			_subscriber.OnEnter -= _OnOccupantEnter;
-			_subscriber.OnExit -= _OnOccupantExit;
-			_occupantDetectorService.Unsubscribe(this);
+			_Subscriber.OnEnter -= _OnOccupantEnter;
+			_Subscriber.OnExit -= _OnOccupantExit;
+			_OccupantDetectorService.Unsubscribe(this);
 			_subscriber = null;
 		}
 	}

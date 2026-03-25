@@ -109,7 +109,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 		private NavMeshBlocker _navMeshBlocker;
 		private Illuminator _illuminator;
 		private WatertightGateTransformController _gateTransformController;
-		private GateAutoOpener _autoOpener;
+		private GateAutoOpener? _autoOpener;
 
 		public void Awake()
 		{
@@ -119,7 +119,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 			_navMeshBlocker = GetComponent<NavMeshBlocker>();
 			_illuminator = GetComponent<Illuminator>();
 			_gateTransformController = GetComponent<WatertightGateTransformController>();
-			_autoOpener = GetComponent<GateAutoOpener>();
+			TryGetComponent(out _autoOpener);
 		}
 		#endregion
 
@@ -270,7 +270,10 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 					_illuminator.Toggle(true);
 					break;
 			}
-			_autoOpener.IsWatching = actualGateMode == EGateMode.Pass;
+			if (_autoOpener != null)
+			{
+				_autoOpener.IsWatching = actualGateMode == EGateMode.Pass;
+			}
 			_gateTransformController.IsOpen = actualGateMode == EGateMode.Open;
 		}
 

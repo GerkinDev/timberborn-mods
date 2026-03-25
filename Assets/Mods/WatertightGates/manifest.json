@@ -9,5 +9,11 @@
             "Id": "Harmony",
             "MinimumVersion": "2.4.1"
         }
+  ],
+  "OptionalMods": [
+    {
+      "Id": "GerkinDev.PressurePlates",
+      "MinimumVersion": "1.0.0.1"
+    }
   ]
 }

@@ -1,0 +1,13 @@
+{
+  "Name": "Pressure plates",
+  "Version": "1.0.1.1",
+  "Id": "GerkinDev.PressurePlates",
+  "MinimumGameVersion": "1.0.0",
+  "Description": "Pressure plates to put on the ground to detect passing beavers and trigger logic.",
+  "RequiredMods": [
+        {
+            "Id": "Harmony",
+            "MinimumVersion": "2.4.1"
+        }
+  ]
+}

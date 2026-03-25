@@ -1,9 +1,7 @@
-{
-    "name": "GerkinDev.WatertightGates",
-    "rootNamespace": "GerkinDev.WatertightGates",
-    "references": [
-        "GUID:7e8721c15c995034982194661dfa49ff"
-    ],
+﻿{
+    "name": "GerkinDev.PressurePlates",
+    "rootNamespace": "GerkinDev.PressurePlates",
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "//allowUnsafeCode": "Required for UI",

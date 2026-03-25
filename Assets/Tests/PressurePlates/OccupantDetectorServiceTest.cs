@@ -1,4 +1,4 @@
-using GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts;
+using GerkinDev.PressurePlates.Assets.Mods.PressurePlates.Scripts.Services;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -7,7 +7,7 @@ using Timberborn.BlockSystem;
 using Timberborn.EntitySystem;
 using UnityEngine;
 
-namespace GerkinDev.Tests.Assets.Tests.WatertightGates
+namespace GerkinDev.Tests.Assets.Tests.PressurePlates
 {
 	public class OccupantDetectorServiceTest
 	{
