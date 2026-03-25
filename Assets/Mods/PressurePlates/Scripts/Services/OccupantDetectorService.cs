@@ -20,19 +20,19 @@ namespace GerkinDev.PressurePlates.Services
 			public int Id { get; } = _instancesCount++;
 			public Vector3Int[] Positions { get; init; }
 			public object Key { get; init; }
-			public event EventHandler<OccypancyEvent> OnEnter;
-			internal void DispatchEnter(OccypancyEvent e)
+			public event EventHandler<OccupancyEvent> OnEnter;
+			internal void DispatchEnter(OccupancyEvent e)
 			{
 				OnEnter?.Invoke(this, e);
 			}
-			public event EventHandler<OccypancyEvent> OnExit;
-			internal void DispatchExit(OccypancyEvent e)
+			public event EventHandler<OccupancyEvent> OnExit;
+			internal void DispatchExit(OccupancyEvent e)
 			{
 				OnExit?.Invoke(this, e);
 			}
 			public override string ToString() => $"OccupancySubscriber@{Id}{{{string.Join(',', Positions)}}}";
 		}
-		public readonly struct OccypancyEvent
+		public readonly struct OccupancyEvent
 		{
 			public ImmutableArray<BlockOccupant> Entered { get; init; }
 			public ImmutableArray<BlockOccupant> Exited { get; init; }
@@ -137,7 +137,7 @@ namespace GerkinDev.PressurePlates.Services
 			foreach (var (subscriber, occupants) in subscriberCurrentOccupants)
 			{
 				var subscriberState = _subscribersState.GetOrDefault(subscriber);
-				OccypancyEvent e;
+				OccupancyEvent e;
 				if (subscriberState == null)
 				{
 					if (occupants.Count == 0) // No previous occupants, no current occupants, nothing to do

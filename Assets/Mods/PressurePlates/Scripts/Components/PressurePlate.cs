@@ -40,9 +40,9 @@ namespace GerkinDev.PressurePlates.Components
 		}
 		#endregion
 
-		private void _OnEnter(object sender, OccupantDetectorService.OccypancyEvent evt) => _OnChangeOccupancy(evt);
-		private void _OnExit(object sender, OccupantDetectorService.OccypancyEvent evt) => _OnChangeOccupancy(evt);
-		private void _OnChangeOccupancy(OccupantDetectorService.OccypancyEvent evt)
+		private void _OnEnter(object sender, OccupantDetectorService.OccupancyEvent evt) => _OnChangeOccupancy(evt);
+		private void _OnExit(object sender, OccupantDetectorService.OccupancyEvent evt) => _OnChangeOccupancy(evt);
+		private void _OnChangeOccupancy(OccupantDetectorService.OccupancyEvent evt)
 		{
 			_illuminator.Toggle(evt.Within.Any());
 		}

@@ -1,4 +1,4 @@
-#region Optional dependencies
+﻿#region Optional dependencies
 
 using GerkinDev.WatertightGates.Components.Specs;
 using System.Diagnostics.CodeAnalysis;
@@ -8,7 +8,6 @@ using Timberborn.BlockSystem;
 using Timberborn.TimeSystem;
 using OccupantDetectorService = GerkinDev.PressurePlates.Services.OccupantDetectorService;
 using Subscriber = GerkinDev.PressurePlates.Services.OccupantDetectorService.Subscriber;
-using OccypancyEvent = GerkinDev.PressurePlates.Services.OccupantDetectorService.OccypancyEvent;
 
 #endregion
 
@@ -83,7 +82,7 @@ namespace GerkinDev.WatertightGates.Components
 		}
 
 		private bool _isOpen = false;
-		private void _OnOccupantEnter(object sender, OccypancyEvent evt)
+		private void _OnOccupantEnter(object sender, OccupantDetectorService.OccupancyEvent evt)
 		{
 			_closeTrigger.Reset();
 			if (!_isOpen)
@@ -93,7 +92,7 @@ namespace GerkinDev.WatertightGates.Components
 			}
 		}
 
-		private void _OnOccupantExit(object sender, OccypancyEvent evt)
+		private void _OnOccupantExit(object sender, OccupantDetectorService.OccupancyEvent evt)
 		{
 			if (_isOpen && evt.Within.Length == 0)
 			{

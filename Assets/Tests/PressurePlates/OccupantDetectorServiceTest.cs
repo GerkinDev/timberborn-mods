@@ -47,15 +47,15 @@ namespace GerkinDev.Tests.PressurePlates
 		private int _counter = 0;
 		private (
 			OccupantDetectorService.Subscriber Subscriber,
-			Mock<EventHandler<OccupantDetectorService.OccypancyEvent>> Enter,
-			Mock<EventHandler<OccupantDetectorService.OccypancyEvent>> Exit
+			Mock<EventHandler<OccupantDetectorService.OccupancyEvent>> Enter,
+			Mock<EventHandler<OccupantDetectorService.OccupancyEvent>> Exit
 		) _InitSubscriber(out object key, params Vector3Int[] positions)
 		{
 			key = _counter++;
 			var subscriber = _occupantDetectorService.Subscribe(key, positions);
-			var enterMock = new Mock<EventHandler<OccupantDetectorService.OccypancyEvent>>();
+			var enterMock = new Mock<EventHandler<OccupantDetectorService.OccupancyEvent>>();
 			subscriber.OnEnter += enterMock.Object;
-			var exitMock = new Mock<EventHandler<OccupantDetectorService.OccypancyEvent>>();
+			var exitMock = new Mock<EventHandler<OccupantDetectorService.OccupancyEvent>>();
 			subscriber.OnExit += exitMock.Object;
 			return (subscriber, enterMock, exitMock);
 		}
@@ -81,8 +81,8 @@ namespace GerkinDev.Tests.PressurePlates
 			beaver.Transform.position = _GameToUnityPosition(new(1, 2, 3));
 			var subscriber = _InitSubscriber(out var key, new Vector3Int(1, 2, 3));
 			_occupantDetectorService.FullScan();
-			subscriber.Enter.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupantDetectorService.OccypancyEvent>()), Times.Once());
-			subscriber.Exit.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupantDetectorService.OccypancyEvent>()), Times.Never());
+			subscriber.Enter.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupantDetectorService.OccupancyEvent>()), Times.Once());
+			subscriber.Exit.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupantDetectorService.OccupancyEvent>()), Times.Never());
 		}
 
 		[Test]
@@ -94,8 +94,8 @@ namespace GerkinDev.Tests.PressurePlates
 			beaver2.Transform.position = _GameToUnityPosition(new(2, 2, 3));
 			var subscriber = _InitSubscriber(out var key, new Vector3Int(1, 2, 3), new Vector3Int(2, 2, 3));
 			_occupantDetectorService.FullScan();
-			subscriber.Enter.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupantDetectorService.OccypancyEvent>()), Times.Once());
-			subscriber.Exit.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupantDetectorService.OccypancyEvent>()), Times.Never());
+			subscriber.Enter.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupantDetectorService.OccupancyEvent>()), Times.Once());
+			subscriber.Exit.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupantDetectorService.OccupancyEvent>()), Times.Never());
 		}
 
 		[Test]
@@ -105,11 +105,11 @@ namespace GerkinDev.Tests.PressurePlates
 			beaver.Transform.position = _GameToUnityPosition(new(1, 2, 3));
 			var subscriber = _InitSubscriber(out var key, new Vector3Int(1, 2, 3));
 			_occupantDetectorService.FullScan();
-			subscriber.Enter.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupantDetectorService.OccypancyEvent>()), Times.Once());
-			subscriber.Exit.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupantDetectorService.OccypancyEvent>()), Times.Never());
+			subscriber.Enter.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupantDetectorService.OccupancyEvent>()), Times.Once());
+			subscriber.Exit.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupantDetectorService.OccupancyEvent>()), Times.Never());
 			_occupantDetectorService.FullScan();
-			subscriber.Enter.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupantDetectorService.OccypancyEvent>()), Times.Once());
-			subscriber.Exit.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupantDetectorService.OccypancyEvent>()), Times.Never());
+			subscriber.Enter.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupantDetectorService.OccupancyEvent>()), Times.Once());
+			subscriber.Exit.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupantDetectorService.OccupancyEvent>()), Times.Never());
 		}
 
 		[Test]
@@ -119,12 +119,12 @@ namespace GerkinDev.Tests.PressurePlates
 			beaver.Transform.position = _GameToUnityPosition(new(1, 2, 3));
 			var subscriber = _InitSubscriber(out var key, new Vector3Int(1, 2, 3));
 			_occupantDetectorService.FullScan();
-			subscriber.Enter.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupantDetectorService.OccypancyEvent>()), Times.Once());
-			subscriber.Exit.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupantDetectorService.OccypancyEvent>()), Times.Never());
+			subscriber.Enter.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupantDetectorService.OccupancyEvent>()), Times.Once());
+			subscriber.Exit.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupantDetectorService.OccupancyEvent>()), Times.Never());
 			beaver.Transform.position = _GameToUnityPosition(new(5, 2, 3));
 			_occupantDetectorService.FullScan();
-			subscriber.Enter.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupantDetectorService.OccypancyEvent>()), Times.Once());
-			subscriber.Exit.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupantDetectorService.OccypancyEvent>()), Times.Once());
+			subscriber.Enter.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupantDetectorService.OccupancyEvent>()), Times.Once());
+			subscriber.Exit.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupantDetectorService.OccupancyEvent>()), Times.Once());
 		}
 
 		[Test]
@@ -134,16 +134,16 @@ namespace GerkinDev.Tests.PressurePlates
 			beaver.Transform.position = _GameToUnityPosition(new(1, 2, 3));
 			var subscriber = _InitSubscriber(out var key, new Vector3Int(1, 2, 3));
 			_occupantDetectorService.FullScan();
-			subscriber.Enter.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupantDetectorService.OccypancyEvent>()), Times.Once());
-			subscriber.Exit.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupantDetectorService.OccypancyEvent>()), Times.Never());
+			subscriber.Enter.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupantDetectorService.OccupancyEvent>()), Times.Once());
+			subscriber.Exit.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupantDetectorService.OccupancyEvent>()), Times.Never());
 			beaver.Transform.position = _GameToUnityPosition(new(5, 2, 3));
 			_occupantDetectorService.FullScan();
-			subscriber.Enter.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupantDetectorService.OccypancyEvent>()), Times.Once());
-			subscriber.Exit.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupantDetectorService.OccypancyEvent>()), Times.Once());
+			subscriber.Enter.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupantDetectorService.OccupancyEvent>()), Times.Once());
+			subscriber.Exit.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupantDetectorService.OccupancyEvent>()), Times.Once());
 			beaver.Transform.position = _GameToUnityPosition(new(1, 2, 3));
 			_occupantDetectorService.FullScan();
-			subscriber.Enter.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupantDetectorService.OccypancyEvent>()), Times.Exactly(2));
-			subscriber.Exit.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupantDetectorService.OccypancyEvent>()), Times.Once());
+			subscriber.Enter.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupantDetectorService.OccupancyEvent>()), Times.Exactly(2));
+			subscriber.Exit.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupantDetectorService.OccupancyEvent>()), Times.Once());
 		}
 
 		public static TestCaseData[] benchmarkSubscribers = new[]{
