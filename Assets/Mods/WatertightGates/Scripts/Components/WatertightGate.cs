@@ -1,11 +1,10 @@
-using GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Components.Specs;
-using GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Extensions;
-using GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Services;
+using GerkinDev.WatertightGates.Components.Specs;
+using GerkinDev.WatertightGates.Extensions;
+using GerkinDev.WatertightGates.Services;
 using System;
 using Timberborn.Automation;
 using Timberborn.BaseComponentSystem;
 using Timberborn.BlockSystem;
-using Timberborn.Common;
 using Timberborn.EntitySystem;
 using Timberborn.Illumination;
 using Timberborn.Localization;
@@ -13,7 +12,7 @@ using Timberborn.Persistence;
 using Timberborn.WorldPersistence;
 using UnityEngine;
 
-namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Components
+namespace GerkinDev.WatertightGates.Components
 {
 	internal class WatertightGate : BaseComponent, IAwakableComponent, IPersistentEntity, IFinishedStateListener, IAutomatableNeeder, ITerminal, IInitializableEntity, IGateLike, IPreInitializableEntity
 	{

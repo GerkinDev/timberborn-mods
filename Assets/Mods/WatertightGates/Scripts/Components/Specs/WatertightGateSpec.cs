@@ -2,7 +2,7 @@
 using Timberborn.BlueprintSystem;
 using UnityEngine;
 
-namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Components.Specs
+namespace GerkinDev.WatertightGates.Components.Specs
 {
 	/// <seealso href="https://github.com/mechanistry/timberborn-modding/wiki/Timberborn-architecture#specs"/>
 	internal record WatertightGateSpec : ComponentSpec

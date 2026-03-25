@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Utils
+namespace GerkinDev.WatertightGates.Utils
 {
-	internal struct CommitableState<T>
+	internal struct CommittableState<T>
 	{
 		public T DesiredValue { get; set; }
 		public T Value { get; private set; }

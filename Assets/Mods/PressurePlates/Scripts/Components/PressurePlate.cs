@@ -1,10 +1,10 @@
-﻿using GerkinDev.PressurePlates.Assets.Mods.PressurePlates.Scripts.Services;
+﻿using GerkinDev.PressurePlates.Services;
 using System.Linq;
 using Timberborn.BaseComponentSystem;
 using Timberborn.BlockSystem;
 using Timberborn.Illumination;
 
-namespace GerkinDev.PressurePlates.Assets.Mods.PressurePlates.Scripts.Components
+namespace GerkinDev.PressurePlates.Components
 {
 	internal class PressurePlate : BaseComponent, IAwakableComponent, IFinishedStateListener
 	{

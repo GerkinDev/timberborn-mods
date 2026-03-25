@@ -8,7 +8,7 @@ using Timberborn.EntitySystem;
 using Timberborn.TickSystem;
 using UnityEngine;
 
-namespace GerkinDev.PressurePlates.Assets.Mods.PressurePlates.Scripts.Services
+namespace GerkinDev.PressurePlates.Services
 {
 	/// <see cref="BlockOccupancyService">
 	public class OccupantDetectorService : ITickableSingleton

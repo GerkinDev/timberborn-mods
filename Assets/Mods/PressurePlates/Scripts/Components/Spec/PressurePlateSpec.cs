@@ -1,6 +1,6 @@
 ﻿using Timberborn.BlueprintSystem;
 
-namespace GerkinDev.PressurePlates.Assets.Mods.PressurePlates.Scripts.Components.Spec
+namespace GerkinDev.PressurePlates.Components.Spec
 {
 	internal record PressurePlateSpec : ComponentSpec
 	{

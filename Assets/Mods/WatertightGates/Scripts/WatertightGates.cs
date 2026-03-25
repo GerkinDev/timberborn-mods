@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
 
-namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
+namespace GerkinDev.WatertightGates
 {
 	public class WatertightGates
 	{
 		public const string MOD_ID = "GerkinDev.WatertightGates";
 
-		private static string _GetPrefix(string name)
+		private static string _GetPrefix(string? name)
 		{
 			var prefix = MOD_ID;
 			if (!string.IsNullOrEmpty(name))

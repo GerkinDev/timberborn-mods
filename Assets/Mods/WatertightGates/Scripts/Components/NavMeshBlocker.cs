@@ -1,5 +1,5 @@
-using GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Components.Specs;
-using GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Utils;
+using GerkinDev.WatertightGates.Components.Specs;
+using GerkinDev.WatertightGates.Utils;
 using System;
 using Timberborn.BaseComponentSystem;
 using Timberborn.BlockSystem;
@@ -10,7 +10,7 @@ using Timberborn.PathSystem;
 using Timberborn.WalkingSystem;
 using UnityEngine;
 
-namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Components
+namespace GerkinDev.WatertightGates.Components
 {
 	/// <summary>
 	/// Extracted from <see cref="Timberborn.AutomationBuildings.GateNavMeshBlocker"/>
@@ -20,8 +20,8 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 		private readonly INavMeshService _navMeshService;
 		private readonly NavMeshGroupService _navMeshGroupService;
 		private readonly IPathService _pathService;
-		private CommitableState<bool> _pathBlocked;
-		private CommitableState<WatertightGate.EGateMode> _traverseCost;
+		private CommittableState<bool> _pathBlocked;
+		private CommittableState<WatertightGate.EGateMode> _traverseCost;
 		private WatertightGate.EGateMode _gateMode;
 		public WatertightGate.EGateMode GateMode
 		{

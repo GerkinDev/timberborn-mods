@@ -1,11 +1,11 @@
 using Bindito.Core;
-using GerkinDev.PressurePlates.Assets.Mods.PressurePlates.Scripts.Components;
-using GerkinDev.PressurePlates.Assets.Mods.PressurePlates.Scripts.Components.Spec;
-using GerkinDev.PressurePlates.Assets.Mods.PressurePlates.Scripts.Services;
+using GerkinDev.PressurePlates.Components;
+using GerkinDev.PressurePlates.Components.Spec;
+using GerkinDev.PressurePlates.Services;
 using Timberborn.Illumination;
 using Timberborn.TemplateInstantiation;
 
-namespace GerkinDev.PressurePlates.Assets.Mods.PressurePlates.Scripts
+namespace GerkinDev.PressurePlates
 {
 	[Context("Game")]
 	internal class PressurePlatesConfigurator : Configurator

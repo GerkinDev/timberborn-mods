@@ -2,7 +2,7 @@
 using Timberborn.Persistence;
 using Timberborn.WorldPersistence;
 
-namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Extensions
+namespace GerkinDev.WatertightGates.Extensions
 {
 	public static class IEntityLoaderExtensions
 	{

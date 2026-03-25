@@ -1,5 +1,5 @@
-﻿using GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Components;
-using GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Services;
+﻿using GerkinDev.WatertightGates.Components;
+using GerkinDev.WatertightGates.Services;
 using System;
 using Timberborn.AutomationBuildingsUI;
 using Timberborn.BaseComponentSystem;
@@ -11,7 +11,7 @@ using Timberborn.SliderToggleSystem;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.UI
+namespace GerkinDev.WatertightGates.UI
 {
 	internal class WatertightGateFragment : IEntityPanelFragment, ILoadableSingleton
 	{

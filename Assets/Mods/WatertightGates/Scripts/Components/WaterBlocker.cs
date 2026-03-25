@@ -1,12 +1,12 @@
-﻿using GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Components.Specs;
-using GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Extensions;
-using GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Utils;
+﻿using GerkinDev.WatertightGates.Components.Specs;
+using GerkinDev.WatertightGates.Extensions;
+using GerkinDev.WatertightGates.Utils;
 using Timberborn.BaseComponentSystem;
 using Timberborn.BlockSystem;
 using Timberborn.WaterSystem;
 using UnityEngine;
 
-namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Components
+namespace GerkinDev.WatertightGates.Components
 {
 	/// <summary>
 	/// Extracted from <see cref="Timberborn.WaterObjects.WaterObstacle"/>
@@ -14,7 +14,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 	internal class WaterBlocker : BaseComponent, IAwakableComponent, IFinishedStateListener
 	{
 		private readonly IWaterService _waterService;
-		private CommitableState<float> _height;
+		private CommittableState<float> _height;
 		public float Height
 		{
 			get => _height.Value;

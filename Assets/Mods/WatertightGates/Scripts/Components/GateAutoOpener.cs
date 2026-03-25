@@ -1,16 +1,18 @@
-using GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Components.Specs;
+#region Optional dependencies
+
+using GerkinDev.WatertightGates.Components.Specs;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Timberborn.BaseComponentSystem;
 using Timberborn.BlockSystem;
 using Timberborn.TimeSystem;
-#region Optional dependencies
-using OccupantDetectorService = GerkinDev.PressurePlates.Assets.Mods.PressurePlates.Scripts.Services.OccupantDetectorService;
-using Subscriber = GerkinDev.PressurePlates.Assets.Mods.PressurePlates.Scripts.Services.OccupantDetectorService.Subscriber;
-using OccypancyEvent = GerkinDev.PressurePlates.Assets.Mods.PressurePlates.Scripts.Services.OccupantDetectorService.OccypancyEvent;
-using System.Diagnostics.CodeAnalysis;
+using OccupantDetectorService = GerkinDev.PressurePlates.Services.OccupantDetectorService;
+using Subscriber = GerkinDev.PressurePlates.Services.OccupantDetectorService.Subscriber;
+using OccypancyEvent = GerkinDev.PressurePlates.Services.OccupantDetectorService.OccypancyEvent;
+
 #endregion
 
-namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Components
+namespace GerkinDev.WatertightGates.Components
 {
 	/// <summary>
 	/// Depends on optional <see cref="OccupantDetectorService"/>

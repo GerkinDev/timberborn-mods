@@ -1,7 +1,7 @@
 ﻿using Bindito.Core;
 using Timberborn.EntityPanelSystem;
 
-namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.UI
+namespace GerkinDev.WatertightGates.UI
 {
 	internal class WatertightGateEntityPanelModuleProvider : IProvider<EntityPanelModule>
 	{

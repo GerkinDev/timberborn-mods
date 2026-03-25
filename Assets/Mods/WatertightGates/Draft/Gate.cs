@@ -13,7 +13,7 @@ using Timberborn.EntitySystem;
 using Timberborn.Persistence;
 using Timberborn.WorldPersistence;
 
-namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Draft
+namespace GerkinDev.WatertightGates.Draft
 {
 
 	public class Gate : BaseComponent, IAwakableComponent, IDeletableEntity, IPersistentEntity, IFinishedStateListener, IAutomatableNeeder, IDuplicable<Gate>, IDuplicable, ITerminal
@@ -178,7 +178,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Draft
 
 		public void NotifyStateChanged()
 		{
-			this.StateChanged?.Invoke(this, EventArgs.Empty);
+			StateChanged?.Invoke(this, EventArgs.Empty);
 		}
 	}
 }

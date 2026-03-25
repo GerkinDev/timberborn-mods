@@ -15,7 +15,7 @@ using Timberborn.WaterObjects;
 using Timberborn.WorldPersistence;
 using UnityEngine;
 
-namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Draft
+namespace GerkinDev.WatertightGates.Draft
 {
 
 	public class Floodgate : BaseComponent, IAwakableComponent, IFinishedStateListener, IUnfinishedStateListener, IPreviewStateListener, IPersistentEntity, IDuplicable<Floodgate>, IDuplicable, ITerminal

@@ -1,4 +1,4 @@
-using GerkinDev.PressurePlates.Assets.Mods.PressurePlates.Scripts.Services;
+using GerkinDev.PressurePlates.Services;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -7,7 +7,7 @@ using Timberborn.BlockSystem;
 using Timberborn.EntitySystem;
 using UnityEngine;
 
-namespace GerkinDev.Tests.Assets.Tests.PressurePlates
+namespace GerkinDev.Tests.PressurePlates
 {
 	public class OccupantDetectorServiceTest
 	{
@@ -28,9 +28,9 @@ namespace GerkinDev.Tests.Assets.Tests.PressurePlates
 		private BlockOccupant _CreateFakeBeaver()
 		{
 			var comp = new EntityComponent(null, _entityRegistry);
-			var emptyGO = new GameObject();
-			emptyGO.AddComponent<ComponentCache>();
-			var cc = emptyGO.GetComponent<ComponentCache>();
+			var emptyGameObject = new GameObject();
+			emptyGameObject.AddComponent<ComponentCache>();
+			var cc = emptyGameObject.GetComponent<ComponentCache>();
 			var blockOccupant = new BlockOccupant();
 			cc.InjectDependencies(_compCacheService, null);
 			cc.AddEnabledComponent(blockOccupant);
@@ -57,7 +57,7 @@ namespace GerkinDev.Tests.Assets.Tests.PressurePlates
 		}
 
 		[Test]
-		public void ShouldInstanciate()
+		public void ShouldInstantiate()
 		{
 			Assert.IsNotNull(_occupantDetectorService);
 		}

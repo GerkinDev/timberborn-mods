@@ -1,10 +1,10 @@
 ﻿using Castle.Core.Internal;
-using GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Services;
+using GerkinDev.WatertightGates.Services;
 using HarmonyLib;
 using System;
 using Timberborn.ModManagerScene;
 
-namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
+namespace GerkinDev.WatertightGates
 {
 	public class WatertightGatesModStarter : IModStarter
 	{
