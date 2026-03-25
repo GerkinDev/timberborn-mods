@@ -1,13 +1,16 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
 using Timberborn.BlockSystem;
 using Timberborn.Common;
+using Timberborn.Coordinates;
+using Timberborn.EntityNaming;
 using Timberborn.EntitySystem;
 using Timberborn.TickSystem;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace GerkinDev.PressurePlates.Services
 {
@@ -45,11 +48,19 @@ namespace GerkinDev.PressurePlates.Services
 		private readonly Dictionary<object, Subscriber> _subscribers = new();
 		private readonly Dictionary<Subscriber, SubscriberState> _subscribersState = new();
 		private readonly EntityComponentRegistry _entityComponentRegistry;
-		private const float _PARTITION_DISTANCE = 2f;
+		private readonly GameObject _tickMasterOwner;
+		private readonly TickMaster _tickMaster;
+		private const float _PARTITION_DISTANCE = 5f;
 
 		public OccupantDetectorService(EntityComponentRegistry entityComponentRegistry)
 		{
 			_entityComponentRegistry = entityComponentRegistry;
+			PressurePlates.Log("Initializing the tickmaster");
+
+			_tickMasterOwner = new GameObject("Ticker");
+			_tickMaster = _tickMasterOwner.AddComponent<TickMaster>();
+			_tickMaster.OccupantDetectorService = this;
+			_tickMaster.ScanInterval = 0.2f;
 		}
 
 		#region ITickableSingleton
@@ -62,6 +73,7 @@ namespace GerkinDev.PressurePlates.Services
 		private readonly Dictionary<Subscriber, ImmutableArray<BlockOccupant>> _partitions = new();
 		private readonly Stopwatch _stopwatch = new();
 
+		private int _buildPartitionCount = 0;
 		/// <summary>
 		/// Find beavers near watched positions. Beavers within the partitions will be checked on each frame in <see cref="ScanPartitions"/>
 		/// </summary>
@@ -99,9 +111,10 @@ namespace GerkinDev.PressurePlates.Services
 				}
 			}
 			_stopwatch.Stop();
-			PressurePlates.Log("Partition ended in {0}ms", _stopwatch.Elapsed.TotalMilliseconds);
+			PressurePlates.Log("Partition {0} ended in {1}ms", _buildPartitionCount++, _stopwatch.Elapsed.TotalMilliseconds);
 		}
 
+		private int _scanCount = 0;
 		public bool ScanPartitions()
 		{
 			if (_partitions.Count == 0 && _subscribersState.Count == 0)
@@ -109,7 +122,7 @@ namespace GerkinDev.PressurePlates.Services
 				return false;
 			}
 			_stopwatch.Restart();
-			var subscriberCurrentOccupants = new Dictionary<Subscriber, HashSet<BlockOccupant>>();
+			var subscriberCurrentOccupants = new Dictionary<Subscriber, HashSet<BlockOccupant>>(_subscribers.Count);
 			// Ensure previously occupied subscriber will be checked even if no one is within
 			foreach (var subscriber in _subscribersState.Keys)
 			{
@@ -118,74 +131,86 @@ namespace GerkinDev.PressurePlates.Services
 			// Check each partition
 			foreach (var (subscriber, partitionOccupants) in _partitions)
 			{
-				var occupantPositions = partitionOccupants.GroupBy(occupant => Vector3Int.FloorToInt(occupant.GridCoordinates)).ToDictionary(group => group.Key, group => group);
-				foreach (var cell in subscriber.Positions)
-				{
-					if (occupantPositions.Remove(cell, out var cellOccupants))
-					{
-						// Occupants are in a single cell. When matched, remove them from check list
-						var subscriberOccupants = subscriberCurrentOccupants.GetOrAdd(subscriber, () => new());
-						subscriberOccupants.UnionWith(cellOccupants);
-					}
-					else
-					{
-						subscriberCurrentOccupants.GetOrAdd(subscriber, () => new HashSet<BlockOccupant>());
-					}
-				}
+				subscriberCurrentOccupants[subscriber] = _FilterSubscriberOccupants(subscriber, partitionOccupants);
 			}
 			var dispatched = false;
 			foreach (var (subscriber, occupants) in subscriberCurrentOccupants)
 			{
-				var subscriberState = _subscribersState.GetOrDefault(subscriber);
-				OccupancyEvent e;
-				if (subscriberState == null)
-				{
-					if (occupants.Count == 0) // No previous occupants, no current occupants, nothing to do
-					{
-						continue;
-					}
+				dispatched |= _MaybeDispatchToSubscriber(subscriber, occupants);
+			}
 
-					var immutableOccupants = occupants.ToImmutableArray();
-					e = new()
-					{
-						Entered = immutableOccupants,
-						Exited = ImmutableArray<BlockOccupant>.Empty,
-						Within = immutableOccupants
-					};
-					_subscribersState[subscriber] = new() { Within = occupants };
-				}
-				else
-				{
-					if (subscriberState.Within.SetEquals(occupants)) // No occupants changes
-					{
-						continue;
-					}
+			PressurePlates.Log("Scan {0} ended in {1}ms", _scanCount++, _stopwatch.Elapsed.TotalMilliseconds);
+			_stopwatch.Stop();
+			return dispatched;
+		}
 
-					var exited = subscriberState.Within.Except(occupants).ToImmutableArray();
-					var entered = occupants.Except(subscriberState.Within).ToImmutableArray();
-					subscriberState.Within = occupants;
-
-					e = new()
-					{
-						Entered = entered,
-						Exited = exited,
-						Within = occupants.ToImmutableArray()
-					};
-				}
-
-				if (e.Entered.Any())
+		private static HashSet<BlockOccupant>? _FilterSubscriberOccupants(Subscriber subscriber, ImmutableArray<BlockOccupant> occupantsToCheck)
+		{
+			var occupantPositions = occupantsToCheck.GroupBy(occupant => Vector3Int.FloorToInt(occupant.GridCoordinates)).ToDictionary(group => group.Key, group => group);
+			var occupants = new HashSet<BlockOccupant>(occupantPositions.Count);
+			foreach (var cell in subscriber.Positions)
+			{
+				// Occupants are in a single cell. When matched, remove them from check list
+				if (occupantPositions.Remove(cell, out var cellOccupants))
 				{
-					dispatched = true;
-					subscriber.DispatchEnter(e);
-				}
-				if (e.Exited.Any())
-				{
-					dispatched = true;
-					subscriber.DispatchExit(e);
+					occupants.UnionWith(cellOccupants);
 				}
 			}
-			PressurePlates.Log("Scan ended in {0}ms", _stopwatch.Elapsed.TotalMilliseconds);
-			_stopwatch.Stop();
+
+			return occupants;
+		}
+
+		private bool _MaybeDispatchToSubscriber(Subscriber subscriber, HashSet<BlockOccupant> occupants)
+		{
+			var dispatched = false;
+			var subscriberState = _subscribersState.GetOrDefault(subscriber);
+			OccupancyEvent e;
+			if (subscriberState == null)
+			{
+				if (occupants.Count == 0) // No previous occupants, no current occupants, nothing to do
+				{
+					return dispatched;
+				}
+
+				var immutableOccupants = occupants.ToImmutableArray();
+				e = new()
+				{
+					Entered = immutableOccupants,
+					Exited = ImmutableArray<BlockOccupant>.Empty,
+					Within = immutableOccupants
+				};
+				_subscribersState[subscriber] = new() { Within = occupants };
+			}
+			else
+			{
+				if (subscriberState.Within.SetEquals(occupants)) // No occupants changes
+				{
+					return dispatched;
+				}
+
+				var exited = subscriberState.Within.Except(occupants).ToImmutableArray();
+				var entered = occupants.Except(subscriberState.Within).ToImmutableArray();
+				subscriberState.Within = occupants;
+
+				e = new()
+				{
+					Entered = entered,
+					Exited = exited,
+					Within = occupants.ToImmutableArray()
+				};
+			}
+
+			if (e.Entered.Any())
+			{
+				dispatched = true;
+				subscriber.DispatchEnter(e);
+			}
+			if (e.Exited.Any())
+			{
+				dispatched = true;
+				subscriber.DispatchExit(e);
+			}
+
 			return dispatched;
 		}
 
@@ -193,6 +218,14 @@ namespace GerkinDev.PressurePlates.Services
 		{
 			BuildPartitions();
 			return ScanPartitions();
+		}
+
+		public bool ScanImmediate(object key)
+		{
+			var subscriber = _subscribers[key];
+			
+			var occupants = _entityComponentRegistry.GetEnabled<BlockOccupant>().ToHashSet();
+			return _MaybeDispatchToSubscriber(subscriber, occupants);
 		}
 
 		public Subscriber Subscribe(object key, BlockObject blockObject) =>

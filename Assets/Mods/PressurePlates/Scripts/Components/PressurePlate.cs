@@ -1,4 +1,5 @@
-﻿using GerkinDev.PressurePlates.Services;
+using GerkinDev.PressurePlates.Extensions;
+using GerkinDev.PressurePlates.Services;
 using System.Linq;
 using Timberborn.BaseComponentSystem;
 using Timberborn.BlockSystem;
@@ -9,6 +10,8 @@ namespace GerkinDev.PressurePlates.Components
 	internal class PressurePlate : BaseComponent, IAwakableComponent, IFinishedStateListener
 	{
 		private readonly OccupantDetectorService _occupantDetectorService;
+		
+		public bool HasOccupant { get; private set; }
 
 		public PressurePlate(OccupantDetectorService occupantDetectorService)
 		{
@@ -17,6 +20,7 @@ namespace GerkinDev.PressurePlates.Components
 		#region IAwakableComponent
 		private BlockObject _blockObject;
 		private Illuminator _illuminator;
+
 		public void Awake()
 		{
 			_blockObject = GetComponent<BlockObject>();
@@ -31,20 +35,36 @@ namespace GerkinDev.PressurePlates.Components
 			_subscriber = _occupantDetectorService.Subscribe(this, _blockObject);
 			_subscriber.OnEnter += _OnEnter;
 			_subscriber.OnExit += _OnExit;
+			_occupantDetectorService.ScanImmediate(this);
 		}
 		public void OnExitFinishedState()
 		{
 			_occupantDetectorService.Unsubscribe(this);
-			_subscriber.OnEnter -= _OnEnter;
-			_subscriber.OnExit -= _OnExit;
+			if (_subscriber != null)
+			{
+				_subscriber.OnEnter -= _OnEnter;
+				_subscriber.OnExit -= _OnExit;
+				_subscriber = null;
+			}
 		}
 		#endregion
 
-		private void _OnEnter(object sender, OccupantDetectorService.OccupancyEvent evt) => _OnChangeOccupancy(evt);
-		private void _OnExit(object sender, OccupantDetectorService.OccupancyEvent evt) => _OnChangeOccupancy(evt);
+		private void _OnEnter(object sender, OccupantDetectorService.OccupancyEvent evt)
+		{
+			this.Log("Entered");
+			_OnChangeOccupancy(evt);
+		}
+
+		private void _OnExit(object sender, OccupantDetectorService.OccupancyEvent evt)
+		{
+			this.Log("Exited");
+			_OnChangeOccupancy(evt);
+		}
+
 		private void _OnChangeOccupancy(OccupantDetectorService.OccupancyEvent evt)
 		{
-			_illuminator.Toggle(evt.Within.Any());
+			HasOccupant = evt.Within.Any();
+			_illuminator.Toggle(HasOccupant);
 		}
 	}
 }
