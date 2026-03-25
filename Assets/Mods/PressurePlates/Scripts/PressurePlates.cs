@@ -24,7 +24,7 @@ namespace GerkinDev.PressurePlates
 			Debug.Log(logStr);
 		}
 
-		public static void Log(string format, params object[] args) => Warn(null, format, args);
+		public static void Log(string format, params object[] args) => Log(null, format, args);
 		public static void Warn(string? name, string format, params object[] args)
 		{
 			var logStr = string.Format(format, args);

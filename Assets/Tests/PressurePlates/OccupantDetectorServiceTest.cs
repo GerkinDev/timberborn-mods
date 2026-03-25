@@ -9,6 +9,7 @@ using Timberborn.BaseComponentSystem;
 using Timberborn.BlockSystem;
 using Timberborn.EntitySystem;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace GerkinDev.Tests.PressurePlates
 {
@@ -42,7 +43,8 @@ namespace GerkinDev.Tests.PressurePlates
 			_entityRegistry.Register(comp);
 			return blockOccupant;
 		}
-		private Vector3Int _GameToUnityPosition(Vector3Int position) => new Vector3Int(position.x, position.z, position.y);
+		private static Vector3Int _GameToUnityPosition(Vector3Int position) => new Vector3Int(position.x, position.z, position.y);
+		private static Vector3 _GameToUnityPosition(Vector3 position) => new Vector3(position.x, position.z, position.y);
 
 		private int _counter = 0;
 		private (
@@ -144,6 +146,54 @@ namespace GerkinDev.Tests.PressurePlates
 			_occupantDetectorService.FullScan();
 			subscriber.Enter.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupantDetectorService.OccupancyEvent>()), Times.Exactly(2));
 			subscriber.Exit.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupantDetectorService.OccupancyEvent>()), Times.Once());
+		}
+
+		[Test]
+		public void ShouldScanWithBackAndForth()
+		{
+			var beaver = _CreateFakeBeaver();
+			beaver.Transform.position = _GameToUnityPosition(new Vector3(1f, 2f, 3f));
+			var count = 0;
+
+			void Scan()
+			{
+				if ((count++ % 10) == 0)
+				{
+					_occupantDetectorService.FullScan();
+				}
+				else
+				{
+					_occupantDetectorService.ScanPartitions();
+				}
+			}
+			var subscriber = _InitSubscriber(out var key, new Vector3Int(5, 2, 3));
+			for (var passage = 0; passage < 10; passage++)
+			{
+				Debug.Log("Forward");
+				for (var x = 1f; x < 10f; x += .1f)
+				{
+					beaver.Transform.position = _GameToUnityPosition(new Vector3(x, 2f, 3f));
+					Scan();
+				}
+				Debug.Log("Forward end");
+				subscriber.Enter.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupantDetectorService.OccupancyEvent>()),
+					Times.Exactly(passage*2+1));
+				subscriber.Exit.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupantDetectorService.OccupancyEvent>()),
+					Times.Exactly(passage*2+1));
+				
+				Debug.Log("Backward");
+				for (var x = 10f; x > 1f; x -= .1f)
+				{
+					beaver.Transform.position = _GameToUnityPosition(new Vector3(x, 2f, 3f));
+					Scan();
+				}
+				Debug.Log("Backward end");
+
+				subscriber.Enter.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupantDetectorService.OccupancyEvent>()),
+					Times.Exactly(passage*2+2));
+				subscriber.Exit.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupantDetectorService.OccupancyEvent>()),
+					Times.Exactly(passage*2+2));
+			}
 		}
 
 		public static TestCaseData[] benchmarkSubscribers = new[]{
