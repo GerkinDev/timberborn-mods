@@ -6,6 +6,7 @@ using Timberborn.Automation;
 using Timberborn.BaseComponentSystem;
 using Timberborn.BlockSystem;
 using Timberborn.Common;
+using Timberborn.DuplicationSystem;
 using Timberborn.EntitySystem;
 using Timberborn.Illumination;
 using Timberborn.Persistence;
@@ -15,7 +16,7 @@ using UnityEngine;
 
 namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Components
 {
-	internal class WatertightGate : BaseComponent, IAwakableComponent, IPersistentEntity, IFinishedStateListener, IAutomatableNeeder, ITerminal, IInitializableEntity, IGateLike, IPreInitializableEntity
+	internal class WatertightGate : BaseComponent, IAwakableComponent, IPersistentEntity, IFinishedStateListener, IAutomatableNeeder, ITerminal, IInitializableEntity, IGateLike, IPreInitializableEntity, IDuplicable<WatertightGate>, IDuplicable
 	{
 		internal enum EGateMode
 		{
@@ -228,6 +229,18 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 			PathStart = _blockObject.TransformCoordinates(_spec.PathStart);
 			PathEnd = _blockObject.TransformCoordinates(_spec.PathEnd);
 			PathCenter = _blockObject.TransformCoordinates(_spec.PathCenter);
+		}
+		#endregion
+
+		#region IDuplicable<WatertightGate>
+		public void DuplicateFrom(WatertightGate source)
+		{
+			this.ActivationMode = source.ActivationMode;
+			this.ActiveGateMode = source.ActiveGateMode;
+			this.InactiveGateMode = source.InactiveGateMode;
+			this._automatable = source._automatable;
+			_ScheduleStateUpdate();
+
 		}
 		#endregion
 
