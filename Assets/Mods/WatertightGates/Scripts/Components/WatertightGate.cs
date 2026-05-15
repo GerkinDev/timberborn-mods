@@ -36,14 +36,14 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 			EGateMode.Open => EGateControlMode.Open,
 			EGateMode.Close => EGateControlMode.Close,
 			EGateMode.Pass => EGateControlMode.Pass,
-			_ => throw new Exception($"Unexpected gate mode {mode}"),
+			_ => throw new ArgumentException($"Unexpected gate mode {mode}"),
 		};
 		private static EGateMode _GateControlToMode(EGateControlMode mode) => mode switch
 		{
 			EGateControlMode.Open => EGateMode.Open,
 			EGateControlMode.Close => EGateMode.Close,
 			EGateControlMode.Pass => EGateMode.Pass,
-			_ => throw new Exception($"Unexpected gate control {mode}"),
+			_ => throw new ArgumentException($"Unexpected gate control {mode}"),
 		};
 		private EGateControlMode _activationMode = EGateControlMode.Open;
 		public EGateControlMode ActivationMode
@@ -89,7 +89,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 		{
 			EGateControlMode.Automated => _automatable.State != ConnectionState.Off ? _activeGateMode : _inactiveGateMode,
 			EGateControlMode.Open or EGateControlMode.Close or EGateControlMode.Pass => _GateControlToMode(_activationMode),
-			_ => throw new Exception($"Unexpected activation mode {_activationMode}"),
+			_ => throw new ArgumentException($"Unexpected activation mode {_activationMode}"),
 		};
 
 		public event EventHandler ConflictStateChanged;

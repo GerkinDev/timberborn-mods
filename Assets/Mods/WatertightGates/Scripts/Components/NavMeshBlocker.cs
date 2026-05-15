@@ -141,7 +141,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 			WatertightGate.EGateMode.Open => 1,
 			WatertightGate.EGateMode.Close => NavigationLimits.MaxEdgeCost,
 			WatertightGate.EGateMode.Pass => NavigationLimits.MaxEdgeCost,
-			_ => throw new Exception($"Invalid mode {gateMode}"),
+			_ => throw new ArgumentException($"Invalid mode {gateMode}"),
 		};
 
 		private NavMeshEdge _GetEdge(Vector3Int start, Vector3Int end, float cost)

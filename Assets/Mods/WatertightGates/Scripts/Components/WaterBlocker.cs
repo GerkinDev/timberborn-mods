@@ -67,7 +67,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 		{
 			if (_height.DesiredValue is > 1f or < 0f)
 			{
-				this.Warn("Height {0} should be within [0, 1]");
+				this.Warn("Height {0} should be within [0, 1]", _height.DesiredValue);
 				// Clamp in range
 				_height.DesiredValue = Mathf.Clamp(_height.DesiredValue, 0f, 1f);
 			}
