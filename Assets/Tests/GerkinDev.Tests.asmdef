@@ -3,7 +3,6 @@
     "rootNamespace": "GerkinDev.Tests",
     "references": [
         "UnityEngine.TestRunner",
-        "UnityEditor.TestRunner",
         "GerkinDev.WatertightGates"
     ],
     "includePlatforms": [
@@ -14,10 +13,23 @@
     "overrideReferences": true,
     "precompiledReferences": [
         "nunit.framework.dll",
+        "System.Collections.Immutable.dll",
         "Timberborn.BaseComponentSystem.dll",
         "Timberborn.BlockSystem.dll",
+        "Timberborn.Common.dll",
         "Timberborn.EntitySystem.dll",
         "Timberborn.SingletonSystem.dll",
+        "Timberborn.WorldPersistence.dll",
+        "Timberborn.Persistence.dll",
+        "Timberborn.QuickNotificationSystem.dll",
+        "Timberborn.ErrorReporting.dll",
+        "Timberborn.Navigation.dll",
+        "Timberborn.Automation.dll",
+        "Timberborn.PathSystem.dll",
+        "Timberborn.Illumination.dll",
+        "Timberborn.Rendering.dll",
+        "Timberborn.TransformControl.dll",
+        "Timberborn.SerializationSystem.dll",
         "Moq.dll"
     ],
     "autoReferenced": false,
