@@ -139,8 +139,8 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 		private float _GetCost(WatertightGate.EGateMode gateMode) => gateMode switch
 		{
 			WatertightGate.EGateMode.Open => 1,
-			WatertightGate.EGateMode.Close => WalkerLimits.BlockingEdgeCost,
-			WatertightGate.EGateMode.Pass => WalkerLimits.BlockingEdgeCost,
+			WatertightGate.EGateMode.Close => NavigationLimits.MaxEdgeCost,
+			WatertightGate.EGateMode.Pass => NavigationLimits.MaxEdgeCost,
 			_ => throw new Exception($"Invalid mode {gateMode}"),
 		};
 

@@ -82,7 +82,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 					_waterService.RemoveFullObstacle(coordinates);
 					break;
 				case > 0f when _height.DesiredValue == 0:
-					_waterService.RemoveInflowLimiter(coordinates);
+					_waterService.RemoveInflowLimit(coordinates);
 					break;
 				default:
 					break;
@@ -93,7 +93,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 					_waterService.AddFullObstacle(coordinates);
 					break;
 				case > 0f:
-					_waterService.UpdateInflowLimiter(coordinates, _height.DesiredValue);
+					_waterService.SetInflowLimit(coordinates, _height.DesiredValue);
 					break;
 				default:
 					break;
