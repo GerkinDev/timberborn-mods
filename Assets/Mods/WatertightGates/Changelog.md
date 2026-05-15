@@ -1,3 +1,7 @@
+[h1] v1.0.1.2 (15/05/2026) [/h1]
+
+Fix loading for Timberborn 1.0.13
+
 [h1] v1.0.1.1 (23/03/2026) [/h1]
 
 Use correct open/close icon.
