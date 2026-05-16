@@ -18,6 +18,8 @@ namespace GerkinDev.WatertightGates
 			Bind<GateLikeUpdater>().AsSingleton();
 
 			Bind<WatertightGateFragment>().AsSingleton();
+			var optionalDependencies = new OptionalDependencies();
+			Bind<OptionalDependencies>().ToInstance(optionalDependencies);
 			MultiBind<EntityPanelModule>().ToProvider<WatertightGateEntityPanelModuleProvider>().AsSingleton();
 
 			Bind<WatertightGate>().AsTransient();
@@ -25,21 +27,36 @@ namespace GerkinDev.WatertightGates
 			Bind<NavMeshBlocker>().AsTransient();
 			Bind<WaterBlocker>().AsTransient();
 			Bind<WatertightGateConflictStatus>().AsTransient();
+			Bind<WatertightGateCheckState>().AsTransient();
 			Bind<FreePositionedDynamicPathModel>().AsTransient();
-			MultiBind<TemplateModule>().ToProvider(_ProvideTemplateModule).AsSingleton();
+			MultiBind<TemplateModule>().ToProvider(() =>
+			{
+				var builder = new TemplateModule.Builder();
+				builder.AddDecorator<WatertightGateSpec, WatertightGateTransformController>();
+				builder.AddDecorator<WatertightGateTransformController, WaterBlocker>();
+				builder.AddDecorator<WatertightGateSpec, WatertightGate>();
+				builder.AddDecorator<WatertightGate, NavMeshBlocker>();
+				builder.AddDecorator<WatertightGate, WatertightGateConflictStatus>();
+				builder.AddDecorator<WatertightGate, WatertightGateCheckState>();
+				builder.AddDecorator<WatertightGate, Illuminator>();
+				builder.AddDecorator<FreePositionedDynamicPathModelSpec, FreePositionedDynamicPathModel>();
+				return builder.Build();
+			}).AsSingleton();
+			if (optionalDependencies.PressurePlates)
+			{
+				_ConfigurePressurePlateExtension();
+			}
 		}
 
-		private static TemplateModule _ProvideTemplateModule()
+		private void _ConfigurePressurePlateExtension()
 		{
-			TemplateModule.Builder builder = new();
-			builder.AddDecorator<WatertightGateSpec, WatertightGateTransformController>();
-			builder.AddDecorator<WatertightGateTransformController, WaterBlocker>();
-			builder.AddDecorator<WatertightGateSpec, WatertightGate>();
-			builder.AddDecorator<WatertightGate, NavMeshBlocker>();
-			builder.AddDecorator<WatertightGate, WatertightGateConflictStatus>();
-			builder.AddDecorator<WatertightGate, Illuminator>();
-			builder.AddDecorator<FreePositionedDynamicPathModelSpec, FreePositionedDynamicPathModel>();
-			return builder.Build();
+			Bind<GateAutoOpener>().AsTransient();
+			MultiBind<TemplateModule>().ToProvider(() =>
+			{
+				var builder = new TemplateModule.Builder();
+				builder.AddDecorator<WatertightGate, GateAutoOpener>();
+				return builder.Build();
+			}).AsSingleton();
 		}
 	}
 }

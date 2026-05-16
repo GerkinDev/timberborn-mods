@@ -156,9 +156,9 @@ namespace GerkinDev.WatertightGates.Components
 			_ => throw new ArgumentException($"Unexpected gate main mode {mode}")
 		};
 
-		public event EventHandler MainModeChanged;
+		public event EventHandler? MainModeChanged;
 
-		public event EventHandler ConflictStateChanged;
+		public event EventHandler? ConflictStateChanged;
 
 		private void _ScheduleStateUpdate()
 		{
@@ -183,7 +183,7 @@ namespace GerkinDev.WatertightGates.Components
 		private bool _didScheduledForCorrectState;
 		private void _UpdateState()
 		{
-			EGateMode actualGateMode = _currentGateState != EGateState.Open ? EGateMode.CLOSE : _CurrentGateMode;
+			var actualGateMode = _currentGateState != EGateState.Open ? EGateMode.CLOSE : _CurrentGateMode;
 			_navMeshBlocker.GateMode = actualGateMode;
 			switch (actualGateMode)
 			{
@@ -198,6 +198,13 @@ namespace GerkinDev.WatertightGates.Components
 					_illuminator.SetColor(1, Color.red);
 					_illuminator.Toggle(true);
 					break;
+				default:
+					throw new ArgumentOutOfRangeException();
+			}
+
+			if (_autoOpener != null)
+			{
+				_autoOpener.IsWatching = actualGateMode == EGateMode.PASS;
 			}
 
 			if (_didInitialize && _didScheduledForCorrectState)
@@ -235,6 +242,7 @@ namespace GerkinDev.WatertightGates.Components
 		private NavMeshBlocker _navMeshBlocker = null!;
 		private Illuminator _illuminator = null!;
 		private WatertightGateTransformController _gateTransformController = null!;
+		private GateAutoOpener? _autoOpener;
 
 		public void Awake()
 		{
@@ -245,6 +253,7 @@ namespace GerkinDev.WatertightGates.Components
 			_navMeshBlocker = GetComponent<NavMeshBlocker>();
 			_illuminator = GetComponent<Illuminator>();
 			_gateTransformController = GetComponent<WatertightGateTransformController>();
+			TryGetComponent(out _autoOpener);
 		}
 
 		#endregion

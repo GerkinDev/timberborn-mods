@@ -22,14 +22,17 @@ namespace GerkinDev.WatertightGates.Components
 		private readonly NeighboredValues4<GameObject> _roofModels = new();
 		private readonly StackableBlockService _stackableBlockService;
 		private readonly ITerrainService _terrainService;
-		private BlockObject _blockObject;
 		private GameObject _currentModel;
 		private Orientation _currentModelOrientation;
-		private FreePositionedDynamicPathModelSpec _pathModelSpec;
 
-		public FreePositionedDynamicPathModel(IConnectionService connectionService, FactionService factionService,
-			StackableBlockService stackableBlockService, IBlockService blockService,
-			PreviewBlockService previewBlockService, ITerrainService terrainService)
+		public FreePositionedDynamicPathModel(
+			IConnectionService connectionService,
+			FactionService factionService,
+			StackableBlockService stackableBlockService,
+			IBlockService blockService,
+			PreviewBlockService previewBlockService,
+			ITerrainService terrainService
+		)
 		{
 			_connectionService = connectionService;
 			_factionService = factionService;
@@ -52,22 +55,6 @@ namespace GerkinDev.WatertightGates.Components
 
 		#endregion
 
-		private void _AddModel(string variant, bool down, bool left, bool up, bool right)
-		{
-			if (!string.IsNullOrWhiteSpace(_pathModelSpec.GroundModelPrefix))
-			{
-				_groundModels.AddVariants(
-					_GetModelVariant(_pathModelSpec.GroundModelPrefix, variant,
-						_factionService.Current.PathMaterial.Asset), down, left, up, right);
-			}
-
-			if (!string.IsNullOrWhiteSpace(_pathModelSpec.RoofModelPrefix))
-			{
-				_roofModels.AddVariants(
-					_GetModelVariant(_pathModelSpec.RoofModelPrefix, variant,
-						_factionService.Current.BaseWoodMaterial.Asset), down, left, up, right);
-			}
-		}
 
 		private GameObject _GetModelVariant(string prefix, string variant, Material material)
 		{
@@ -109,7 +96,7 @@ namespace GerkinDev.WatertightGates.Components
 
 		private bool _IsEnforced(Vector3Int coordinates, PathModelType modelType)
 		{
-			PathModelTypeEnforcer pathModelTypeEnforcer =
+			PathModelTypeEnforcer? pathModelTypeEnforcer =
 				_blockService.GetObjectsWithComponentAt<PathModelTypeEnforcer>(coordinates).FirstOrDefault() ??
 				_previewBlockService.GetObjectsWithComponentAt<PathModelTypeEnforcer>(coordinates).FirstOrDefault();
 			if (pathModelTypeEnforcer != null)
@@ -125,7 +112,7 @@ namespace GerkinDev.WatertightGates.Components
 			if (!(_currentModel != model) && _currentModelOrientation == orientation)
 			{
 				GameObject currentModel = _currentModel;
-				if ((object)currentModel == null || currentModel.activeSelf)
+				if (!currentModel || currentModel.activeSelf)
 				{
 					return;
 				}
@@ -154,6 +141,9 @@ namespace GerkinDev.WatertightGates.Components
 
 		#region IAwakableComponent
 
+		private BlockObject _blockObject = null!;
+		private FreePositionedDynamicPathModelSpec _pathModelSpec = null!;
+
 		public void Awake()
 		{
 			_blockObject = GetComponent<BlockObject>();
@@ -170,6 +160,23 @@ namespace GerkinDev.WatertightGates.Components
 			_AddModel("0011", false, false, true, true);
 			_AddModel("0111", false, true, true, true);
 			_AddModel("1111", true, true, true, true);
+		}
+
+		private void _AddModel(string variant, bool down, bool left, bool up, bool right)
+		{
+			if (!string.IsNullOrWhiteSpace(_pathModelSpec.GroundModelPrefix))
+			{
+				_groundModels.AddVariants(
+					_GetModelVariant(_pathModelSpec.GroundModelPrefix, variant,
+						_factionService.Current.PathMaterial.Asset), down, left, up, right);
+			}
+
+			if (!string.IsNullOrWhiteSpace(_pathModelSpec.RoofModelPrefix))
+			{
+				_roofModels.AddVariants(
+					_GetModelVariant(_pathModelSpec.RoofModelPrefix, variant,
+						_factionService.Current.BaseWoodMaterial.Asset), down, left, up, right);
+			}
 		}
 
 		#endregion
