@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
@@ -124,6 +124,9 @@ namespace GerkinDev.PressurePlates.Services
 				}
 			}
 		}
+
+		public Subscriber Subscribe(object key, BlockObject blockObject) =>
+			Subscribe(key, blockObject.Blocks.GetAllCoordinates().Select(relCoords => blockObject.TransformCoordinates(relCoords)).ToArray());
 
 		public Subscriber Subscribe(object key, params Vector3Int[] position)
 		{
