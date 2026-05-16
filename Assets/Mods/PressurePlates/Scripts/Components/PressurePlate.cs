@@ -1,4 +1,5 @@
-﻿using GerkinDev.PressurePlates.Services;
+using GerkinDev.PressurePlates.Extensions;
+using GerkinDev.PressurePlates.Services;
 using System.Linq;
 using Timberborn.BaseComponentSystem;
 using Timberborn.BlockSystem;
@@ -10,16 +11,12 @@ namespace GerkinDev.PressurePlates.Components
 	{
 		private readonly OccupantDetectorService _occupantDetectorService;
 
+		public bool HasOccupant { get; private set; }
+
 		public PressurePlate(OccupantDetectorService occupantDetectorService)
 		{
 			_occupantDetectorService = occupantDetectorService;
 		}
-
-		private void _OnEnter(object sender, OccupantDetectorService.OccupancyEvent evt) => _OnChangeOccupancy(evt);
-		private void _OnExit(object sender, OccupantDetectorService.OccupancyEvent evt) => _OnChangeOccupancy(evt);
-
-		private void _OnChangeOccupancy(OccupantDetectorService.OccupancyEvent evt) =>
-			_illuminator.Toggle(evt.Within.Any());
 
 		#region IAwakableComponent
 
@@ -43,6 +40,7 @@ namespace GerkinDev.PressurePlates.Components
 			_subscriber = _occupantDetectorService.Subscribe(this, _blockObject);
 			_subscriber.OnEnter += _OnEnter;
 			_subscriber.OnExit += _OnExit;
+			_occupantDetectorService.ScanImmediate(this);
 		}
 
 		public void OnExitFinishedState()
@@ -53,11 +51,32 @@ namespace GerkinDev.PressurePlates.Components
 			}
 
 			_occupantDetectorService.Unsubscribe(this);
-			_subscriber.OnEnter -= _OnEnter;
-			_subscriber.OnExit -= _OnExit;
-			_subscriber = null;
+			if (_subscriber != null)
+			{
+				_subscriber.OnEnter -= _OnEnter;
+				_subscriber.OnExit -= _OnExit;
+				_subscriber = null;
+			}
 		}
 
 		#endregion
+
+		private void _OnEnter(object sender, OccupantDetectorService.OccupancyEvent evt)
+		{
+			this.Log("Entered");
+			_OnChangeOccupancy(evt);
+		}
+
+		private void _OnExit(object sender, OccupantDetectorService.OccupancyEvent evt)
+		{
+			this.Log("Exited");
+			_OnChangeOccupancy(evt);
+		}
+
+		private void _OnChangeOccupancy(OccupantDetectorService.OccupancyEvent evt)
+		{
+			HasOccupant = evt.Within.Any();
+			_illuminator.Toggle(HasOccupant);
+		}
 	}
 }
