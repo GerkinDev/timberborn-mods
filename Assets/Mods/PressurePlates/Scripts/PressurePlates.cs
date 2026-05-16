@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 
-namespace GerkinDev.WatertightGates
+namespace GerkinDev.PressurePlates
 {
-	public static class WatertightGates
+	public static class PressurePlates
 	{
-		public const string MOD_ID = "GerkinDev.WatertightGates";
+		public const string MOD_ID = "GerkinDev.PressurePlates";
 
 		private static string _GetPrefix(string? name)
 		{

@@ -21,7 +21,7 @@ namespace GerkinDev.Tests.Utils
 		public IObjectLoader GetComponent(ComponentKey key, string suffix) =>
 			throw new NotImplementedException();
 
-		public bool TryGetComponent(ComponentKey key, out IObjectLoader objectLoader)
+		public bool TryGetComponent(ComponentKey key, out IObjectLoader? objectLoader)
 		{
 			if (_initData.TryGetValue(key.Name, out Dictionary<string, object>? initData))
 			{

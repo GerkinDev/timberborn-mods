@@ -34,7 +34,7 @@ namespace GerkinDev.Tests.WatertightGates
 			cc.InjectDependencies(compCacheService, new());
 
 			QuickNotificationService quickNotifService = new();
-			WatertightGate gate = new(null, quickNotifService);
+			WatertightGate gate = new(null!, quickNotifService);
 			List<object> awakeComponents = new()
 			{
 				new BlockObjectSpec { Size = new(1, 1, 1), Blocks = ImmutableArray.Create(new BlockSpec()) },
@@ -50,7 +50,7 @@ namespace GerkinDev.Tests.WatertightGates
 			List<object> instantiatedComponents = new()
 			{
 				new WatertightGateSpec { Anchor = "anchor", OpenTransform = new(), CloseTransform = new() },
-				new NavMeshBlocker(default, default, default)
+				new NavMeshBlocker(default!, default!, default!)
 			};
 			cc.Initialize(awakeComponents.Concat(instantiatedComponents).ToList(), "test", new());
 			foreach (object? instantiatedComponent in awakeComponents)
