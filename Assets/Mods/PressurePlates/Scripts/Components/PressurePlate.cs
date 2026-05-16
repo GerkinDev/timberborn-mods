@@ -1,8 +1,8 @@
 ﻿using GerkinDev.PressurePlates.Services;
+using System.Linq;
 using Timberborn.BaseComponentSystem;
 using Timberborn.BlockSystem;
 using Timberborn.Illumination;
-using System.Linq;
 
 namespace GerkinDev.PressurePlates.Components
 {
@@ -14,6 +14,12 @@ namespace GerkinDev.PressurePlates.Components
 		{
 			_occupantDetectorService = occupantDetectorService;
 		}
+
+		private void _OnEnter(object sender, OccupantDetectorService.OccupancyEvent evt) => _OnChangeOccupancy(evt);
+		private void _OnExit(object sender, OccupantDetectorService.OccupancyEvent evt) => _OnChangeOccupancy(evt);
+
+		private void _OnChangeOccupancy(OccupantDetectorService.OccupancyEvent evt) =>
+			_illuminator.Toggle(evt.Within.Any());
 
 		#region IAwakableComponent
 
@@ -45,7 +51,7 @@ namespace GerkinDev.PressurePlates.Components
 			{
 				return;
 			}
-			
+
 			_occupantDetectorService.Unsubscribe(this);
 			_subscriber.OnEnter -= _OnEnter;
 			_subscriber.OnExit -= _OnExit;
@@ -53,13 +59,5 @@ namespace GerkinDev.PressurePlates.Components
 		}
 
 		#endregion
-
-		private void _OnEnter(object sender, OccupantDetectorService.OccupancyEvent evt) => _OnChangeOccupancy(evt);
-		private void _OnExit(object sender, OccupantDetectorService.OccupancyEvent evt) => _OnChangeOccupancy(evt);
-
-		private void _OnChangeOccupancy(OccupantDetectorService.OccupancyEvent evt)
-		{
-			_illuminator.Toggle(evt.Within.Any());
-		}
 	}
 }

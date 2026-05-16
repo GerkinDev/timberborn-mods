@@ -16,7 +16,7 @@ namespace GerkinDev.PressurePlates
 			Bind<PressurePlate>().AsTransient();
 			MultiBind<TemplateModule>().ToProvider(() =>
 			{
-				var builder = new TemplateModule.Builder();
+				TemplateModule.Builder builder = new();
 				builder.AddDecorator<PressurePlateSpec, PressurePlate>();
 				builder.AddDecorator<PressurePlate, Illuminator>();
 				return builder.Build();
