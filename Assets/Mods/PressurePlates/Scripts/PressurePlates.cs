@@ -17,7 +17,7 @@ namespace GerkinDev.PressurePlates
 			return prefix;
 		}
 
-		public static void Log(string? name, string format, params object[] args)
+		public static void Log(string? name, string format, params object?[] args)
 		{
 			string logStr = string.Format(format, args);
 			string prefix = _GetPrefix(name);
@@ -25,9 +25,9 @@ namespace GerkinDev.PressurePlates
 			Debug.Log(logStr);
 		}
 
-		public static void Log(string format, params object[] args) => Log(null, format, args);
+		public static void Log(string format, params object?[] args) => Log(null, format, args);
 
-		public static void Warn(string? name, string format, params object[] args)
+		public static void Warn(string? name, string format, params object?[] args)
 		{
 			string logStr = string.Format(format, args);
 			string prefix = _GetPrefix(name);
@@ -35,6 +35,6 @@ namespace GerkinDev.PressurePlates
 			Debug.LogWarning(logStr);
 		}
 
-		public static void Warn(string format, params object[] args) => Warn(null, format, args);
+		public static void Warn(string format, params object?[] args) => Warn(null, format, args);
 	}
 }

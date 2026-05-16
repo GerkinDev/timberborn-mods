@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
+using Timberborn.BaseComponentSystem;
 using Timberborn.BlockSystem;
+using Timberborn.CharacterModelSystem;
+using Timberborn.Characters;
 using Timberborn.Common;
 using Timberborn.Coordinates;
 using Timberborn.EntityNaming;
@@ -38,11 +41,14 @@ namespace GerkinDev.PressurePlates.Services
 
 		#region ITickableSingleton
 
-		public void Tick() => FullScan();
+		public void Tick()
+		{
+			FullScan();
+		}
 
 		#endregion
 
-		private readonly Dictionary<Subscriber, ImmutableArray<BlockOccupant>> _partitions = new();
+		private readonly Dictionary<Subscriber, ImmutableArray<CharacterMeta>> _partitions = new();
 		private readonly Stopwatch _stopwatch = new();
 
 		private int _buildPartitionCount = 0;
@@ -64,7 +70,7 @@ namespace GerkinDev.PressurePlates.Services
 				_entityComponentRegistry.GetEnabled<BlockOccupant>().ToImmutableArray();
 			foreach (Subscriber? subscriber in _subscribers.Values)
 			{
-				List<BlockOccupant> subscriberPartitionOccupants = new(occupants.Length / 2);
+				List<CharacterMeta> subscriberPartitionOccupants = new(occupants.Length / 2);
 				List<BlockOccupant> tempOccupants = occupants.ToList();
 				foreach (Vector3Int cell in subscriber.Positions)
 				{
@@ -75,7 +81,14 @@ namespace GerkinDev.PressurePlates.Services
 						// Add to partition, remove from further checks
 						if (distance < _PARTITION_DISTANCE)
 						{
-							subscriberPartitionOccupants.Add(occupant);
+							if (occupant.TryGetComponent<CharacterModel>(out var characterModel))
+							{
+								subscriberPartitionOccupants.Add(new()
+								{
+									BlockOccupant = occupant, CharacterModel = characterModel
+								});
+							}
+
 							tempOccupants.RemoveAt(i);
 							i--;
 						}
@@ -89,8 +102,11 @@ namespace GerkinDev.PressurePlates.Services
 			}
 
 			_stopwatch.Stop();
-			PressurePlates.Log("Partition {0} ended in {1}ms", _buildPartitionCount++,
-				_stopwatch.Elapsed.TotalMilliseconds);
+			PressurePlates.Log(
+				"Partition {0} ended in {1}ms",
+				_buildPartitionCount++,
+				_stopwatch.Elapsed.TotalMilliseconds
+			);
 		}
 
 		private int _scanCount = 0;
@@ -111,9 +127,9 @@ namespace GerkinDev.PressurePlates.Services
 			}
 
 			// Check each partition
-			foreach ((Subscriber? subscriber, ImmutableArray<BlockOccupant> partitionOccupants) in _partitions)
+			foreach ((Subscriber? subscriber, ImmutableArray<CharacterMeta> partitionOccupants) in _partitions)
 			{
-				subscriberCurrentOccupants[subscriber] = _FilterSubscriberOccupants(subscriber, partitionOccupants);
+				subscriberCurrentOccupants[subscriber] = _FilterOccupantsInPartition(subscriber, partitionOccupants);
 			}
 
 			bool dispatched = false;
@@ -127,19 +143,25 @@ namespace GerkinDev.PressurePlates.Services
 			return dispatched;
 		}
 
-		private static HashSet<BlockOccupant> _FilterSubscriberOccupants(Subscriber subscriber,
-			ImmutableArray<BlockOccupant> occupantsToCheck)
+		private static HashSet<BlockOccupant> _FilterOccupantsInPartition(
+			Subscriber subscriber,
+			ImmutableArray<CharacterMeta> toCheck
+		)
 		{
-			var occupantPositions = occupantsToCheck
-				.GroupBy(occupant => Vector3Int.FloorToInt(occupant.GridCoordinates))
+			var occupantPositions = toCheck
+				.GroupBy(characterMeta => CoordinateSystem.WorldToGridInt(characterMeta.CharacterModel.Position))
 				.ToDictionary(group => group.Key, group => group);
 			var occupants = new HashSet<BlockOccupant>(occupantPositions.Count);
+
 			foreach (var cell in subscriber.Positions)
 			{
 				// Occupants are in a single cell. When matched, remove them from check list
 				if (occupantPositions.Remove(cell, out var cellOccupants))
 				{
-					occupants.UnionWith(cellOccupants);
+					occupants.UnionWith(
+						cellOccupants
+							.Select(cellOccupant => cellOccupant.BlockOccupant)
+					);
 				}
 			}
 
@@ -251,6 +273,12 @@ namespace GerkinDev.PressurePlates.Services
 		private class SubscriberState
 		{
 			public HashSet<BlockOccupant> Within { get; set; } = new();
+		}
+
+		private readonly struct CharacterMeta
+		{
+			public BlockOccupant BlockOccupant { get; init; }
+			public CharacterModel CharacterModel { get; init; }
 		}
 	}
 }

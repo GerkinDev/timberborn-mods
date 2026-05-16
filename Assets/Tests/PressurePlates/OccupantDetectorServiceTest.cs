@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Linq;
 using Timberborn.BaseComponentSystem;
 using Timberborn.BlockSystem;
+using Timberborn.CharacterModelSystem;
 using Timberborn.EntitySystem;
 using UnityEngine;
 using static GerkinDev.PressurePlates.Services.OccupantDetectorService;
@@ -30,20 +31,36 @@ namespace GerkinDev.Tests.PressurePlates
 			_occupantDetectorService = new OccupantDetectorService(_entityRegistry);
 		}
 
-		private BlockOccupant _CreateFakeBeaver()
+		class FakeBeaver
 		{
-			var comp = new EntityComponent(null, _entityRegistry);
-			var emptyGameObject = new GameObject();
-			emptyGameObject.AddComponent<ComponentCache>();
-			var cc = emptyGameObject.GetComponent<ComponentCache>();
-			var blockOccupant = new BlockOccupant();
-			cc.InjectDependencies(_compCacheService, null);
-			cc.AddEnabledComponent(blockOccupant);
-			cc.Initialize(new() { blockOccupant }, "test", null);
-			comp.RegisteredComponents.Add(blockOccupant);
-			_entityRegistry.Register(comp);
-			return blockOccupant;
+			public readonly CharacterModel characterModel;
+			public readonly BlockOccupant blockOccupant;
+
+			public FakeBeaver(EntityComponentRegistry entityComponentRegistry, ComponentCacheService componentCacheService)
+			{
+				var comp = new EntityComponent(null, entityComponentRegistry);
+				var emptyGameObject = new GameObject();
+				emptyGameObject.AddComponent<ComponentCache>();
+				var cc = emptyGameObject.GetComponent<ComponentCache>();
+				blockOccupant = new();
+				var characterGameObject = new GameObject();
+				characterModel = new(){ _model = characterGameObject.transform };
+				cc.InjectDependencies(componentCacheService, new());
+				cc.Initialize(new() { blockOccupant, characterModel }, "test", new());
+				comp.RegisteredComponents.Add(blockOccupant);
+				entityComponentRegistry.Register(comp);
+			}
+
+			public FakeBeaver SetPosition(Vector3 approx, Vector3? real = null)
+			{
+				real ??= approx;
+				blockOccupant.Transform.position = approx;
+				characterModel.Position = _GameToUnityPosition(real.Value);
+				return this;
+			}
 		}
+
+		private FakeBeaver _CreateFakeBeaver() => new FakeBeaver(_entityRegistry, _compCacheService);
 
 		private static Vector3Int _GameToUnityPosition(Vector3Int position) =>
 			new Vector3Int(position.x, position.z, position.y);
@@ -78,7 +95,7 @@ namespace GerkinDev.Tests.PressurePlates
 		public void ShouldScanWithOneBeaverButNoSubscriber()
 		{
 			var beaver = _CreateFakeBeaver();
-			beaver.Transform.position = _GameToUnityPosition(new(1, 2, 3));
+			beaver.SetPosition(new(1, 2, 3));
 			_occupantDetectorService.FullScan();
 		}
 
@@ -86,7 +103,7 @@ namespace GerkinDev.Tests.PressurePlates
 		public void ShouldScanWithOneBeaverAndOneSubscriber()
 		{
 			var beaver = _CreateFakeBeaver();
-			beaver.Transform.position = _GameToUnityPosition(new(1, 2, 3));
+			beaver.SetPosition(new(1, 2, 3));
 			var subscriber = _InitSubscriber(out var key, new Vector3Int(1, 2, 3));
 			_occupantDetectorService.FullScan();
 			subscriber.Enter.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupancyEvent>()), Times.Once());
@@ -97,9 +114,9 @@ namespace GerkinDev.Tests.PressurePlates
 		public void ShouldScanWithTwoBeaversAndOneMultiCellSubscriber()
 		{
 			var beaver1 = _CreateFakeBeaver();
-			beaver1.Transform.position = _GameToUnityPosition(new(1, 2, 3));
+			beaver1.SetPosition(new(1, 2, 3));
 			var beaver2 = _CreateFakeBeaver();
-			beaver2.Transform.position = _GameToUnityPosition(new(2, 2, 3));
+			beaver2.SetPosition(new(2, 2, 3));
 			var subscriber = _InitSubscriber(out var key, new Vector3Int(1, 2, 3), new Vector3Int(2, 2, 3));
 			_occupantDetectorService.FullScan();
 			subscriber.Enter.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupancyEvent>()), Times.Once());
@@ -110,7 +127,7 @@ namespace GerkinDev.Tests.PressurePlates
 		public void ShouldScanWithOneBeaverAndOneSubscriberNoDispatchUnchanged()
 		{
 			var beaver = _CreateFakeBeaver();
-			beaver.Transform.position = _GameToUnityPosition(new(1, 2, 3));
+			beaver.SetPosition(new(1, 2, 3));
 			var subscriber = _InitSubscriber(out var key, new Vector3Int(1, 2, 3));
 			_occupantDetectorService.FullScan();
 			subscriber.Enter.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupancyEvent>()), Times.Once());
@@ -124,12 +141,12 @@ namespace GerkinDev.Tests.PressurePlates
 		public void ShouldScanWithOneBeaverAndOneSubscriberDispatchLeft()
 		{
 			var beaver = _CreateFakeBeaver();
-			beaver.Transform.position = _GameToUnityPosition(new(1, 2, 3));
+			beaver.SetPosition(new(1, 2, 3));
 			var subscriber = _InitSubscriber(out var key, new Vector3Int(1, 2, 3));
 			_occupantDetectorService.FullScan();
 			subscriber.Enter.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupancyEvent>()), Times.Once());
 			subscriber.Exit.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupancyEvent>()), Times.Never());
-			beaver.Transform.position = _GameToUnityPosition(new(5, 2, 3));
+			beaver.SetPosition(new(5, 2, 3));
 			_occupantDetectorService.FullScan();
 			subscriber.Enter.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupancyEvent>()), Times.Once());
 			subscriber.Exit.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupancyEvent>()), Times.Once());
@@ -139,16 +156,16 @@ namespace GerkinDev.Tests.PressurePlates
 		public void ShouldScanWithEnterExitEnter()
 		{
 			var beaver = _CreateFakeBeaver();
-			beaver.Transform.position = _GameToUnityPosition(new(1, 2, 3));
+			beaver.SetPosition(new(1, 2, 3));
 			var subscriber = _InitSubscriber(out var key, new Vector3Int(1, 2, 3));
 			_occupantDetectorService.FullScan();
 			subscriber.Enter.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupancyEvent>()), Times.Once());
 			subscriber.Exit.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupancyEvent>()), Times.Never());
-			beaver.Transform.position = _GameToUnityPosition(new(5, 2, 3));
+			beaver.SetPosition(new(5, 2, 3));
 			_occupantDetectorService.FullScan();
 			subscriber.Enter.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupancyEvent>()), Times.Once());
 			subscriber.Exit.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupancyEvent>()), Times.Once());
-			beaver.Transform.position = _GameToUnityPosition(new(1, 2, 3));
+			beaver.SetPosition(new(1, 2, 3));
 			_occupantDetectorService.FullScan();
 			subscriber.Enter.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupancyEvent>()), Times.Exactly(2));
 			subscriber.Exit.Verify(_ => _(It.IsAny<object>(), It.IsAny<OccupancyEvent>()), Times.Once());
@@ -158,7 +175,7 @@ namespace GerkinDev.Tests.PressurePlates
 		public void ShouldScanWithBackAndForth()
 		{
 			var beaver = _CreateFakeBeaver();
-			beaver.Transform.position = _GameToUnityPosition(new Vector3(1f, 2f, 3f));
+			beaver.SetPosition(new Vector3(1f, 2f, 3f));
 			var count = 0;
 
 			void Scan()
@@ -179,7 +196,7 @@ namespace GerkinDev.Tests.PressurePlates
 				Debug.Log("Forward");
 				for (var x = 1f; x < 10f; x += .1f)
 				{
-					beaver.Transform.position = _GameToUnityPosition(new Vector3(x, 2f, 3f));
+					beaver.SetPosition(new Vector3(x, 2f, 3f));
 					Scan();
 				}
 
@@ -192,7 +209,7 @@ namespace GerkinDev.Tests.PressurePlates
 				Debug.Log("Backward");
 				for (var x = 10f; x > 1f; x -= .1f)
 				{
-					beaver.Transform.position = _GameToUnityPosition(new Vector3(x, 2f, 3f));
+					beaver.SetPosition(new Vector3(x, 2f, 3f));
 					Scan();
 				}
 
@@ -231,7 +248,7 @@ namespace GerkinDev.Tests.PressurePlates
 					for (var z = 0; z < 10; z++)
 					{
 						var beaver = _CreateFakeBeaver();
-						beaver.Transform.position = _GameToUnityPosition(new(x, y, z));
+						beaver.SetPosition(new(x, y, z));
 					}
 				}
 			}

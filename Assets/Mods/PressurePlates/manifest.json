@@ -1,6 +1,6 @@
 {
 	"Name": "Pressure plates",
-	"Version": "1.0.1.1",
+	"Version": "1.0.0.0",
 	"Id": "GerkinDev.PressurePlates",
 	"MinimumGameVersion": "1.0.0",
 	"Description": "Pressure plates to put on the ground to detect passing beavers and trigger logic.",

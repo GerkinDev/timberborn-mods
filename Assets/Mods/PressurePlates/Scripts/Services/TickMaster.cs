@@ -12,7 +12,7 @@ namespace GerkinDev.PressurePlates.Services
 
 		public void Update()
 		{
-			if (OccupantDetectorService == null)
+			if (OccupantDetectorService is null)
 			{
 				return;
 			}
@@ -20,12 +20,15 @@ namespace GerkinDev.PressurePlates.Services
 			{
 				return;
 			}
+			
 			_timeSinceLastDispatch += Time.deltaTime;
-			if (_timeSinceLastDispatch > ScanInterval)
+			if (_timeSinceLastDispatch < ScanInterval)
 			{
-				_timeSinceLastDispatch = 0;
-				OccupantDetectorService.ScanPartitions();
+				return;
 			}
+
+			_timeSinceLastDispatch = 0;
+			OccupantDetectorService.ScanPartitions();
 		}
 	}
 }
