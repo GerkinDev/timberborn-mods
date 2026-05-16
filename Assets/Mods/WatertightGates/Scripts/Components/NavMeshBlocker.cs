@@ -31,7 +31,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 				{
 					return;
 				}
-				_pathBlocked.DesiredValue = value == WatertightGate.EGateMode.Close;
+				_pathBlocked.DesiredValue = value == WatertightGate.EGateMode.CLOSE;
 				_traverseCost.DesiredValue = value;
 				_gateMode = value;
 				_UpdateState();
@@ -64,7 +64,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 		}
 		public void OnExitFinishedState()
 		{
-			GateMode = WatertightGate.EGateMode.Close;
+			GateMode = WatertightGate.EGateMode.CLOSE;
 		}
 		#endregion
 
@@ -138,9 +138,9 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 
 		private float _GetCost(WatertightGate.EGateMode gateMode) => gateMode switch
 		{
-			WatertightGate.EGateMode.Open => 1,
-			WatertightGate.EGateMode.Close => NavigationLimits.MaxEdgeCost,
-			WatertightGate.EGateMode.Pass => NavigationLimits.MaxEdgeCost,
+			WatertightGate.EGateMode.OPEN => 1,
+			WatertightGate.EGateMode.CLOSE => NavigationLimits.MaxEdgeCost,
+			WatertightGate.EGateMode.PASS => NavigationLimits.MaxEdgeCost,
 			_ => throw new ArgumentException($"Invalid mode {gateMode}"),
 		};
 

@@ -21,7 +21,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.UI
 
 		private VisualElement _root;
 		private VisualElement _automatedContainer;
-		private EnumSliderToggle<WatertightGate.EGateControlMode> _activationModeToggle;
+		private EnumSliderToggle<WatertightGate.EGateMainMode> _mainModeToggle;
 		private EnumSliderToggle<WatertightGate.EGateMode> _activeStateToggle;
 		private EnumSliderToggle<WatertightGate.EGateMode> _inactiveStateToggle;
 
@@ -95,8 +95,8 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.UI
 			{
 				return;
 			}
-			_automatedContainer.ToggleDisplayStyle(_target.ActivationMode == WatertightGate.EGateControlMode.Automated);
-			_activationModeToggle.Update();
+			_automatedContainer.ToggleDisplayStyle(_target.MainMode == WatertightGate.EGateMainMode.AUTOMATED);
+			_mainModeToggle.Update();
 			_activeStateToggle.Update();
 			_inactiveStateToggle.Update();
 		}
@@ -108,60 +108,60 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.UI
 			_root = _visualElementLoader.LoadVisualElement("EntityPanel/WatertightGate");
 			_automatedContainer = _root.Q<VisualElement>("AutomatedContainer");
 			_automatedContainer.ToggleDisplayStyle(false);
-			_activationModeToggle = new(
+			_mainModeToggle = new(
 				_sliderToggleFactory,
-				_root.Q<VisualElement>("ActivationModeToggle"),
-				_root.Q<Label>("ActivationModeLabel"),
-				() => _target.ActivationMode,
-				value => _target.ActivationMode = value
+				_root.Q<VisualElement>("MainModeToggle"),
+				_root.Q<Label>("MainModeLabel"),
+				() => _target.MainMode,
+				value => _target.MainMode = value
 			)
 			{
 				IconClassGetter = (value) => value switch
 				{
-					WatertightGate.EGateControlMode.Open => GateToggle.OpenedClass,
-					WatertightGate.EGateControlMode.Close => GateToggle.ClosedClass,
-					WatertightGate.EGateControlMode.Pass => "WatertightGate-fragment__icon-pass",
-					WatertightGate.EGateControlMode.Automated => GateToggle.AutomatedClass,
+					WatertightGate.EGateMainMode.OPEN => GateToggle.OpenedClass,
+					WatertightGate.EGateMainMode.CLOSE => GateToggle.ClosedClass,
+					WatertightGate.EGateMainMode.PASS => "WatertightGate-fragment__icon-pass",
+					WatertightGate.EGateMainMode.AUTOMATED => GateToggle.AutomatedClass,
 					_ => throw new ArgumentException($"Invalid value {value}")
 				},
 				LabelGetter = value => _loc.T(value switch
 				{
-					WatertightGate.EGateControlMode.Open => "GerkinDev.WatertightGates.UI.WatertightGate.Modes.Open.Label",
-					WatertightGate.EGateControlMode.Close => "GerkinDev.WatertightGates.UI.WatertightGate.Modes.Close.Label",
-					WatertightGate.EGateControlMode.Pass => "GerkinDev.WatertightGates.UI.WatertightGate.Modes.Pass.Label",
-					WatertightGate.EGateControlMode.Automated => "GerkinDev.WatertightGates.UI.WatertightGate.ActivationMode.Automated.Label",
+					WatertightGate.EGateMainMode.OPEN => "GerkinDev.WatertightGates.UI.WatertightGate.Modes.Open.Label",
+					WatertightGate.EGateMainMode.CLOSE => "GerkinDev.WatertightGates.UI.WatertightGate.Modes.Close.Label",
+					WatertightGate.EGateMainMode.PASS => "GerkinDev.WatertightGates.UI.WatertightGate.Modes.Pass.Label",
+					WatertightGate.EGateMainMode.AUTOMATED => "GerkinDev.WatertightGates.UI.WatertightGate.MainMode.Automated.Label",
 					_ => throw new ArgumentException($"Invalid value {value}")
 				}),
 				TooltipGetter = value => _loc.T(value switch
 				{
-					WatertightGate.EGateControlMode.Open => "GerkinDev.WatertightGates.UI.WatertightGate.Modes.Open.Tooltip",
-					WatertightGate.EGateControlMode.Close => "GerkinDev.WatertightGates.UI.WatertightGate.Modes.Close.Tooltip",
-					WatertightGate.EGateControlMode.Pass => "GerkinDev.WatertightGates.UI.WatertightGate.Modes.Pass.Tooltip",
-					WatertightGate.EGateControlMode.Automated => "GerkinDev.WatertightGates.UI.WatertightGate.ActivationMode.Automated.Tooltip",
+					WatertightGate.EGateMainMode.OPEN => "GerkinDev.WatertightGates.UI.WatertightGate.Modes.Open.Tooltip",
+					WatertightGate.EGateMainMode.CLOSE => "GerkinDev.WatertightGates.UI.WatertightGate.Modes.Close.Tooltip",
+					WatertightGate.EGateMainMode.PASS => "GerkinDev.WatertightGates.UI.WatertightGate.Modes.Pass.Tooltip",
+					WatertightGate.EGateMainMode.AUTOMATED => "GerkinDev.WatertightGates.UI.WatertightGate.MainMode.Automated.Tooltip",
 					_ => throw new ArgumentException($"Invalid value {value}")
 				}),
 			};
-			_activationModeToggle.Initialize();
+			_mainModeToggle.Initialize();
 
 			static string getModeClass(WatertightGate.EGateMode value) => value switch
 			{
-				WatertightGate.EGateMode.Open => GateToggle.OpenedClass,
-				WatertightGate.EGateMode.Close => GateToggle.ClosedClass,
-				WatertightGate.EGateMode.Pass => "WatertightGate-fragment__icon-pass",
+				WatertightGate.EGateMode.OPEN => GateToggle.OpenedClass,
+				WatertightGate.EGateMode.CLOSE => GateToggle.ClosedClass,
+				WatertightGate.EGateMode.PASS => "WatertightGate-fragment__icon-pass",
 				_ => throw new ArgumentException($"Invalid value {value}")
 			};
 			string getModeLabel(WatertightGate.EGateMode value) => _loc.T(value switch
 			{
-				WatertightGate.EGateMode.Open => "GerkinDev.WatertightGates.UI.WatertightGate.Modes.Open.Label",
-				WatertightGate.EGateMode.Close => "GerkinDev.WatertightGates.UI.WatertightGate.Modes.Close.Label",
-				WatertightGate.EGateMode.Pass => "GerkinDev.WatertightGates.UI.WatertightGate.Modes.Pass.Label",
+				WatertightGate.EGateMode.OPEN => "GerkinDev.WatertightGates.UI.WatertightGate.Modes.Open.Label",
+				WatertightGate.EGateMode.CLOSE => "GerkinDev.WatertightGates.UI.WatertightGate.Modes.Close.Label",
+				WatertightGate.EGateMode.PASS => "GerkinDev.WatertightGates.UI.WatertightGate.Modes.Pass.Label",
 				_ => throw new ArgumentException($"Invalid value {value}")
 			});
 			string getModeTooltip(WatertightGate.EGateMode value) => _loc.T(value switch
 			{
-				WatertightGate.EGateMode.Open => "GerkinDev.WatertightGates.UI.WatertightGate.Modes.Open.Tooltip",
-				WatertightGate.EGateMode.Close => "GerkinDev.WatertightGates.UI.WatertightGate.Modes.Close.Tooltip",
-				WatertightGate.EGateMode.Pass => "GerkinDev.WatertightGates.UI.WatertightGate.Modes.Pass.Tooltip",
+				WatertightGate.EGateMode.OPEN => "GerkinDev.WatertightGates.UI.WatertightGate.Modes.Open.Tooltip",
+				WatertightGate.EGateMode.CLOSE => "GerkinDev.WatertightGates.UI.WatertightGate.Modes.Close.Tooltip",
+				WatertightGate.EGateMode.PASS => "GerkinDev.WatertightGates.UI.WatertightGate.Modes.Pass.Tooltip",
 				_ => throw new ArgumentException($"Invalid value {value}")
 			});
 			_activeStateToggle = new(

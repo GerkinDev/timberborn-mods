@@ -22,53 +22,53 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 	{
 		internal enum EGateMode
 		{
-			Open,
-			Close,
-			Pass,
+			OPEN,
+			CLOSE,
+			PASS,
 		}
 
-		internal enum EGateControlMode
+		internal enum EGateMainMode
 		{
-			Open,
-			Close,
-			Pass,
-			Automated,
+			OPEN,
+			CLOSE,
+			PASS,
+			AUTOMATED,
 		}
 
-		private static EGateControlMode _GateModeToControl(EGateMode mode) => mode switch
+		private static EGateMainMode _GateModeToMainMode(EGateMode mode) => mode switch
 		{
-			EGateMode.Open => EGateControlMode.Open,
-			EGateMode.Close => EGateControlMode.Close,
-			EGateMode.Pass => EGateControlMode.Pass,
+			EGateMode.OPEN => EGateMainMode.OPEN,
+			EGateMode.CLOSE => EGateMainMode.CLOSE,
+			EGateMode.PASS => EGateMainMode.PASS,
 			_ => throw new ArgumentException($"Unexpected gate mode {mode}"),
 		};
 
-		private static EGateMode _GateControlToMode(EGateControlMode mode) => mode switch
+		private static EGateMode _MainModeToGateMode(EGateMainMode mode) => mode switch
 		{
-			EGateControlMode.Open => EGateMode.Open,
-			EGateControlMode.Close => EGateMode.Close,
-			EGateControlMode.Pass => EGateMode.Pass,
-			_ => throw new ArgumentException($"Unexpected gate control {mode}"),
+			EGateMainMode.OPEN => EGateMode.OPEN,
+			EGateMainMode.CLOSE => EGateMode.CLOSE,
+			EGateMainMode.PASS => EGateMode.PASS,
+			_ => throw new ArgumentException($"Unexpected gate main mode {mode}"),
 		};
 
-		private EGateControlMode _activationMode = EGateControlMode.Open;
+		private EGateMainMode _mainMode = EGateMainMode.OPEN;
 
-		public EGateControlMode ActivationMode
+		public EGateMainMode MainMode
 		{
-			get => _activationMode;
+			get => _mainMode;
 			set
 			{
-				if (_activationMode == value)
+				if (_mainMode == value)
 				{
 					return;
 				}
 
-				_activationMode = value;
+				_mainMode = value;
 				_ScheduleStateUpdate();
 			}
 		}
 
-		private EGateMode _activeGateMode = EGateMode.Open;
+		private EGateMode _activeGateMode = EGateMode.OPEN;
 
 		public EGateMode ActiveGateMode
 		{
@@ -85,7 +85,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 			}
 		}
 
-		private EGateMode _inactiveGateMode = EGateMode.Close;
+		private EGateMode _inactiveGateMode = EGateMode.CLOSE;
 
 		public EGateMode InactiveGateMode
 		{
@@ -102,14 +102,11 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 			}
 		}
 
-		private EGateMode _CurrentGateMode => _activationMode switch
+		private EGateMode _CurrentGateMode => _mainMode switch
 		{
-			EGateControlMode.Automated => _automatable.State != ConnectionState.Off
-				? _activeGateMode
-				: _inactiveGateMode,
-			EGateControlMode.Open or EGateControlMode.Close or EGateControlMode.Pass => _GateControlToMode(
-				_activationMode),
-			_ => throw new ArgumentException($"Unexpected activation mode {_activationMode}"),
+			EGateMainMode.AUTOMATED => _automatable.State != ConnectionState.Off ? _activeGateMode : _inactiveGateMode,
+			EGateMainMode.OPEN or EGateMainMode.CLOSE or EGateMainMode.PASS => _MainModeToGateMode(_mainMode),
+			_ => throw new ArgumentException($"Unexpected gate main mode {_mainMode}"),
 		};
 
 		public event EventHandler ConflictStateChanged;
@@ -148,56 +145,90 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 		#region IPersistentEntity
 
 		internal static readonly ComponentKey _persistenceKey = new("WatertightGate");
-		internal static readonly PropertyKey<EGateControlMode> _activationModeKey = new(nameof(_activationMode));
+		internal static readonly PropertyKey<EGateMainMode> _mainModeKey = new(nameof(_mainMode));
 		internal static readonly PropertyKey<EGateMode> _activeGateModeKey = new(nameof(_activeGateMode));
 		internal static readonly PropertyKey<EGateMode> _inactiveGateModeKey = new(nameof(_inactiveGateMode));
 
-		public void Load(IEntityLoader entityLoader)
+		private EGateMode _LoadGateModeWithBackwardCompatibility(IEntityLoader entityLoader, PropertyKey<EGateMode> key,
+			string label, EGateMode defaultMode)
 		{
 			try
 			{
-				ActiveGateMode = entityLoader.GetOrDefault(_persistenceKey, _activeGateModeKey, EGateMode.Open);
+				return entityLoader.GetOrDefault(_persistenceKey, key, defaultMode);
 			}
-			catch (ArgumentException ex)
+			catch (ArgumentException ex) when (ex.InnerException is ArgumentException)
 			{
-				this.Log("Failed to parse active gate mode value value: {0}", ex);
-				ActiveGateMode = EGateMode.Open;
+				var stringValue = entityLoader.GetAsString(_persistenceKey, key);
+				if (string.IsNullOrEmpty(stringValue))
+				{
+					this.Warn("No {0} gate mode found", label);
+					return defaultMode;
+				}
+
+				this.Log("Has legacy {0} gate mode stored value \"{1}\"", label, stringValue);
+				if (Enum.TryParse<EGateMode>(stringValue, true, out var value))
+				{
+					return value;
+				}
+
+				this.Warn(
+					"Legacy {0} gate mode stored value \"{1}\" is invalid, return default \"{2}\"",
+					label,
+					stringValue,
+					defaultMode
+				);
+				return defaultMode;
 			}
+		}
+
+		public void Load(IEntityLoader entityLoader)
+		{
+			ActiveGateMode =
+				_LoadGateModeWithBackwardCompatibility(entityLoader, _activeGateModeKey, "active", EGateMode.OPEN);
+			InactiveGateMode =
+				_LoadGateModeWithBackwardCompatibility(entityLoader, _inactiveGateModeKey, "inactive", EGateMode.CLOSE);
 
 			try
 			{
-				InactiveGateMode = entityLoader.GetOrDefault(_persistenceKey, _inactiveGateModeKey, EGateMode.Close);
+				_mainMode = entityLoader.GetRequired(_persistenceKey, _mainModeKey);
 			}
-			catch (ArgumentException ex)
+			catch (IEntityLoaderExtensions.PersistenceException ex)
 			{
-				this.Log("Failed to parse inactive gate mode value value: {0}", ex);
-				InactiveGateMode = EGateMode.Close;
-			}
-
-			try
-			{
-				_activationMode = entityLoader.GetOrDefault(_persistenceKey, _activationModeKey, EGateControlMode.Open);
-			}
-			catch (ArgumentException ex)
-			{
-				this.Log("Failed to parse value: {0}", ex);
-				var mode = entityLoader.GetOrDefaultAsString(_persistenceKey, _activationModeKey, "Active").ToLower();
+				this.Log("Failed to load main mode value: {0}", ex);
+				var mode = entityLoader.GetOrDefaultAsString(
+					_persistenceKey,
+					_mainModeKey,
+					() => entityLoader.GetOrDefaultAsString(
+						_persistenceKey,
+						new PropertyKey<string>("_activationMode"),
+						"Active"
+					)
+				).ToLower();
 				switch (mode)
 				{
 					case "active":
-						_activationMode = _GateModeToControl(ActiveGateMode);
-						_quickNotificationService.SendNotification("Gate mode updated.");
+						_mainMode = _GateModeToMainMode(ActiveGateMode);
 						break;
 					case "inactive":
-						_activationMode = _GateModeToControl(InactiveGateMode);
-						_quickNotificationService.SendNotification("Gate mode updated.");
+						_mainMode = _GateModeToMainMode(InactiveGateMode);
+						break;
+					case "pass":
+						_mainMode = EGateMainMode.PASS;
+						break;
+					case "automated":
+						_mainMode = EGateMainMode.AUTOMATED;
+						break;
+					case "open":
+						_mainMode = EGateMainMode.OPEN;
+						break;
+					case "close":
+						_mainMode = EGateMainMode.CLOSE;
 						break;
 					default:
-						this.Log("Invalid loaded value {0}, falling back to open", mode);
+						this.Warn("Invalid loaded main mode value \"{0}\", falling back to open", mode);
 						_quickNotificationService.SendWarningNotification(
-							"Failed to load previous watertight gate mode. It has been opened as a default. Please verify your watertight gates to avoid leakage."
-						);
-						_activationMode = EGateControlMode.Open;
+							"Failed to load previous watertight gate mode. It has been opened as a default. Please verify your watertight gates to avoid leakage.");
+						_mainMode = EGateMainMode.OPEN;
 						break;
 				}
 			}
@@ -206,7 +237,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 		public void Save(IEntitySaver entitySaver)
 		{
 			var objectSaver = entitySaver.GetComponent(_persistenceKey);
-			objectSaver.Set(_activationModeKey, _activationMode);
+			objectSaver.Set(_mainModeKey, _mainMode);
 			objectSaver.Set(_activeGateModeKey, ActiveGateMode);
 			objectSaver.Set(_inactiveGateModeKey, InactiveGateMode);
 		}
@@ -228,7 +259,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 
 		#region IAutomatableNeeder
 
-		public bool NeedsAutomatable => _activationMode == EGateControlMode.Automated;
+		public bool NeedsAutomatable => _mainMode == EGateMainMode.AUTOMATED;
 
 		#endregion
 
@@ -266,8 +297,10 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 				var prevState = _currentGateState;
 				_currentGateState = value;
 				_UpdateState();
-				if (prevState != _currentGateState && (prevState == EGateState.OpenConflict ||
-					_currentGateState == EGateState.OpenConflict))
+				if (
+					prevState != _currentGateState &&
+					(prevState == EGateState.OpenConflict || _currentGateState == EGateState.OpenConflict)
+				)
 				{
 					_NotifyConflictStateChanged();
 				}
@@ -295,7 +328,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 
 		public void DuplicateFrom(WatertightGate source)
 		{
-			this.ActivationMode = source.ActivationMode;
+			this.MainMode = source.MainMode;
 			this.ActiveGateMode = source.ActiveGateMode;
 			this.InactiveGateMode = source.InactiveGateMode;
 			this._automatable = source._automatable;
@@ -308,7 +341,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 		{
 			if (_blockObject.IsFinished)
 			{
-				if (_CurrentGateMode != EGateMode.Close)
+				if (_CurrentGateMode != EGateMode.CLOSE)
 				{
 					_gateLikeUpdater.ScheduleToOpen(this);
 				}
@@ -319,30 +352,30 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 			}
 			else
 			{
-				_gateTransformController.IsOpen = _CurrentGateMode == EGateMode.Open;
+				_gateTransformController.IsOpen = _CurrentGateMode == EGateMode.OPEN;
 			}
 		}
 
 		private void _UpdateState()
 		{
-			var actualGateMode = _currentGateState != EGateState.Open ? EGateMode.Close : _CurrentGateMode;
+			var actualGateMode = _currentGateState != EGateState.Open ? EGateMode.CLOSE : _CurrentGateMode;
 			_navMeshBlocker.GateMode = actualGateMode;
 			switch (actualGateMode)
 			{
-				case EGateMode.Close:
+				case EGateMode.CLOSE:
 					_illuminator.Toggle(false);
 					break;
-				case EGateMode.Open:
+				case EGateMode.OPEN:
 					_illuminator.ClearColor(1);
 					_illuminator.Toggle(true);
 					break;
-				case EGateMode.Pass:
+				case EGateMode.PASS:
 					_illuminator.SetColor(1, Color.red);
 					_illuminator.Toggle(true);
 					break;
 			}
 
-			_gateTransformController.IsOpen = actualGateMode == EGateMode.Open;
+			_gateTransformController.IsOpen = actualGateMode == EGateMode.OPEN;
 		}
 
 		private void _NotifyConflictStateChanged()

@@ -1,12 +1,12 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:cui="Timberborn.CoreUI" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <cui:NineSliceVisualElement name="WatertightGateWrapper" class="entity-sub-panel WatertightGate-fragment bg-sub-box--green" style="align-items: flex-start; align-self: stretch; flex-direction: column;">
         <Style src="project://database/Assets/Mods/WatertightGates/AssetBundles/Resources/UI/Styles/EntityPanel/WatertightGate.uss"/>
-        <ui:VisualElement name="ActivationModeContainer" class="WatertightGate-fragment__row">
-            <ui:VisualElement name="ActivationModeToggle" class="WatertightGate-fragment__toggle-container">
+        <ui:VisualElement name="MainModeContainer" class="WatertightGate-fragment__row">
+            <ui:VisualElement name="MainModeToggle" class="WatertightGate-fragment__toggle-container">
                 <ui:Toggle label=""/>
                 <ui:Toggle label=""/>
             </ui:VisualElement>
-            <ui:Label name="ActivationModeLabel" text="Open" class="entity-panel__text WatertightGate-fragment__right-label"/>
+            <ui:Label name="MainModeLabel" text="Open" class="entity-panel__text WatertightGate-fragment__right-label"/>
         </ui:VisualElement>
         <ui:VisualElement name="AutomatedContainer">
             <ui:VisualElement name="ActiveStateContainer" class="WatertightGate-fragment__row">

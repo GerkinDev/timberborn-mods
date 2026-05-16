@@ -73,32 +73,32 @@ namespace GerkinDev.Tests.WatertightGates
 			{
 				yield return new TestCaseData(
 					new Dictionary<string, Dictionary<string, object>>(),
-					EGateControlMode.Open,
-					EGateMode.Open,
-					EGateMode.Close
+					EGateMainMode.OPEN,
+					EGateMode.OPEN,
+					EGateMode.CLOSE
 				).SetName("No persistence");
 				yield return new TestCaseData(
 					new Dictionary<string, Dictionary<string, object>>() { { _persistenceKey.Name, new() { } } },
-					EGateControlMode.Open,
-					EGateMode.Open,
-					EGateMode.Close
+					EGateMainMode.OPEN,
+					EGateMode.OPEN,
+					EGateMode.CLOSE
 				).SetName("No data in object loader");
 				yield return new TestCaseData(
 					new Dictionary<string, Dictionary<string, object>>()
 					{
 						{
-							_persistenceKey.Name,
-							new()
+							_persistenceKey.Name, new()
 							{
 								{ "_activationMode", "invalid" },
+								{ "_mainMode", "invalid" },
 								{ "_activeGateMode", "invalid" },
 								{ "_inactiveGateMode", "invalid" },
 							}
 						}
 					},
-					EGateControlMode.Open,
-					EGateMode.Open,
-					EGateMode.Close
+					EGateMainMode.OPEN,
+					EGateMode.OPEN,
+					EGateMode.CLOSE
 				).SetName("Activation: invalid");
 			}
 		}
@@ -106,14 +106,14 @@ namespace GerkinDev.Tests.WatertightGates
 		[TestCaseSource(typeof(WatertightGatesLoadingInteropTests), nameof(Data_Other))]
 		public void LoadFrom_Other(
 			Dictionary<string, Dictionary<string, object>> saveData,
-			object expectedActivationMode,
+			object expectedMainMode,
 			object expectedActiveGateMode,
 			object expectedInactiveGateMode
 		)
 		{
 			WatertightGate gate = _InitGate();
 			gate.Load(new MockEntityLoader(saveData));
-			Assert.That(gate.ActivationMode, Is.EqualTo((EGateControlMode)expectedActivationMode));
+			Assert.That(gate.MainMode, Is.EqualTo((EGateMainMode)expectedMainMode));
 			Assert.That(gate.ActiveGateMode, Is.EqualTo((EGateMode)expectedActiveGateMode));
 			Assert.That(gate.InactiveGateMode, Is.EqualTo((EGateMode)expectedInactiveGateMode));
 		}
@@ -139,10 +139,10 @@ namespace GerkinDev.Tests.WatertightGates
 							}
 						}
 					},
-					EGateControlMode.Automated,
-					EGateMode.Close,
-					EGateMode.Open
-				).SetName("Activation: Automated");
+					EGateMainMode.AUTOMATED,
+					EGateMode.CLOSE,
+					EGateMode.OPEN
+				).SetName("Activation: automated");
 				yield return new TestCaseData(
 					new Dictionary<string, Dictionary<string, object>>()
 					{
@@ -156,9 +156,9 @@ namespace GerkinDev.Tests.WatertightGates
 							}
 						}
 					},
-					EGateControlMode.Pass,
-					EGateMode.Pass,
-					EGateMode.Close
+					EGateMainMode.PASS,
+					EGateMode.PASS,
+					EGateMode.CLOSE
 				).SetName("Activation: active");
 				yield return new TestCaseData(
 					new Dictionary<string, Dictionary<string, object>>()
@@ -173,9 +173,9 @@ namespace GerkinDev.Tests.WatertightGates
 							}
 						}
 					},
-					EGateControlMode.Pass,
-					EGateMode.Open,
-					EGateMode.Pass
+					EGateMainMode.PASS,
+					EGateMode.OPEN,
+					EGateMode.PASS
 				).SetName("Activation: inactive");
 				yield return new TestCaseData(
 					new Dictionary<string, Dictionary<string, object>>()
@@ -190,9 +190,9 @@ namespace GerkinDev.Tests.WatertightGates
 							}
 						}
 					},
-					EGateControlMode.Open,
-					EGateMode.Pass,
-					EGateMode.Pass
+					EGateMainMode.OPEN,
+					EGateMode.PASS,
+					EGateMode.PASS
 				).SetName("Activation: invalid");
 			}
 		}
@@ -200,14 +200,108 @@ namespace GerkinDev.Tests.WatertightGates
 		[TestCaseSource(typeof(WatertightGatesLoadingInteropTests), nameof(Data_1_0_0_1))]
 		public void LoadFrom_1_0_0_1(
 			Dictionary<string, Dictionary<string, object>> saveData,
-			object expectedActivationMode,
+			object expectedMainMode,
 			object expectedActiveGateMode,
 			object expectedInactiveGateMode
 		)
 		{
 			WatertightGate gate = _InitGate();
 			gate.Load(new MockEntityLoader(saveData));
-			Assert.That(gate.ActivationMode, Is.EqualTo((EGateControlMode)expectedActivationMode));
+			Assert.That(gate.MainMode, Is.EqualTo((EGateMainMode)expectedMainMode));
+			Assert.That(gate.ActiveGateMode, Is.EqualTo((EGateMode)expectedActiveGateMode));
+			Assert.That(gate.InactiveGateMode, Is.EqualTo((EGateMode)expectedInactiveGateMode));
+		}
+
+		#endregion
+
+		#region 1.0.1.2
+
+		public static IEnumerable Data_1_0_1_2
+		{
+			get
+			{
+				yield return new TestCaseData(
+					new Dictionary<string, Dictionary<string, object>>()
+					{
+						{
+							_persistenceKey.Name,
+							new()
+							{
+								{ "_activationMode", "Automated" },
+								{ "_activeGateMode", "Close" },
+								{ "_inactiveGateMode", "Open" },
+							}
+						}
+					},
+					EGateMainMode.AUTOMATED,
+					EGateMode.CLOSE,
+					EGateMode.OPEN
+				).SetName("Activation: automated");
+				yield return new TestCaseData(
+					new Dictionary<string, Dictionary<string, object>>()
+					{
+						{
+							_persistenceKey.Name,
+							new()
+							{
+								{ "_activationMode", "Open" },
+								{ "_activeGateMode", "Pass" },
+								{ "_inactiveGateMode", "Close" },
+							}
+						}
+					},
+					EGateMainMode.OPEN,
+					EGateMode.PASS,
+					EGateMode.CLOSE
+				).SetName("Activation: open");
+				yield return new TestCaseData(
+					new Dictionary<string, Dictionary<string, object>>()
+					{
+						{
+							_persistenceKey.Name,
+							new()
+							{
+								{ "_activationMode", "Close" },
+								{ "_activeGateMode", "Open" },
+								{ "_inactiveGateMode", "Pass" },
+							}
+						}
+					},
+					EGateMainMode.CLOSE,
+					EGateMode.OPEN,
+					EGateMode.PASS
+				).SetName("Activation: close");
+				yield return new TestCaseData(
+					new Dictionary<string, Dictionary<string, object>>()
+					{
+						{
+							_persistenceKey.Name,
+							new()
+							{
+								{ "_activationMode", "invalid" },
+								{ "_activeGateMode", "Pass" },
+								{ "_inactiveGateMode", "Pass" },
+							}
+						}
+					},
+					EGateMainMode.OPEN,
+					EGateMode.PASS,
+					EGateMode.PASS
+				).SetName("Activation: invalid");
+			}
+		}
+
+		[TestCaseSource(typeof(WatertightGatesLoadingInteropTests), nameof(Data_1_0_1_2))]
+		public void LoadFrom_1_0_1_2(
+			Dictionary<string, Dictionary<string, object>> saveData,
+			object expectedMainMode,
+			object expectedActiveGateMode,
+			object expectedInactiveGateMode
+		)
+		{
+			WatertightGate gate = _InitGate();
+			gate.Load(new MockEntityLoader(saveData));
+			Assert.That(gate.MainMode, Is.EqualTo((EGateMainMode)expectedMainMode));
 			Assert.That(gate.ActiveGateMode, Is.EqualTo((EGateMode)expectedActiveGateMode));
 			Assert.That(gate.InactiveGateMode, Is.EqualTo((EGateMode)expectedInactiveGateMode));
 		}
@@ -227,16 +321,16 @@ namespace GerkinDev.Tests.WatertightGates
 							_persistenceKey.Name,
 							new()
 							{
-								{ _activationModeKey.Name, EGateControlMode.Automated },
-								{ _activeGateModeKey.Name, EGateMode.Close },
-								{ _inactiveGateModeKey.Name, EGateMode.Open },
+								{ _mainModeKey.Name, EGateMainMode.AUTOMATED },
+								{ _activeGateModeKey.Name, EGateMode.CLOSE },
+								{ _inactiveGateModeKey.Name, EGateMode.OPEN },
 							}
 						}
 					},
-					EGateControlMode.Automated,
-					EGateMode.Close,
-					EGateMode.Open
-				).SetName("activation: Automated");
+					EGateMainMode.AUTOMATED,
+					EGateMode.CLOSE,
+					EGateMode.OPEN
+				).SetName("main: automated");
 				yield return new TestCaseData(
 					new Dictionary<string, Dictionary<string, object>>()
 					{
@@ -244,16 +338,16 @@ namespace GerkinDev.Tests.WatertightGates
 							_persistenceKey.Name,
 							new()
 							{
-								{ _activationModeKey.Name, EGateControlMode.Open },
-								{ _activeGateModeKey.Name, EGateMode.Pass },
-								{ _inactiveGateModeKey.Name, EGateMode.Pass },
+								{ _mainModeKey.Name, EGateMainMode.OPEN },
+								{ _activeGateModeKey.Name, EGateMode.PASS },
+								{ _inactiveGateModeKey.Name, EGateMode.PASS },
 							}
 						}
 					},
-					EGateControlMode.Open,
-					EGateMode.Pass,
-					EGateMode.Pass
-				).SetName("activation: Open");
+					EGateMainMode.OPEN,
+					EGateMode.PASS,
+					EGateMode.PASS
+				).SetName("main: open");
 				yield return new TestCaseData(
 					new Dictionary<string, Dictionary<string, object>>()
 					{
@@ -261,16 +355,16 @@ namespace GerkinDev.Tests.WatertightGates
 							_persistenceKey.Name,
 							new()
 							{
-								{ _activationModeKey.Name, EGateControlMode.Close },
-								{ _activeGateModeKey.Name, EGateMode.Pass },
-								{ _inactiveGateModeKey.Name, EGateMode.Pass },
+								{ _mainModeKey.Name, EGateMainMode.CLOSE },
+								{ _activeGateModeKey.Name, EGateMode.PASS },
+								{ _inactiveGateModeKey.Name, EGateMode.PASS },
 							}
 						}
 					},
-					EGateControlMode.Close,
-					EGateMode.Pass,
-					EGateMode.Pass
-				).SetName("activation: Close");
+					EGateMainMode.CLOSE,
+					EGateMode.PASS,
+					EGateMode.PASS
+				).SetName("main: close");
 				yield return new TestCaseData(
 					new Dictionary<string, Dictionary<string, object>>()
 					{
@@ -278,16 +372,16 @@ namespace GerkinDev.Tests.WatertightGates
 							_persistenceKey.Name,
 							new()
 							{
-								{ _activationModeKey.Name, EGateControlMode.Pass },
-								{ _activeGateModeKey.Name, EGateMode.Pass },
-								{ _inactiveGateModeKey.Name, EGateMode.Pass },
+								{ _mainModeKey.Name, EGateMainMode.PASS },
+								{ _activeGateModeKey.Name, EGateMode.PASS },
+								{ _inactiveGateModeKey.Name, EGateMode.PASS },
 							}
 						}
 					},
-					EGateControlMode.Pass,
-					EGateMode.Pass,
-					EGateMode.Pass
-				).SetName("activation: pass");
+					EGateMainMode.PASS,
+					EGateMode.PASS,
+					EGateMode.PASS
+				).SetName("main: pass");
 				yield return new TestCaseData(
 					new Dictionary<string, Dictionary<string, object>>()
 					{
@@ -295,30 +389,30 @@ namespace GerkinDev.Tests.WatertightGates
 							_persistenceKey.Name,
 							new()
 							{
-								{ _activationModeKey.Name, "Nope" },
-								{ _activeGateModeKey.Name, EGateMode.Pass },
-								{ _inactiveGateModeKey.Name, EGateMode.Pass },
+								{ _mainModeKey.Name, "Nope" },
+								{ _activeGateModeKey.Name, EGateMode.PASS },
+								{ _inactiveGateModeKey.Name, EGateMode.PASS },
 							}
 						}
 					},
-					EGateControlMode.Open,
-					EGateMode.Pass,
-					EGateMode.Pass
-				).SetName("activation: invalid");
+					EGateMainMode.OPEN,
+					EGateMode.PASS,
+					EGateMode.PASS
+				).SetName("main: invalid");
 			}
 		}
 
 		[TestCaseSource(typeof(WatertightGatesLoadingInteropTests), nameof(Data_Current))]
 		public void LoadFrom_Current(
 			Dictionary<string, Dictionary<string, object>> saveData,
-			object expectedActivationMode,
+			object expectedMainMode,
 			object expectedActiveGateMode,
 			object expectedInactiveGateMode
 		)
 		{
 			WatertightGate gate = _InitGate();
 			gate.Load(new MockEntityLoader(saveData));
-			Assert.That(gate.ActivationMode, Is.EqualTo((EGateControlMode)expectedActivationMode));
+			Assert.That(gate.MainMode, Is.EqualTo((EGateMainMode)expectedMainMode));
 			Assert.That(gate.ActiveGateMode, Is.EqualTo((EGateMode)expectedActiveGateMode));
 			Assert.That(gate.InactiveGateMode, Is.EqualTo((EGateMode)expectedInactiveGateMode));
 		}
