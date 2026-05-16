@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Utils
+namespace GerkinDev.WatertightGates.Utils
 {
 	internal struct CommitableState<T>
 	{

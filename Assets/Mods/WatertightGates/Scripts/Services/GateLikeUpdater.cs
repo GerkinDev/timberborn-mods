@@ -5,7 +5,7 @@ using Timberborn.Navigation;
 using Timberborn.SingletonSystem;
 using UnityEngine;
 
-namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Services
+namespace GerkinDev.WatertightGates.Services
 {
 	public enum EGateState
 	{

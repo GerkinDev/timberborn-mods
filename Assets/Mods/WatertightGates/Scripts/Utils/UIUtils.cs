@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Utils
+namespace GerkinDev.WatertightGates.Utils
 {
 	internal static class UIUtils
 	{

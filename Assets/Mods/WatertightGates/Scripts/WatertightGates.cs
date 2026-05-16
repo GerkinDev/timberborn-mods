@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
+namespace GerkinDev.WatertightGates
 {
 	public class WatertightGates
 	{

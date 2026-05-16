@@ -2,7 +2,7 @@
 using Timberborn.BaseComponentSystem;
 using Timberborn.BlockSystem;
 
-namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Extensions
+namespace GerkinDev.WatertightGates.Extensions
 {
 	public static class BaseComponentExtensions
 	{

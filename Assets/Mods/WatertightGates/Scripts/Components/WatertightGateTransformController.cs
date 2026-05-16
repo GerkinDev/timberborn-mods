@@ -1,11 +1,11 @@
-using GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Components.Specs;
+using GerkinDev.WatertightGates.Components.Specs;
 using Timberborn.BaseComponentSystem;
 using Timberborn.BlockSystem;
 using Timberborn.Common;
 using Timberborn.EntitySystem;
 using UnityEngine;
 
-namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Components
+namespace GerkinDev.WatertightGates.Components
 {
 	internal class WatertightGateTransformController : BaseComponent, IAwakableComponent, IFinishedStateListener,
 		IInitializableEntity

@@ -1,4 +1,4 @@
-﻿using GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Components.Specs;
+﻿using GerkinDev.WatertightGates.Components.Specs;
 using System.Linq;
 using Timberborn.BaseComponentSystem;
 using Timberborn.BlockObjectModelSystem;
@@ -10,7 +10,7 @@ using Timberborn.PathSystem;
 using Timberborn.TerrainSystem;
 using UnityEngine;
 
-namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Components
+namespace GerkinDev.WatertightGates.Components
 {
 	public class FreePositionedDynamicPathModel : BaseComponent, IAwakableComponent, IModelUpdater
 	{

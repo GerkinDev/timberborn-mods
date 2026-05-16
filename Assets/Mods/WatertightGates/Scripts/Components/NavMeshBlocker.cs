@@ -1,5 +1,5 @@
-using GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Components.Specs;
-using GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Utils;
+using GerkinDev.WatertightGates.Components.Specs;
+using GerkinDev.WatertightGates.Utils;
 using System;
 using Timberborn.BaseComponentSystem;
 using Timberborn.BlockSystem;
@@ -9,7 +9,7 @@ using Timberborn.Navigation;
 using Timberborn.PathSystem;
 using UnityEngine;
 
-namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Components
+namespace GerkinDev.WatertightGates.Components
 {
 	/// <summary>
 	///     Extracted from <see cref="Timberborn.AutomationBuildings.GateNavMeshBlocker" />

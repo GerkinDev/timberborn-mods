@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Timberborn.SliderToggleSystem;
 using UnityEngine.UIElements;
 
-namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.UI
+namespace GerkinDev.WatertightGates.UI
 {
 	/// <see cref="Timberborn.AutomationBuildingsUI.GateToggle" />
 	internal class EnumSliderToggle<T> where T : struct, Enum

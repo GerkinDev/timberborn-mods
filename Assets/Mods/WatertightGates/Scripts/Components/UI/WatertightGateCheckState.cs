@@ -4,7 +4,7 @@ using Timberborn.EntitySystem;
 using Timberborn.Localization;
 using Timberborn.StatusSystem;
 
-namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Components.UI
+namespace GerkinDev.WatertightGates.Components.UI
 {
 	internal class WatertightGateCheckState : BaseComponent, IAwakableComponent, IStartableComponent,
 		IPostLoadableEntity

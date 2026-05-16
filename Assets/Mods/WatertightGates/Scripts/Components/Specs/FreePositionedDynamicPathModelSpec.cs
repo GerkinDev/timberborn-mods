@@ -1,7 +1,7 @@
 ﻿using Timberborn.BlueprintSystem;
 using UnityEngine;
 
-namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Components.Specs
+namespace GerkinDev.WatertightGates.Components.Specs
 {
 	public record FreePositionedDynamicPathModelSpec : ComponentSpec
 	{

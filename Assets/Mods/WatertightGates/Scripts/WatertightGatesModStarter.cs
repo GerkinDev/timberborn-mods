@@ -1,5 +1,5 @@
 ﻿using Castle.Core.Internal;
-using GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Services;
+using GerkinDev.WatertightGates.Services;
 using HarmonyLib;
 using System;
 using System.IO;
@@ -8,7 +8,7 @@ using System.Text.Json;
 using Timberborn.ModManagerScene;
 using Timberborn.Versioning;
 
-namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
+namespace GerkinDev.WatertightGates
 {
 	internal class ModInfo
 	{

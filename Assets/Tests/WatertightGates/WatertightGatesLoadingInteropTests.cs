@@ -1,6 +1,6 @@
 using GerkinDev.Tests.Utils;
-using GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Components;
-using GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Components.Specs;
+using GerkinDev.WatertightGates.Components;
+using GerkinDev.WatertightGates.Components.Specs;
 using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,7 +14,7 @@ using Timberborn.Illumination;
 using Timberborn.QuickNotificationSystem;
 using Timberborn.TransformControl;
 using UnityEngine;
-using static GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Components.WatertightGate;
+using static GerkinDev.WatertightGates.Components.WatertightGate;
 
 namespace GerkinDev.Tests.WatertightGates
 {
