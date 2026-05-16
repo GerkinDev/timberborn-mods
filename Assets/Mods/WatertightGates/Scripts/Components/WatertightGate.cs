@@ -51,6 +51,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 			_ => throw new ArgumentException($"Unexpected gate main mode {mode}"),
 		};
 
+		public event EventHandler MainModeChanged;
 		private EGateMainMode _mainMode = EGateMainMode.OPEN;
 
 		public EGateMainMode MainMode
@@ -64,7 +65,9 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 				}
 
 				_mainMode = value;
+				StateNeedCheck = false;
 				_ScheduleStateUpdate();
+				MainModeChanged?.Invoke(this, EventArgs.Empty);
 			}
 		}
 
@@ -148,6 +151,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 		internal static readonly PropertyKey<EGateMainMode> _mainModeKey = new(nameof(_mainMode));
 		internal static readonly PropertyKey<EGateMode> _activeGateModeKey = new(nameof(_activeGateMode));
 		internal static readonly PropertyKey<EGateMode> _inactiveGateModeKey = new(nameof(_inactiveGateMode));
+		public bool StateNeedCheck { get; private set; } = false;
 
 		private EGateMode _LoadGateModeWithBackwardCompatibility(IEntityLoader entityLoader, PropertyKey<EGateMode> key,
 			string label, EGateMode defaultMode)
@@ -226,9 +230,8 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 						break;
 					default:
 						this.Warn("Invalid loaded main mode value \"{0}\", falling back to open", mode);
-						_quickNotificationService.SendWarningNotification(
-							"Failed to load previous watertight gate mode. It has been opened as a default. Please verify your watertight gates to avoid leakage.");
 						_mainMode = EGateMainMode.OPEN;
+						StateNeedCheck = true;
 						break;
 				}
 			}
