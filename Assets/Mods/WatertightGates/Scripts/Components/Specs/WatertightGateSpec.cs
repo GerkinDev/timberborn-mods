@@ -4,12 +4,12 @@ using UnityEngine;
 
 namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Components.Specs
 {
-	/// <seealso href="https://github.com/mechanistry/timberborn-modding/wiki/Timberborn-architecture#specs"/>
+	/// <seealso href="https://github.com/mechanistry/timberborn-modding/wiki/Timberborn-architecture#specs" />
 	internal record WatertightGateSpec : ComponentSpec
 	{
-		[Serialize] public string Anchor { get; set; }
-		[Serialize] public GateTransformSpec OpenTransform { get; init; }
-		[Serialize] public GateTransformSpec CloseTransform { get; init; }
+		[Serialize] public string Anchor { get; set; } = null!;
+		[Serialize] public GateTransformSpec OpenTransform { get; init; } = null!;
+		[Serialize] public GateTransformSpec CloseTransform { get; init; } = null!;
 		[Serialize] public float OpenTime { get; init; }
 		[Serialize] public float CloseTime { get; init; }
 		[Serialize] public Vector3Int PathStart { get; init; }

@@ -8,7 +8,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 
 		private static string _GetPrefix(string? name)
 		{
-			var prefix = MOD_ID;
+			string prefix = MOD_ID;
 			if (!string.IsNullOrEmpty(name))
 			{
 				prefix += "::" + name;
@@ -16,18 +16,20 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 
 			return prefix;
 		}
+
 		public static void Log(string? name, string format, params object[] args)
 		{
-			var logStr = string.Format(format, args);
+			string logStr = string.Format(format, args);
 			string prefix = _GetPrefix(name);
 			logStr = $"[{prefix}] {logStr}";
 			Debug.Log(logStr);
 		}
 
 		public static void Log(string format, params object[] args) => Log(null, format, args);
+
 		public static void Warn(string? name, string format, params object[] args)
 		{
-			var logStr = string.Format(format, args);
+			string logStr = string.Format(format, args);
 			string prefix = _GetPrefix(name);
 			logStr = $"[{prefix}] {logStr}";
 			Debug.LogWarning(logStr);

@@ -6,7 +6,6 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Extensio
 {
 	public static class BaseComponentExtensions
 	{
-
 		private static string _GetLogPrefix(BaseComponent component)
 		{
 			string who;
@@ -15,7 +14,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Extensio
 				who = component.GetType().Name;
 				who += ":" + component.Name;
 				who += "<" + component.GameObject.GetEntityId() + ">";
-				if (component.TryGetComponent<BlockObject>(out var blockObject))
+				if (component.TryGetComponent<BlockObject>(out BlockObject? blockObject))
 				{
 					who += "@" + blockObject.Placement.Coordinates;
 				}
@@ -27,11 +26,13 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Extensio
 
 			return who;
 		}
+
 		public static void Log(this BaseComponent component, string format, params object[] args)
 		{
 			string who = _GetLogPrefix(component);
 			WatertightGates.Log(who, format, args);
 		}
+
 		public static void Warn(this BaseComponent component, string format, params object[] args)
 		{
 			string who = _GetLogPrefix(component);

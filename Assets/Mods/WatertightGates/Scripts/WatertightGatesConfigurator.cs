@@ -31,7 +31,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts
 
 		private static TemplateModule _ProvideTemplateModule()
 		{
-			var builder = new TemplateModule.Builder();
+			TemplateModule.Builder builder = new();
 			builder.AddDecorator<WatertightGateSpec, WatertightGateTransformController>();
 			builder.AddDecorator<WatertightGateTransformController, WaterBlocker>();
 			builder.AddDecorator<WatertightGateSpec, WatertightGate>();

@@ -5,13 +5,8 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 {
 	public record FreePositionedDynamicPathModelSpec : ComponentSpec
 	{
-		[Serialize]
-		public string GroundModelPrefix { get; init; }
-
-		[Serialize]
-		public string RoofModelPrefix { get; init; }
-
-		[Serialize]
-		public Vector3Int Position { get; init; }
+		[Serialize] public string GroundModelPrefix { get; init; } = null!;
+		[Serialize] public string RoofModelPrefix { get; init; } = null!;
+		[Serialize] public Vector3Int Position { get; init; }
 	}
 }

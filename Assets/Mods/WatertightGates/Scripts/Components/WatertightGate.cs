@@ -5,7 +5,6 @@ using System;
 using Timberborn.Automation;
 using Timberborn.BaseComponentSystem;
 using Timberborn.BlockSystem;
-using Timberborn.Common;
 using Timberborn.DuplicationSystem;
 using Timberborn.EntitySystem;
 using Timberborn.Illumination;
@@ -20,39 +19,19 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 		IAutomatableNeeder, ITerminal, IInitializableEntity, IGateLike, IPreInitializableEntity,
 		IDuplicable<WatertightGate>, IDuplicable
 	{
-		internal enum EGateMode
-		{
-			OPEN,
-			CLOSE,
-			PASS,
-		}
+		private readonly GateLikeUpdater _gateLikeUpdater;
+		private readonly QuickNotificationService _quickNotificationService;
 
-		internal enum EGateMainMode
-		{
-			OPEN,
-			CLOSE,
-			PASS,
-			AUTOMATED,
-		}
+		private EGateMode _activeGateMode = EGateMode.OPEN;
 
-		private static EGateMainMode _GateModeToMainMode(EGateMode mode) => mode switch
-		{
-			EGateMode.OPEN => EGateMainMode.OPEN,
-			EGateMode.CLOSE => EGateMainMode.CLOSE,
-			EGateMode.PASS => EGateMainMode.PASS,
-			_ => throw new ArgumentException($"Unexpected gate mode {mode}"),
-		};
-
-		private static EGateMode _MainModeToGateMode(EGateMainMode mode) => mode switch
-		{
-			EGateMainMode.OPEN => EGateMode.OPEN,
-			EGateMainMode.CLOSE => EGateMode.CLOSE,
-			EGateMainMode.PASS => EGateMode.PASS,
-			_ => throw new ArgumentException($"Unexpected gate main mode {mode}"),
-		};
-
-		public event EventHandler MainModeChanged;
+		private EGateMode _inactiveGateMode = EGateMode.CLOSE;
 		private EGateMainMode _mainMode = EGateMainMode.OPEN;
+
+		public WatertightGate(GateLikeUpdater gateLikeUpdater, QuickNotificationService quickNotificationService)
+		{
+			_gateLikeUpdater = gateLikeUpdater;
+			_quickNotificationService = quickNotificationService;
+		}
 
 		public EGateMainMode MainMode
 		{
@@ -71,8 +50,6 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 			}
 		}
 
-		private EGateMode _activeGateMode = EGateMode.OPEN;
-
 		public EGateMode ActiveGateMode
 		{
 			get => _activeGateMode;
@@ -87,8 +64,6 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 				_ScheduleStateUpdate();
 			}
 		}
-
-		private EGateMode _inactiveGateMode = EGateMode.CLOSE;
 
 		public EGateMode InactiveGateMode
 		{
@@ -109,35 +84,154 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 		{
 			EGateMainMode.AUTOMATED => _automatable.State != ConnectionState.Off ? _activeGateMode : _inactiveGateMode,
 			EGateMainMode.OPEN or EGateMainMode.CLOSE or EGateMainMode.PASS => _MainModeToGateMode(_mainMode),
-			_ => throw new ArgumentException($"Unexpected gate main mode {_mainMode}"),
+			_ => throw new ArgumentException($"Unexpected gate main mode {_mainMode}")
 		};
+
+		#region IAutomatableNeeder
+
+		public bool NeedsAutomatable => _mainMode == EGateMainMode.AUTOMATED;
+
+		#endregion
+
+		#region IDuplicable<WatertightGate>
+
+		public void DuplicateFrom(WatertightGate source)
+		{
+			MainMode = source.MainMode;
+			ActiveGateMode = source.ActiveGateMode;
+			InactiveGateMode = source.InactiveGateMode;
+			_automatable = source._automatable;
+			_ScheduleStateUpdate();
+		}
+
+		#endregion
+
+		#region IInitializableEntity
+
+		public void InitializeEntity()
+		{
+			CurrentGateState = EGateState.Closed;
+			_ScheduleStateUpdate();
+		}
+
+		#endregion
+
+		#region IPreInitializableEntity
+
+		public void PreInitializeEntity()
+		{
+			PathStart = _blockObject.TransformCoordinates(_spec.PathStart);
+			PathEnd = _blockObject.TransformCoordinates(_spec.PathEnd);
+			PathCenter = _blockObject.TransformCoordinates(_spec.PathCenter);
+		}
+
+		#endregion
+
+		#region ITerminal
+
+		public void Evaluate()
+		{
+			if (NeedsAutomatable)
+			{
+				_ScheduleStateUpdate();
+			}
+		}
+
+		#endregion
+
+		private static EGateMainMode _GateModeToMainMode(EGateMode mode) => mode switch
+		{
+			EGateMode.OPEN => EGateMainMode.OPEN,
+			EGateMode.CLOSE => EGateMainMode.CLOSE,
+			EGateMode.PASS => EGateMainMode.PASS,
+			_ => throw new ArgumentException($"Unexpected gate mode {mode}")
+		};
+
+		private static EGateMode _MainModeToGateMode(EGateMainMode mode) => mode switch
+		{
+			EGateMainMode.OPEN => EGateMode.OPEN,
+			EGateMainMode.CLOSE => EGateMode.CLOSE,
+			EGateMainMode.PASS => EGateMode.PASS,
+			_ => throw new ArgumentException($"Unexpected gate main mode {mode}")
+		};
+
+		public event EventHandler MainModeChanged;
 
 		public event EventHandler ConflictStateChanged;
 
-		private readonly GateLikeUpdater _gateLikeUpdater;
-		private readonly QuickNotificationService _quickNotificationService;
-
-		public WatertightGate(GateLikeUpdater gateLikeUpdater, QuickNotificationService quickNotificationService)
+		private void _ScheduleStateUpdate()
 		{
-			_gateLikeUpdater = gateLikeUpdater;
-			_quickNotificationService = quickNotificationService;
+			if (_blockObject.IsFinished)
+			{
+				if (_CurrentGateMode != EGateMode.CLOSE)
+				{
+					_gateLikeUpdater.ScheduleToOpen(this);
+				}
+				else
+				{
+					_gateLikeUpdater.ScheduleToClose(this);
+				}
+			}
+			else
+			{
+				_gateTransformController.IsOpen = _CurrentGateMode == EGateMode.OPEN;
+			}
+		}
+
+		private void _UpdateState()
+		{
+			EGateMode actualGateMode = _currentGateState != EGateState.Open ? EGateMode.CLOSE : _CurrentGateMode;
+			_navMeshBlocker.GateMode = actualGateMode;
+			switch (actualGateMode)
+			{
+				case EGateMode.CLOSE:
+					_illuminator.Toggle(false);
+					break;
+				case EGateMode.OPEN:
+					_illuminator.ClearColor(1);
+					_illuminator.Toggle(true);
+					break;
+				case EGateMode.PASS:
+					_illuminator.SetColor(1, Color.red);
+					_illuminator.Toggle(true);
+					break;
+			}
+
+			_gateTransformController.IsOpen = actualGateMode == EGateMode.OPEN;
+		}
+
+		private void _NotifyConflictStateChanged() => ConflictStateChanged?.Invoke(this, EventArgs.Empty);
+
+		internal enum EGateMode
+		{
+			OPEN,
+			CLOSE,
+			PASS
+		}
+
+		internal enum EGateMainMode
+		{
+			OPEN,
+			CLOSE,
+			PASS,
+			AUTOMATED
 		}
 
 		#region IAwakableComponent
 
-		private WatertightGateSpec _spec;
-		private Automatable _automatable;
-		private BlockObject _blockObject;
-		private NavMeshBlocker _navMeshBlocker;
-		private Illuminator _illuminator;
-		private WatertightGateTransformController _gateTransformController;
+		private WatertightGateSpec _spec = null!;
+		private Automatable _automatable = null!;
+		private BlockObject _blockObject = null!;
+		private NavMeshBlocker _navMeshBlocker = null!;
+		private Illuminator _illuminator = null!;
+		private WatertightGateTransformController _gateTransformController = null!;
 
 		public void Awake()
 		{
 			_spec = GetComponent<WatertightGateSpec>();
 			_automatable = GetComponent<Automatable>();
-			_blockObject =
-				GetComponent<BlockObject>(); /// Position is not initialized yet. See <see cref="PreInitializeEntity"/> for transforms
+			// Position is not initialized yet. See <see cref="PreInitializeEntity"/> for transforms
+			_blockObject = GetComponent<BlockObject>();
 			_navMeshBlocker = GetComponent<NavMeshBlocker>();
 			_illuminator = GetComponent<Illuminator>();
 			_gateTransformController = GetComponent<WatertightGateTransformController>();
@@ -151,7 +245,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 		internal static readonly PropertyKey<EGateMainMode> _mainModeKey = new(nameof(_mainMode));
 		internal static readonly PropertyKey<EGateMode> _activeGateModeKey = new(nameof(_activeGateMode));
 		internal static readonly PropertyKey<EGateMode> _inactiveGateModeKey = new(nameof(_inactiveGateMode));
-		public bool StateNeedCheck { get; private set; } = false;
+		public bool StateNeedCheck { get; private set; }
 
 		private EGateMode _LoadGateModeWithBackwardCompatibility(IEntityLoader entityLoader, PropertyKey<EGateMode> key,
 			string label, EGateMode defaultMode)
@@ -162,7 +256,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 			}
 			catch (ArgumentException ex) when (ex.InnerException is ArgumentException)
 			{
-				var stringValue = entityLoader.GetAsString(_persistenceKey, key);
+				string? stringValue = entityLoader.GetAsString(_persistenceKey, key);
 				if (string.IsNullOrEmpty(stringValue))
 				{
 					this.Warn("No {0} gate mode found", label);
@@ -170,7 +264,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 				}
 
 				this.Log("Has legacy {0} gate mode stored value \"{1}\"", label, stringValue);
-				if (Enum.TryParse<EGateMode>(stringValue, true, out var value))
+				if (Enum.TryParse(stringValue, true, out EGateMode value))
 				{
 					return value;
 				}
@@ -199,7 +293,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 			catch (IEntityLoaderExtensions.PersistenceException ex)
 			{
 				this.Log("Failed to load main mode value: {0}", ex);
-				var mode = entityLoader.GetOrDefaultAsString(
+				string mode = entityLoader.GetOrDefaultAsString(
 					_persistenceKey,
 					_mainModeKey,
 					() => entityLoader.GetOrDefaultAsString(
@@ -239,7 +333,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 
 		public void Save(IEntitySaver entitySaver)
 		{
-			var objectSaver = entitySaver.GetComponent(_persistenceKey);
+			IObjectSaver? objectSaver = entitySaver.GetComponent(_persistenceKey);
 			objectSaver.Set(_mainModeKey, _mainMode);
 			objectSaver.Set(_activeGateModeKey, ActiveGateMode);
 			objectSaver.Set(_inactiveGateModeKey, InactiveGateMode);
@@ -249,41 +343,10 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 
 		#region IFinishedStateListener
 
-		public void OnEnterFinishedState()
-		{
-			_ScheduleStateUpdate();
-		}
+		public void OnEnterFinishedState() => _ScheduleStateUpdate();
 
 		public void OnExitFinishedState()
 		{
-		}
-
-		#endregion
-
-		#region IAutomatableNeeder
-
-		public bool NeedsAutomatable => _mainMode == EGateMainMode.AUTOMATED;
-
-		#endregion
-
-		#region ITerminal
-
-		public void Evaluate()
-		{
-			if (NeedsAutomatable)
-			{
-				_ScheduleStateUpdate();
-			}
-		}
-
-		#endregion
-
-		#region IInitializableEntity
-
-		public void InitializeEntity()
-		{
-			CurrentGateState = EGateState.Closed;
-			_ScheduleStateUpdate();
 		}
 
 		#endregion
@@ -297,7 +360,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 			get => _currentGateState;
 			set
 			{
-				var prevState = _currentGateState;
+				EGateState prevState = _currentGateState;
 				_currentGateState = value;
 				_UpdateState();
 				if (
@@ -315,75 +378,5 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 		public Vector3Int PathCenter { get; private set; }
 
 		#endregion
-
-		#region IPreInitializableEntity
-
-		public void PreInitializeEntity()
-		{
-			PathStart = _blockObject.TransformCoordinates(_spec.PathStart);
-			PathEnd = _blockObject.TransformCoordinates(_spec.PathEnd);
-			PathCenter = _blockObject.TransformCoordinates(_spec.PathCenter);
-		}
-
-		#endregion
-
-		#region IDuplicable<WatertightGate>
-
-		public void DuplicateFrom(WatertightGate source)
-		{
-			this.MainMode = source.MainMode;
-			this.ActiveGateMode = source.ActiveGateMode;
-			this.InactiveGateMode = source.InactiveGateMode;
-			this._automatable = source._automatable;
-			_ScheduleStateUpdate();
-		}
-
-		#endregion
-
-		private void _ScheduleStateUpdate()
-		{
-			if (_blockObject.IsFinished)
-			{
-				if (_CurrentGateMode != EGateMode.CLOSE)
-				{
-					_gateLikeUpdater.ScheduleToOpen(this);
-				}
-				else
-				{
-					_gateLikeUpdater.ScheduleToClose(this);
-				}
-			}
-			else
-			{
-				_gateTransformController.IsOpen = _CurrentGateMode == EGateMode.OPEN;
-			}
-		}
-
-		private void _UpdateState()
-		{
-			var actualGateMode = _currentGateState != EGateState.Open ? EGateMode.CLOSE : _CurrentGateMode;
-			_navMeshBlocker.GateMode = actualGateMode;
-			switch (actualGateMode)
-			{
-				case EGateMode.CLOSE:
-					_illuminator.Toggle(false);
-					break;
-				case EGateMode.OPEN:
-					_illuminator.ClearColor(1);
-					_illuminator.Toggle(true);
-					break;
-				case EGateMode.PASS:
-					_illuminator.SetColor(1, Color.red);
-					_illuminator.Toggle(true);
-					break;
-			}
-
-			_gateTransformController.IsOpen = actualGateMode == EGateMode.OPEN;
-		}
-
-		private void _NotifyConflictStateChanged()
-		{
-			ConflictStateChanged?.Invoke(this, EventArgs.Empty);
-		}
 	}
 }

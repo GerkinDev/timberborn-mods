@@ -9,6 +9,33 @@ namespace GerkinDev.Tests.Utils
 {
 	public class MockEntityLoader : IEntityLoader
 	{
+		private readonly Dictionary<string, Dictionary<string, object>> _initData;
+
+		public MockEntityLoader(Dictionary<string, Dictionary<string, object>> initData)
+		{
+			_initData = initData;
+		}
+
+		public IObjectLoader GetComponent(ComponentKey key) => throw new NotImplementedException();
+
+		public IObjectLoader GetComponent(ComponentKey key, string suffix) =>
+			throw new NotImplementedException();
+
+		public bool TryGetComponent(ComponentKey key, out IObjectLoader objectLoader)
+		{
+			if (_initData.TryGetValue(key.Name, out Dictionary<string, object>? initData))
+			{
+				objectLoader = new MockObjectLoader(initData);
+				return true;
+			}
+
+			objectLoader = null;
+			return false;
+		}
+
+		public bool TryGetComponent(ComponentKey key, string suffix, out IObjectLoader objectLoader) =>
+			throw new NotImplementedException();
+
 		private class MockObjectLoader : IObjectLoader
 		{
 			private readonly Dictionary<string, object> _initData;
@@ -17,8 +44,6 @@ namespace GerkinDev.Tests.Utils
 			{
 				_initData = initData;
 			}
-			
-			private string _GetAsString(string key) => _initData[key].ToString();
 
 			public int Get(PropertyKey<int> key) => throw new NotImplementedException();
 			public float Get(PropertyKey<float> key) => throw new NotImplementedException();
@@ -32,7 +57,10 @@ namespace GerkinDev.Tests.Utils
 			public Vector2Int Get(PropertyKey<Vector2Int> key) => throw new NotImplementedException();
 			public Color Get(PropertyKey<Color> key) => throw new NotImplementedException();
 			public Guid Get(PropertyKey<Guid> key) => throw new NotImplementedException();
-			public T Get<T>(PropertyKey<T> key) where T : Enum => (T)PrimitiveTypeSerialization.Deserialize(_GetAsString(key.Name), typeof(T));
+
+			public T Get<T>(PropertyKey<T> key) where T : Enum =>
+				(T)PrimitiveTypeSerialization.Deserialize(_GetAsString(key.Name), typeof(T));
+
 			public T Get<T>(PropertyKey<T> key, IValueSerializer<T> serializer) => throw new NotImplementedException();
 
 			public bool GetObsoletable<T>(PropertyKey<T> key, IValueSerializer<T> serializer, out T value) =>
@@ -57,33 +85,8 @@ namespace GerkinDev.Tests.Utils
 
 			public bool Has<T>(PropertyKey<T> key) => _initData.ContainsKey(key.Name);
 			public bool Has<T>(ListKey<T> key) => throw new NotImplementedException();
+
+			private string _GetAsString(string key) => _initData[key].ToString();
 		}
-
-		private readonly Dictionary<string, Dictionary<string, object>> _initData;
-
-		public MockEntityLoader(Dictionary<string, Dictionary<string, object>> initData)
-		{
-			_initData = initData;
-		}
-
-		public IObjectLoader GetComponent(ComponentKey key) => throw new System.NotImplementedException();
-
-		public IObjectLoader GetComponent(ComponentKey key, string suffix) =>
-			throw new System.NotImplementedException();
-
-		public bool TryGetComponent(ComponentKey key, out IObjectLoader objectLoader)
-		{
-			if (_initData.TryGetValue(key.Name, out var initData))
-			{
-				objectLoader = new MockObjectLoader(initData);
-				return true;
-			}
-
-			objectLoader = null;
-			return false;
-		}
-
-		public bool TryGetComponent(ComponentKey key, string suffix, out IObjectLoader objectLoader) =>
-			throw new System.NotImplementedException();
 	}
 }

@@ -5,21 +5,18 @@ using UnityEngine.UIElements;
 
 namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.UI
 {
-	/// <see cref="Timberborn.AutomationBuildingsUI.GateToggle"/>
+	/// <see cref="Timberborn.AutomationBuildingsUI.GateToggle" />
 	internal class EnumSliderToggle<T> where T : struct, Enum
 	{
-		private readonly SliderToggleFactory _sliderToggleFactory;
 		private readonly VisualElement _container;
-		private readonly Label _valueDisplay;
 		private readonly Func<T> _getValue;
 		private readonly Action<T> _setValue;
-		private SliderToggle _sliderToggle;
+		private readonly SliderToggleFactory _sliderToggleFactory;
+		private readonly Label _valueDisplay;
+		private SliderToggle? _sliderToggle;
 
-		public Func<T, string> TooltipGetter { get; init; } = (value) => value.ToString();
-		public Func<T, string> LabelGetter { get; init; } = (value) => value.ToString();
-		public Func<T, string?> IconClassGetter { get; init; } = (value) => null;
-
-		public EnumSliderToggle(SliderToggleFactory sliderToggleFactory, VisualElement container, Label valueDisplay, Func<T> getValue, Action<T> setValue)
+		public EnumSliderToggle(SliderToggleFactory sliderToggleFactory, VisualElement container, Label valueDisplay,
+			Func<T> getValue, Action<T> setValue)
 		{
 			_sliderToggleFactory = sliderToggleFactory ?? throw new ArgumentNullException(nameof(sliderToggleFactory));
 			_container = container ?? throw new ArgumentNullException(nameof(container));
@@ -28,10 +25,14 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.UI
 			_setValue = setValue ?? throw new ArgumentNullException(nameof(setValue));
 		}
 
+		public Func<T, string> TooltipGetter { get; init; } = value => value.ToString();
+		public Func<T, string> LabelGetter { get; init; } = value => value.ToString();
+		public Func<T, string?> IconClassGetter { get; init; } = value => null;
+
 		public void Initialize()
 		{
 			_container.Clear();
-			var options = new List<SliderToggleItem>();
+			List<SliderToggleItem> options = new();
 			foreach (T value in Enum.GetValues(typeof(T)))
 			{
 				options.Add(SliderToggleItem.Create(
@@ -41,6 +42,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.UI
 					() => value.Equals(_getValue())
 				));
 			}
+
 			_sliderToggle = _sliderToggleFactory.Create(_container, options.ToArray());
 		}
 
@@ -56,6 +58,7 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.UI
 			{
 				return;
 			}
+
 			_sliderToggle.Update();
 			_valueDisplay.text = LabelGetter(_getValue());
 		}

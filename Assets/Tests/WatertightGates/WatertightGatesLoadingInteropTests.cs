@@ -22,22 +22,22 @@ namespace GerkinDev.Tests.WatertightGates
 	{
 		private static WatertightGate _InitGate()
 		{
-			var compCacheService = new ComponentCacheService();
-			var componentRegistry = new RegisteredComponentService();
-			var entityRegistry = new EntityComponentRegistry(componentRegistry);
-			var comp = new EntityComponent(null, entityRegistry);
-			var emptyGameObject = new GameObject();
+			ComponentCacheService compCacheService = new();
+			RegisteredComponentService componentRegistry = new();
+			EntityComponentRegistry entityRegistry = new(componentRegistry);
+			EntityComponent comp = new(null, entityRegistry);
+			GameObject emptyGameObject = new();
 			emptyGameObject.AddComponent<ComponentCache>();
-			var cc = emptyGameObject.GetComponent<ComponentCache>();
-			var child = new GameObject("anchor");
+			ComponentCache? cc = emptyGameObject.GetComponent<ComponentCache>();
+			GameObject child = new("anchor");
 			child.transform.parent = emptyGameObject.transform;
 			cc.InjectDependencies(compCacheService, new());
 
-			var quickNotifService = new QuickNotificationService();
-			var gate = new WatertightGate(null, quickNotifService);
+			QuickNotificationService quickNotifService = new();
+			WatertightGate gate = new(null, quickNotifService);
 			List<object> awakeComponents = new()
 			{
-				new BlockObjectSpec { Size = new(1, 1, 1), Blocks = ImmutableArray.Create(new BlockSpec { }) },
+				new BlockObjectSpec { Size = new(1, 1, 1), Blocks = ImmutableArray.Create(new BlockSpec()) },
 				new TransformController(),
 				new BlockObjectState(null),
 				new BlockObject(default, default, default, default, default, default),
@@ -49,14 +49,16 @@ namespace GerkinDev.Tests.WatertightGates
 			};
 			List<object> instantiatedComponents = new()
 			{
-				new WatertightGateSpec { Anchor = "anchor", OpenTransform = new(), CloseTransform = new(), },
-				new NavMeshBlocker(default, default, default),
+				new WatertightGateSpec { Anchor = "anchor", OpenTransform = new(), CloseTransform = new() },
+				new NavMeshBlocker(default, default, default)
 			};
 			cc.Initialize(awakeComponents.Concat(instantiatedComponents).ToList(), "test", new());
-			foreach (var instantiatedComponent in awakeComponents)
+			foreach (object? instantiatedComponent in awakeComponents)
 			{
 				if (instantiatedComponent is IAwakableComponent awakableComponent)
+				{
 					awakableComponent.Awake();
+				}
 			}
 
 			entityRegistry.Register(comp);
@@ -78,21 +80,22 @@ namespace GerkinDev.Tests.WatertightGates
 					EGateMode.CLOSE
 				).SetName("No persistence");
 				yield return new TestCaseData(
-					new Dictionary<string, Dictionary<string, object>>() { { _persistenceKey.Name, new() { } } },
+					new Dictionary<string, Dictionary<string, object>> { { _persistenceKey.Name, new() } },
 					EGateMainMode.OPEN,
 					EGateMode.OPEN,
 					EGateMode.CLOSE
 				).SetName("No data in object loader");
 				yield return new TestCaseData(
-					new Dictionary<string, Dictionary<string, object>>()
+					new Dictionary<string, Dictionary<string, object>>
 					{
 						{
-							_persistenceKey.Name, new()
+							_persistenceKey.Name,
+							new()
 							{
 								{ "_activationMode", "invalid" },
 								{ "_mainMode", "invalid" },
 								{ "_activeGateMode", "invalid" },
-								{ "_inactiveGateMode", "invalid" },
+								{ "_inactiveGateMode", "invalid" }
 							}
 						}
 					},
@@ -127,7 +130,7 @@ namespace GerkinDev.Tests.WatertightGates
 			get
 			{
 				yield return new TestCaseData(
-					new Dictionary<string, Dictionary<string, object>>()
+					new Dictionary<string, Dictionary<string, object>>
 					{
 						{
 							_persistenceKey.Name,
@@ -135,7 +138,7 @@ namespace GerkinDev.Tests.WatertightGates
 							{
 								{ "_activationMode", "Automated" },
 								{ "_activeGateMode", "Close" },
-								{ "_inactiveGateMode", "Open" },
+								{ "_inactiveGateMode", "Open" }
 							}
 						}
 					},
@@ -144,7 +147,7 @@ namespace GerkinDev.Tests.WatertightGates
 					EGateMode.OPEN
 				).SetName("Activation: automated");
 				yield return new TestCaseData(
-					new Dictionary<string, Dictionary<string, object>>()
+					new Dictionary<string, Dictionary<string, object>>
 					{
 						{
 							_persistenceKey.Name,
@@ -152,7 +155,7 @@ namespace GerkinDev.Tests.WatertightGates
 							{
 								{ "_activationMode", "Active" },
 								{ "_activeGateMode", "Pass" },
-								{ "_inactiveGateMode", "Close" },
+								{ "_inactiveGateMode", "Close" }
 							}
 						}
 					},
@@ -161,7 +164,7 @@ namespace GerkinDev.Tests.WatertightGates
 					EGateMode.CLOSE
 				).SetName("Activation: active");
 				yield return new TestCaseData(
-					new Dictionary<string, Dictionary<string, object>>()
+					new Dictionary<string, Dictionary<string, object>>
 					{
 						{
 							_persistenceKey.Name,
@@ -169,7 +172,7 @@ namespace GerkinDev.Tests.WatertightGates
 							{
 								{ "_activationMode", "Inactive" },
 								{ "_activeGateMode", "Open" },
-								{ "_inactiveGateMode", "Pass" },
+								{ "_inactiveGateMode", "Pass" }
 							}
 						}
 					},
@@ -178,7 +181,7 @@ namespace GerkinDev.Tests.WatertightGates
 					EGateMode.PASS
 				).SetName("Activation: inactive");
 				yield return new TestCaseData(
-					new Dictionary<string, Dictionary<string, object>>()
+					new Dictionary<string, Dictionary<string, object>>
 					{
 						{
 							_persistenceKey.Name,
@@ -186,7 +189,7 @@ namespace GerkinDev.Tests.WatertightGates
 							{
 								{ "_activationMode", "invalid" },
 								{ "_activeGateMode", "Pass" },
-								{ "_inactiveGateMode", "Pass" },
+								{ "_inactiveGateMode", "Pass" }
 							}
 						}
 					},
@@ -221,7 +224,7 @@ namespace GerkinDev.Tests.WatertightGates
 			get
 			{
 				yield return new TestCaseData(
-					new Dictionary<string, Dictionary<string, object>>()
+					new Dictionary<string, Dictionary<string, object>>
 					{
 						{
 							_persistenceKey.Name,
@@ -229,7 +232,7 @@ namespace GerkinDev.Tests.WatertightGates
 							{
 								{ "_activationMode", "Automated" },
 								{ "_activeGateMode", "Close" },
-								{ "_inactiveGateMode", "Open" },
+								{ "_inactiveGateMode", "Open" }
 							}
 						}
 					},
@@ -238,7 +241,7 @@ namespace GerkinDev.Tests.WatertightGates
 					EGateMode.OPEN
 				).SetName("Activation: automated");
 				yield return new TestCaseData(
-					new Dictionary<string, Dictionary<string, object>>()
+					new Dictionary<string, Dictionary<string, object>>
 					{
 						{
 							_persistenceKey.Name,
@@ -246,7 +249,7 @@ namespace GerkinDev.Tests.WatertightGates
 							{
 								{ "_activationMode", "Open" },
 								{ "_activeGateMode", "Pass" },
-								{ "_inactiveGateMode", "Close" },
+								{ "_inactiveGateMode", "Close" }
 							}
 						}
 					},
@@ -255,7 +258,7 @@ namespace GerkinDev.Tests.WatertightGates
 					EGateMode.CLOSE
 				).SetName("Activation: open");
 				yield return new TestCaseData(
-					new Dictionary<string, Dictionary<string, object>>()
+					new Dictionary<string, Dictionary<string, object>>
 					{
 						{
 							_persistenceKey.Name,
@@ -263,7 +266,7 @@ namespace GerkinDev.Tests.WatertightGates
 							{
 								{ "_activationMode", "Close" },
 								{ "_activeGateMode", "Open" },
-								{ "_inactiveGateMode", "Pass" },
+								{ "_inactiveGateMode", "Pass" }
 							}
 						}
 					},
@@ -272,7 +275,7 @@ namespace GerkinDev.Tests.WatertightGates
 					EGateMode.PASS
 				).SetName("Activation: close");
 				yield return new TestCaseData(
-					new Dictionary<string, Dictionary<string, object>>()
+					new Dictionary<string, Dictionary<string, object>>
 					{
 						{
 							_persistenceKey.Name,
@@ -280,7 +283,7 @@ namespace GerkinDev.Tests.WatertightGates
 							{
 								{ "_activationMode", "invalid" },
 								{ "_activeGateMode", "Pass" },
-								{ "_inactiveGateMode", "Pass" },
+								{ "_inactiveGateMode", "Pass" }
 							}
 						}
 					},
@@ -315,7 +318,7 @@ namespace GerkinDev.Tests.WatertightGates
 			get
 			{
 				yield return new TestCaseData(
-					new Dictionary<string, Dictionary<string, object>>()
+					new Dictionary<string, Dictionary<string, object>>
 					{
 						{
 							_persistenceKey.Name,
@@ -323,7 +326,7 @@ namespace GerkinDev.Tests.WatertightGates
 							{
 								{ _mainModeKey.Name, EGateMainMode.AUTOMATED },
 								{ _activeGateModeKey.Name, EGateMode.CLOSE },
-								{ _inactiveGateModeKey.Name, EGateMode.OPEN },
+								{ _inactiveGateModeKey.Name, EGateMode.OPEN }
 							}
 						}
 					},
@@ -332,7 +335,7 @@ namespace GerkinDev.Tests.WatertightGates
 					EGateMode.OPEN
 				).SetName("main: automated");
 				yield return new TestCaseData(
-					new Dictionary<string, Dictionary<string, object>>()
+					new Dictionary<string, Dictionary<string, object>>
 					{
 						{
 							_persistenceKey.Name,
@@ -340,7 +343,7 @@ namespace GerkinDev.Tests.WatertightGates
 							{
 								{ _mainModeKey.Name, EGateMainMode.OPEN },
 								{ _activeGateModeKey.Name, EGateMode.PASS },
-								{ _inactiveGateModeKey.Name, EGateMode.PASS },
+								{ _inactiveGateModeKey.Name, EGateMode.PASS }
 							}
 						}
 					},
@@ -349,7 +352,7 @@ namespace GerkinDev.Tests.WatertightGates
 					EGateMode.PASS
 				).SetName("main: open");
 				yield return new TestCaseData(
-					new Dictionary<string, Dictionary<string, object>>()
+					new Dictionary<string, Dictionary<string, object>>
 					{
 						{
 							_persistenceKey.Name,
@@ -357,7 +360,7 @@ namespace GerkinDev.Tests.WatertightGates
 							{
 								{ _mainModeKey.Name, EGateMainMode.CLOSE },
 								{ _activeGateModeKey.Name, EGateMode.PASS },
-								{ _inactiveGateModeKey.Name, EGateMode.PASS },
+								{ _inactiveGateModeKey.Name, EGateMode.PASS }
 							}
 						}
 					},
@@ -366,7 +369,7 @@ namespace GerkinDev.Tests.WatertightGates
 					EGateMode.PASS
 				).SetName("main: close");
 				yield return new TestCaseData(
-					new Dictionary<string, Dictionary<string, object>>()
+					new Dictionary<string, Dictionary<string, object>>
 					{
 						{
 							_persistenceKey.Name,
@@ -374,7 +377,7 @@ namespace GerkinDev.Tests.WatertightGates
 							{
 								{ _mainModeKey.Name, EGateMainMode.PASS },
 								{ _activeGateModeKey.Name, EGateMode.PASS },
-								{ _inactiveGateModeKey.Name, EGateMode.PASS },
+								{ _inactiveGateModeKey.Name, EGateMode.PASS }
 							}
 						}
 					},
@@ -383,7 +386,7 @@ namespace GerkinDev.Tests.WatertightGates
 					EGateMode.PASS
 				).SetName("main: pass");
 				yield return new TestCaseData(
-					new Dictionary<string, Dictionary<string, object>>()
+					new Dictionary<string, Dictionary<string, object>>
 					{
 						{
 							_persistenceKey.Name,
@@ -391,7 +394,7 @@ namespace GerkinDev.Tests.WatertightGates
 							{
 								{ _mainModeKey.Name, "Nope" },
 								{ _activeGateModeKey.Name, EGateMode.PASS },
-								{ _inactiveGateModeKey.Name, EGateMode.PASS },
+								{ _inactiveGateModeKey.Name, EGateMode.PASS }
 							}
 						}
 					},

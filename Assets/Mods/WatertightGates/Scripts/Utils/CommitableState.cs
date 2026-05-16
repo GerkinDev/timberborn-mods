@@ -8,9 +8,6 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Utils
 		public T Value { get; private set; }
 		public readonly bool HasChange => !EqualityComparer<T>.Default.Equals(Value, DesiredValue);
 
-		public void Commit()
-		{
-			Value = DesiredValue;
-		}
+		public void Commit() => Value = DesiredValue;
 	}
 }

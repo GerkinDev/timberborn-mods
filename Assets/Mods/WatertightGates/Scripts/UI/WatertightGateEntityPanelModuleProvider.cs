@@ -5,7 +5,6 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.UI
 {
 	internal class WatertightGateEntityPanelModuleProvider : IProvider<EntityPanelModule>
 	{
-
 		private readonly WatertightGateFragment _fragment;
 
 		public WatertightGateEntityPanelModuleProvider(WatertightGateFragment fragment)
@@ -15,10 +14,9 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.UI
 
 		public EntityPanelModule Get()
 		{
-			var builder = new EntityPanelModule.Builder();
+			EntityPanelModule.Builder builder = new();
 			builder.AddTopFragment(_fragment, -100);
 			return builder.Build();
 		}
-
 	}
 }

@@ -2,39 +2,44 @@
 }
 
 .unity-toggle__checkmark {
-    width: 40px;
-    height: 40px;
+	width: 40px;
+	height: 40px;
 }
 
 .WatertightGate-fragment__right-label, .WatertightGate-fragment__left-label {
-    -unity-text-align: middle-left;
-    align-self: center;
-    justify-content: center;
-    align-items: center;
+	-unity-text-align: middle-left;
+	align-self: center;
+	justify-content: center;
+	align-items: center;
 }
+
 .WatertightGate-fragment__right-label {
-    margin-left: 8px;
+	margin-left: 8px;
 }
+
 .WatertightGate-fragment__left-label {
-    margin-right: 8px;
+	margin-right: 8px;
 }
+
 .WatertightGate-fragment__row {
-    flex-direction: row;
-    justify-content: flex-start;
-    align-self: stretch;
-    align-items: center;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-self: stretch;
+	align-items: center;
 }
+
 .WatertightGate-fragment__toggle-container {
-    flex-direction: row;
+	flex-direction: row;
 }
 
 .WatertightGate-fragment__icon-pass {
-    background-image: url("project://database/Assets/Mods/WatertightGates/AssetBundles/Images/ico-gate-pass.png");
+	background-image: url("project://database/Assets/Mods/WatertightGates/AssetBundles/Images/ico-gate-pass.png");
 }
 
 .WatertightGate-fragment__icon-active {
-    background-image: url("project://database/Assets/Mods/WatertightGates/AssetBundles/Images/automation-state-on-large.png");
+	background-image: url("project://database/Assets/Mods/WatertightGates/AssetBundles/Images/automation-state-on-large.png");
 }
+
 .WatertightGate-fragment__icon-inactive {
-    background-image: url("project://database/Assets/Mods/WatertightGates/AssetBundles/Images/automation-state-off-large.png");
+	background-image: url("project://database/Assets/Mods/WatertightGates/AssetBundles/Images/automation-state-off-large.png");
 }

@@ -9,12 +9,19 @@ using UnityEngine;
 namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Components
 {
 	/// <summary>
-	/// Extracted from <see cref="Timberborn.WaterObjects.WaterObstacle"/>
+	///     Extracted from <see cref="Timberborn.WaterObjects.WaterObstacle" />
 	/// </summary>
 	internal class WaterBlocker : BaseComponent, IAwakableComponent, IFinishedStateListener
 	{
 		private readonly IWaterService _waterService;
 		private CommitableState<float> _height;
+
+
+		public WaterBlocker(IWaterService waterService)
+		{
+			_waterService = waterService;
+		}
+
 		public float Height
 		{
 			get => _height.Value;
@@ -25,44 +32,6 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 			}
 		}
 
-
-		public WaterBlocker(IWaterService waterService)
-		{
-			_waterService = waterService;
-		}
-
-		#region IAwakableComponent
-		private WatertightGateSpec _spec;
-		private BlockObject _blockObject;
-
-		public void Awake()
-		{
-			_spec = GetComponent<WatertightGateSpec>();
-			_blockObject = GetComponent<BlockObject>();
-		}
-		#endregion
-
-		#region IFinishedStateListener
-		public void OnEnterFinishedState()
-		{
-			foreach (var blocking in _spec.WaterBlockingPositions)
-			{
-				var coordinates = _blockObject.TransformCoordinates(blocking);
-				_waterService.AddFullObstacle(coordinates);
-			}
-			_UpdateState();
-		}
-
-		public void OnExitFinishedState()
-		{
-			foreach (var blocking in _spec.WaterBlockingPositions)
-			{
-				var coordinates = _blockObject.TransformCoordinates(blocking);
-				_waterService.RemoveFullObstacle(coordinates);
-			}
-			Height = 0;
-		}
-		#endregion
 		private void _UpdateState()
 		{
 			if (_height.DesiredValue is > 1f or < 0f)
@@ -71,11 +40,13 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 				// Clamp in range
 				_height.DesiredValue = Mathf.Clamp(_height.DesiredValue, 0f, 1f);
 			}
+
 			if (!_blockObject.IsFinished || !_height.HasChange)
 			{
 				return;
 			}
-			var coordinates = _blockObject.TransformCoordinates(_spec.WaterDynamicPosition);
+
+			Vector3Int coordinates = _blockObject.TransformCoordinates(_spec.WaterDynamicPosition);
 			switch (_height.Value)
 			{
 				case 1f:
@@ -84,9 +55,8 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 				case > 0f when _height.DesiredValue == 0:
 					_waterService.RemoveInflowLimit(coordinates);
 					break;
-				default:
-					break;
 			}
+
 			switch (_height.DesiredValue)
 			{
 				case 1f:
@@ -95,10 +65,48 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 				case > 0f:
 					_waterService.SetInflowLimit(coordinates, _height.DesiredValue);
 					break;
-				default:
-					break;
 			}
+
 			_height.Commit();
 		}
+
+		#region IAwakableComponent
+
+		private WatertightGateSpec _spec = null!;
+		private BlockObject _blockObject = null!;
+
+		public void Awake()
+		{
+			_spec = GetComponent<WatertightGateSpec>();
+			_blockObject = GetComponent<BlockObject>();
+		}
+
+		#endregion
+
+		#region IFinishedStateListener
+
+		public void OnEnterFinishedState()
+		{
+			foreach (Vector3Int blocking in _spec.WaterBlockingPositions)
+			{
+				Vector3Int coordinates = _blockObject.TransformCoordinates(blocking);
+				_waterService.AddFullObstacle(coordinates);
+			}
+
+			_UpdateState();
+		}
+
+		public void OnExitFinishedState()
+		{
+			foreach (Vector3Int blocking in _spec.WaterBlockingPositions)
+			{
+				Vector3Int coordinates = _blockObject.TransformCoordinates(blocking);
+				_waterService.RemoveFullObstacle(coordinates);
+			}
+
+			Height = 0;
+		}
+
+		#endregion
 	}
 }

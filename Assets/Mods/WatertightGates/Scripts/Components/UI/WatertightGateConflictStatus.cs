@@ -9,9 +9,6 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 {
 	internal class WatertightGateConflictStatus : BaseComponent, IAwakableComponent, IStartableComponent
 	{
-		private static string _ConflictLocKey => GateConflictStatus.ConflictLocKey;
-		private static string _ConflictShortLocKey => GateConflictStatus.ConflictShortLocKey;
-
 		private readonly ILoc _loc;
 
 		private WatertightGate _gate;
@@ -23,21 +20,20 @@ namespace GerkinDev.WatertightGates.Assets.Mods.WatertightGates.Scripts.Componen
 			_loc = loc;
 		}
 
+		private static string _ConflictLocKey => GateConflictStatus.ConflictLocKey;
+		private static string _ConflictShortLocKey => GateConflictStatus.ConflictShortLocKey;
+
 		public void Awake()
 		{
 			_gate = GetComponent<WatertightGate>();
-			_statusToggle = StatusToggle.CreateNormalStatusWithAlertAndFloatingIcon("GateConflict", _loc.T(_ConflictLocKey), _loc.T(_ConflictShortLocKey));
+			_statusToggle = StatusToggle.CreateNormalStatusWithAlertAndFloatingIcon("GateConflict",
+				_loc.T(_ConflictLocKey), _loc.T(_ConflictShortLocKey));
 			_gate.ConflictStateChanged += OnStateChanged;
 		}
 
-		public void Start()
-		{
-			GetComponent<StatusSubject>().RegisterStatus(_statusToggle);
-		}
+		public void Start() => GetComponent<StatusSubject>().RegisterStatus(_statusToggle);
 
-		public void OnStateChanged(object sender, EventArgs e)
-		{
+		public void OnStateChanged(object sender, EventArgs e) =>
 			_statusToggle.Toggle(_gate.CurrentGateState == EGateState.OpenConflict);
-		}
 	}
 }
