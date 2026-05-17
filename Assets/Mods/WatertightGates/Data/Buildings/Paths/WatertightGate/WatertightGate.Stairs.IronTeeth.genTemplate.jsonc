@@ -15,15 +15,6 @@
       "TimbermeshSpec": {
         "Model": "Buildings/Paths/WatertightGate/WatertightGate.Stairs.IronTeeth.Model"
       }
-    },
-    "#Unfinished": {
-      "Children": {
-        "ConstructionStage0": {
-          "TimbermeshSpec": {
-            "Model": "Buildings/Paths/WatertightGate/WatertightGate.Stairs.IronTeeth.Model"
-          }
-        }
-      }
     }
   }
 }

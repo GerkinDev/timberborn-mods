@@ -341,6 +341,9 @@
             ],
             "SphereColliders": [],
             "CapsuleColliders": []
+          },
+          "TimbermeshSpec": {
+            "Model": "ConstructionBases/ConstructionBase1x1/ConstructionBase1x1.Model"
           }
         }
       }

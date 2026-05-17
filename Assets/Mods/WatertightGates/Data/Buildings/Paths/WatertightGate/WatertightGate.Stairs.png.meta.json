@@ -1,8 +1,8 @@
 {
-	"isSprite": true,
-	"generateMipmap": false,
-	"filterMode": "Bilinear",
-	"textureFormat": "RGBA32",
-	"width": 112,
-	"height": 112
+  "isSprite": true,
+  "generateMipmap": false,
+  "filterMode": "Bilinear",
+  "textureFormat": "RGBA32",
+  "width": 112,
+  "height": 112
 }

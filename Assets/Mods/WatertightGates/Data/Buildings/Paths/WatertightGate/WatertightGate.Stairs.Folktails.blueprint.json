@@ -256,7 +256,7 @@
             "SphereColliders": []
           },
           "TimbermeshSpec": {
-            "Model": "Buildings/Paths/WatertightGate/WatertightGate.Stairs.Folktails.Model"
+            "Model": "ConstructionBases/ConstructionBase1x1/ConstructionBase1x1.Model"
           }
         }
       }

@@ -18,15 +18,6 @@
       "TimbermeshSpec": {
         "Model": "Buildings/Paths/WatertightGate/WatertightGate.Flat.Folktails.Model"
       }
-    },
-    "#Unfinished": {
-      "Children": {
-        "ConstructionStage0": {
-          "TimbermeshSpec": {
-            "Model": "Buildings/Paths/WatertightGate/WatertightGate.Flat.Folktails.Model"
-          }
-        }
-      }
     }
   }
 }

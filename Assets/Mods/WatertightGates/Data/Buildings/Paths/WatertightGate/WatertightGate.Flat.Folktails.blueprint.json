@@ -141,38 +141,6 @@
   },
   "Children": {
     "#Finished": {
-      "Children": {
-        "DirtPath0000": {
-          "TimbermeshSpec": {
-            "Model": "Buildings/Paths/Path/DirtPath0000.Model"
-          }
-        },
-        "DirtPath0010": {
-          "TimbermeshSpec": {
-            "Model": "Buildings/Paths/Path/DirtPath0010.Model"
-          }
-        },
-        "DirtPath0011": {
-          "TimbermeshSpec": {
-            "Model": "Buildings/Paths/Path/DirtPath0011.Model"
-          }
-        },
-        "DirtPath0111": {
-          "TimbermeshSpec": {
-            "Model": "Buildings/Paths/Path/DirtPath0111.Model"
-          }
-        },
-        "DirtPath1010": {
-          "TimbermeshSpec": {
-            "Model": "Buildings/Paths/Path/DirtPath1010.Model"
-          }
-        },
-        "DirtPath1111": {
-          "TimbermeshSpec": {
-            "Model": "Buildings/Paths/Path/DirtPath1111.Model"
-          }
-        }
-      },
       "CollidersSpec": {
         "BoxColliders": [
           {
@@ -244,9 +212,39 @@
             "SphereColliders": []
           },
           "TimbermeshSpec": {
-            "Model": "Buildings/Paths/WatertightGate/WatertightGate.Flat.Folktails.Model"
+            "Model": "ConstructionBases/ConstructionBase1x1/ConstructionBase1x1.Model"
           }
         }
+      }
+    },
+    "DirtPath0000": {
+      "TimbermeshSpec": {
+        "Model": "Buildings/Paths/Path/DirtPath0000.Model"
+      }
+    },
+    "DirtPath0010": {
+      "TimbermeshSpec": {
+        "Model": "Buildings/Paths/Path/DirtPath0010.Model"
+      }
+    },
+    "DirtPath0011": {
+      "TimbermeshSpec": {
+        "Model": "Buildings/Paths/Path/DirtPath0011.Model"
+      }
+    },
+    "DirtPath0111": {
+      "TimbermeshSpec": {
+        "Model": "Buildings/Paths/Path/DirtPath0111.Model"
+      }
+    },
+    "DirtPath1010": {
+      "TimbermeshSpec": {
+        "Model": "Buildings/Paths/Path/DirtPath1010.Model"
+      }
+    },
+    "DirtPath1111": {
+      "TimbermeshSpec": {
+        "Model": "Buildings/Paths/Path/DirtPath1111.Model"
       }
     }
   },
