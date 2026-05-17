@@ -8,7 +8,7 @@ namespace GerkinDev.WatertightGates
 
 		private static string _GetPrefix(string? name)
 		{
-			string prefix = MOD_ID;
+			var prefix = MOD_ID;
 			if (!string.IsNullOrEmpty(name))
 			{
 				prefix += "::" + name;
@@ -19,8 +19,8 @@ namespace GerkinDev.WatertightGates
 
 		public static void Log(string? name, string format, params object?[] args)
 		{
-			string logStr = string.Format(format, args);
-			string prefix = _GetPrefix(name);
+			var logStr = string.Format(format, args);
+			var prefix = _GetPrefix(name);
 			logStr = $"[{prefix}] {logStr}";
 			Debug.Log(logStr);
 		}
@@ -29,8 +29,8 @@ namespace GerkinDev.WatertightGates
 
 		public static void Warn(string? name, string format, params object?[] args)
 		{
-			string logStr = string.Format(format, args);
-			string prefix = _GetPrefix(name);
+			var logStr = string.Format(format, args);
+			var prefix = _GetPrefix(name);
 			logStr = $"[{prefix}] {logStr}";
 			Debug.LogWarning(logStr);
 		}

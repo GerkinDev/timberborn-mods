@@ -9,10 +9,10 @@ namespace GerkinDev.WatertightGates.Utils
 	{
 		public static void DebugNode(this VisualElement debugged)
 		{
-			foreach (VisualElement? child in debugged.Query().ToList())
+			foreach (var child in debugged.Query().ToList())
 			{
 				List<string> path = new();
-				VisualElement? curr = child;
+				var curr = child;
 				while (curr != null && curr != debugged)
 				{
 					path.Add(curr.name + string.Join("", curr.GetClasses().Select(c => "." + c)));

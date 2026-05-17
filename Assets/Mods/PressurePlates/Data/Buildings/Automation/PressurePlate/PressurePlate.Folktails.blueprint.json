@@ -1,375 +1,375 @@
 {
-	"BlockObjectNavMeshSettingsSpec": {
-		"NoAutoWalls": true,
-		"GenerateFloorsOnStackable": false,
-		"EdgeGroups": [
-			{
-				"Cost": 1.0,
-				"Group": {
-					"UseGroup": false,
-					"GroupName": ""
-				},
-				"IsPath": true,
-				"AddedEdges": [
-					{
-						"Start": {
-							"X": 0,
-							"Y": 0,
-							"Z": 0
-						},
-						"End": {
-							"X": -1,
-							"Y": 0,
-							"Z": 0
-						},
-						"IsTwoWay": false
-					},
-					{
-						"Start": {
-							"X": 0,
-							"Y": 0,
-							"Z": 0
-						},
-						"End": {
-							"X": 1,
-							"Y": 0,
-							"Z": 0
-						},
-						"IsTwoWay": false
-					},
-					{
-						"Start": {
-							"X": 0,
-							"Y": 0,
-							"Z": 0
-						},
-						"End": {
-							"X": 0,
-							"Y": -1,
-							"Z": 0
-						},
-						"IsTwoWay": false
-					},
-					{
-						"Start": {
-							"X": 0,
-							"Y": 0,
-							"Z": 0
-						},
-						"End": {
-							"X": 0,
-							"Y": 1,
-							"Z": 0
-						},
-						"IsTwoWay": false
-					}
-				]
-			}
-		],
-		"UnblockedCoordinates": [],
-		"BlockedEdges": []
-	},
-	"BlockObjectSpec": {
-		"Size": {
-			"X": 1,
-			"Y": 1,
-			"Z": 1
-		},
-		"Blocks": [
-			{
-				"MatterBelow": "GroundOrStackable",
-				"Occupations": "Path",
-				"Stackable": "None",
-				"OccupyAllBelow": false,
-				"Underground": false
-			}
-		],
-		"Entrance": {
-			"HasEntrance": false,
-			"Coordinates": {
-				"X": 0,
-				"Y": 0,
-				"Z": 0
-			}
-		},
-		"BaseZ": 0,
-		"Overridable": false,
-		"Flippable": false
-	},
-	"BlockObjectWithPathRangeSpec": {},
-	"BuildingModelSpec": {
-		"FinishedModelName": "#Finished",
-		"UnfinishedModelName": "#Unfinished",
-		"FinishedUncoveredModelName": "",
-		"UndergroundModelName": "",
-		"ConstructionModeModel": "Finished",
-		"UndergroundModelDepth": 0
-	},
-	"BuildingSpec": {
-		"SelectionSoundName": "Automation",
-		"LoopingSoundName": "",
-		"BuildingCost": [
-			{
-				"Id": "Log",
-				"Amount": 10
-			},
-			{
-				"Id": "Plank",
-				"Amount": 6
-			},
-			{
-				"Id": "Gear",
-				"Amount": 6
-			},
-			{
-				"Id": "ScrapMetal",
-				"Amount": 6
-			}
-		],
-		"ScienceCost": 400,
-		"PlaceFinished": false,
-		"FinishableWithBeaversOnSite": false,
-		"DrawRangeBoundsOnIt": false
-	},
-	"ConstructionSiteProgressVisualizerSpec": {
-		"ProgressThresholds": [
-			0.0
-		]
-	},
-	"DynamicPathModelSpec": {
-		"GroundModelPrefix": "DirtPath",
-		"RoofModelPrefix": ""
-	},
-	"LabeledEntitySpec": {
-		"DisplayNameLocKey": "GerkinDev.PressurePlate.Building.PressurePlate.DisplayName",
-		"DescriptionLocKey": "GerkinDev.PressurePlate.Building.PressurePlate.Description",
-		"FlavorDescriptionLocKey": "GerkinDev.PressurePlate.Building.PressurePlate.FlavorDescription",
-		"Icon": "Buildings/Automation/Chronometer/ChronometerIcon"
-	},
-	"MergeableObjectModelEnforcerSpec": {},
-	"PathSpec": {
-		"MainPathCoordinates": {
-			"X": 0,
-			"Y": 0,
-			"Z": 0
-		}
-	},
-	"PlaceableBlockObjectSpec": {
-		"ToolGroupId": "Automation",
-		"ToolOrder": 61,
-		"ToolShape": "Square",
-		"Layout": "Single",
-		"CustomPivot": {
-			"HasCustomPivot": false,
-			"Coordinates": {
-				"X": 0.0,
-				"Y": 0.0,
-				"Z": 0.0
-			}
-		},
-		"CanBeAttachedToTerrainSide": false,
-		"DevModeTool": false
-	},
-	"PressurePlateSpec": {},
-	"TemplateSpec": {
-		"TemplateName": "GerkinDev.PressurePlates.Folktails",
-		"BackwardCompatibleTemplateNames": [],
-		"RequiredFeatureToggle": "",
-		"DisablingFeatureToggle": ""
-	},
-	"Children": {
-		"#Finished": {
-			"CollidersSpec": {
-				"BoxColliders": [
-					{
-						"Center": {
-							"X": 0.5,
-							"Y": 0.1,
-							"Z": 0.5
-						},
-						"Size": {
-							"X": 1.0,
-							"Y": 0.2,
-							"Z": 1.0
-						}
-					}
-				],
-				"SphereColliders": [],
-				"CapsuleColliders": []
-			},
-			"TimbermeshSpec": {
-				"Model": "Buildings/Automation/PressurePlate/PressurePlate.Folktails.Model"
-			},
-			"Children": {
-				"DirtPath0000": {
-					"CollidersSpec": {
-						"BoxColliders": [
-							{
-								"Center": {
-									"X": 0.5,
-									"Y": 0.02,
-									"Z": 0.5
-								},
-								"Size": {
-									"X": 1.0,
-									"Y": 0.04,
-									"Z": 1.0
-								}
-							}
-						],
-						"SphereColliders": [],
-						"CapsuleColliders": []
-					},
-					"TimbermeshSpec": {
-						"Model": "Buildings/Paths/Path/DirtPath0000.Model"
-					}
-				},
-				"DirtPath0010": {
-					"CollidersSpec": {
-						"BoxColliders": [
-							{
-								"Center": {
-									"X": 0.5,
-									"Y": 0.02,
-									"Z": 0.5
-								},
-								"Size": {
-									"X": 1.0,
-									"Y": 0.04,
-									"Z": 1.0
-								}
-							}
-						],
-						"SphereColliders": [],
-						"CapsuleColliders": []
-					},
-					"TimbermeshSpec": {
-						"Model": "Buildings/Paths/Path/DirtPath0010.Model"
-					}
-				},
-				"DirtPath0011": {
-					"CollidersSpec": {
-						"BoxColliders": [
-							{
-								"Center": {
-									"X": 0.5,
-									"Y": 0.02,
-									"Z": 0.5
-								},
-								"Size": {
-									"X": 1.0,
-									"Y": 0.04,
-									"Z": 1.0
-								}
-							}
-						],
-						"SphereColliders": [],
-						"CapsuleColliders": []
-					},
-					"TimbermeshSpec": {
-						"Model": "Buildings/Paths/Path/DirtPath0011.Model"
-					}
-				},
-				"DirtPath0111": {
-					"CollidersSpec": {
-						"BoxColliders": [
-							{
-								"Center": {
-									"X": 0.5,
-									"Y": 0.02,
-									"Z": 0.5
-								},
-								"Size": {
-									"X": 1.0,
-									"Y": 0.04,
-									"Z": 1.0
-								}
-							}
-						],
-						"SphereColliders": [],
-						"CapsuleColliders": []
-					},
-					"TimbermeshSpec": {
-						"Model": "Buildings/Paths/Path/DirtPath0111.Model"
-					}
-				},
-				"DirtPath1010": {
-					"CollidersSpec": {
-						"BoxColliders": [
-							{
-								"Center": {
-									"X": 0.5,
-									"Y": 0.02,
-									"Z": 0.5
-								},
-								"Size": {
-									"X": 1.0,
-									"Y": 0.04,
-									"Z": 1.0
-								}
-							}
-						],
-						"SphereColliders": [],
-						"CapsuleColliders": []
-					},
-					"TimbermeshSpec": {
-						"Model": "Buildings/Paths/Path/DirtPath1010.Model"
-					}
-				},
-				"DirtPath1111": {
-					"CollidersSpec": {
-						"BoxColliders": [
-							{
-								"Center": {
-									"X": 0.5,
-									"Y": 0.02,
-									"Z": 0.5
-								},
-								"Size": {
-									"X": 1.0,
-									"Y": 0.04,
-									"Z": 1.0
-								}
-							}
-						],
-						"SphereColliders": [],
-						"CapsuleColliders": []
-					},
-					"TimbermeshSpec": {
-						"Model": "Buildings/Paths/Path/DirtPath1111.Model"
-					}
-				}
-			}
-		},
-		"#Unfinished": {
-			"Children": {
-				"ConstructionBase1x1#nested": {
-					"BlueprintPath": "ConstructionBases/ConstructionBase1x1/ConstructionBase1x1.blueprint"
-				},
-				"ConstructionStage0": {
-					"CollidersSpec": {
-						"BoxColliders": [
-							{
-								"Center": {
-									"X": 0.5,
-									"Y": 0.1,
-									"Z": 0.5
-								},
-								"Size": {
-									"X": 1.0,
-									"Y": 0.2,
-									"Z": 1.0
-								}
-							}
-						],
-						"SphereColliders": [],
-						"CapsuleColliders": []
-					},
-					"TimbermeshSpec": {
-						"Model": "Buildings/Automation/PressurePlate/PressurePlate.Folktails.Model"
-					}
-				}
-			}
-		}
-	}
+  "BlockObjectNavMeshSettingsSpec": {
+    "NoAutoWalls": true,
+    "GenerateFloorsOnStackable": false,
+    "EdgeGroups": [
+      {
+        "Cost": 1.0,
+        "Group": {
+          "UseGroup": false,
+          "GroupName": ""
+        },
+        "IsPath": true,
+        "AddedEdges": [
+          {
+            "Start": {
+              "X": 0,
+              "Y": 0,
+              "Z": 0
+            },
+            "End": {
+              "X": -1,
+              "Y": 0,
+              "Z": 0
+            },
+            "IsTwoWay": false
+          },
+          {
+            "Start": {
+              "X": 0,
+              "Y": 0,
+              "Z": 0
+            },
+            "End": {
+              "X": 1,
+              "Y": 0,
+              "Z": 0
+            },
+            "IsTwoWay": false
+          },
+          {
+            "Start": {
+              "X": 0,
+              "Y": 0,
+              "Z": 0
+            },
+            "End": {
+              "X": 0,
+              "Y": -1,
+              "Z": 0
+            },
+            "IsTwoWay": false
+          },
+          {
+            "Start": {
+              "X": 0,
+              "Y": 0,
+              "Z": 0
+            },
+            "End": {
+              "X": 0,
+              "Y": 1,
+              "Z": 0
+            },
+            "IsTwoWay": false
+          }
+        ]
+      }
+    ],
+    "UnblockedCoordinates": [],
+    "BlockedEdges": []
+  },
+  "BlockObjectSpec": {
+    "Size": {
+      "X": 1,
+      "Y": 1,
+      "Z": 1
+    },
+    "Blocks": [
+      {
+        "MatterBelow": "GroundOrStackable",
+        "Occupations": "Path",
+        "Stackable": "None",
+        "OccupyAllBelow": false,
+        "Underground": false
+      }
+    ],
+    "Entrance": {
+      "HasEntrance": false,
+      "Coordinates": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      }
+    },
+    "BaseZ": 0,
+    "Overridable": false,
+    "Flippable": false
+  },
+  "BlockObjectWithPathRangeSpec": {},
+  "BuildingModelSpec": {
+    "FinishedModelName": "#Finished",
+    "UnfinishedModelName": "#Unfinished",
+    "FinishedUncoveredModelName": "",
+    "UndergroundModelName": "",
+    "ConstructionModeModel": "Finished",
+    "UndergroundModelDepth": 0
+  },
+  "BuildingSpec": {
+    "SelectionSoundName": "Automation",
+    "LoopingSoundName": "",
+    "BuildingCost": [
+      {
+        "Id": "Log",
+        "Amount": 10
+      },
+      {
+        "Id": "Plank",
+        "Amount": 6
+      },
+      {
+        "Id": "Gear",
+        "Amount": 6
+      },
+      {
+        "Id": "ScrapMetal",
+        "Amount": 6
+      }
+    ],
+    "ScienceCost": 400,
+    "PlaceFinished": false,
+    "FinishableWithBeaversOnSite": false,
+    "DrawRangeBoundsOnIt": false
+  },
+  "ConstructionSiteProgressVisualizerSpec": {
+    "ProgressThresholds": [
+      0.0
+    ]
+  },
+  "DynamicPathModelSpec": {
+    "GroundModelPrefix": "DirtPath",
+    "RoofModelPrefix": ""
+  },
+  "LabeledEntitySpec": {
+    "DisplayNameLocKey": "GerkinDev.PressurePlate.Building.PressurePlate.DisplayName",
+    "DescriptionLocKey": "GerkinDev.PressurePlate.Building.PressurePlate.Description",
+    "FlavorDescriptionLocKey": "GerkinDev.PressurePlate.Building.PressurePlate.FlavorDescription",
+    "Icon": "Buildings/Automation/Chronometer/ChronometerIcon"
+  },
+  "MergeableObjectModelEnforcerSpec": {},
+  "PathSpec": {
+    "MainPathCoordinates": {
+      "X": 0,
+      "Y": 0,
+      "Z": 0
+    }
+  },
+  "PlaceableBlockObjectSpec": {
+    "ToolGroupId": "Automation",
+    "ToolOrder": 61,
+    "ToolShape": "Square",
+    "Layout": "Single",
+    "CustomPivot": {
+      "HasCustomPivot": false,
+      "Coordinates": {
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      }
+    },
+    "CanBeAttachedToTerrainSide": false,
+    "DevModeTool": false
+  },
+  "PressurePlateSpec": {},
+  "TemplateSpec": {
+    "TemplateName": "GerkinDev.PressurePlates.Folktails",
+    "BackwardCompatibleTemplateNames": [],
+    "RequiredFeatureToggle": "",
+    "DisablingFeatureToggle": ""
+  },
+  "Children": {
+    "#Finished": {
+      "CollidersSpec": {
+        "BoxColliders": [
+          {
+            "Center": {
+              "X": 0.5,
+              "Y": 0.1,
+              "Z": 0.5
+            },
+            "Size": {
+              "X": 1.0,
+              "Y": 0.2,
+              "Z": 1.0
+            }
+          }
+        ],
+        "SphereColliders": [],
+        "CapsuleColliders": []
+      },
+      "TimbermeshSpec": {
+        "Model": "Buildings/Automation/PressurePlate/PressurePlate.Folktails.Model"
+      },
+      "Children": {
+        "DirtPath0000": {
+          "CollidersSpec": {
+            "BoxColliders": [
+              {
+                "Center": {
+                  "X": 0.5,
+                  "Y": 0.02,
+                  "Z": 0.5
+                },
+                "Size": {
+                  "X": 1.0,
+                  "Y": 0.04,
+                  "Z": 1.0
+                }
+              }
+            ],
+            "SphereColliders": [],
+            "CapsuleColliders": []
+          },
+          "TimbermeshSpec": {
+            "Model": "Buildings/Paths/Path/DirtPath0000.Model"
+          }
+        },
+        "DirtPath0010": {
+          "CollidersSpec": {
+            "BoxColliders": [
+              {
+                "Center": {
+                  "X": 0.5,
+                  "Y": 0.02,
+                  "Z": 0.5
+                },
+                "Size": {
+                  "X": 1.0,
+                  "Y": 0.04,
+                  "Z": 1.0
+                }
+              }
+            ],
+            "SphereColliders": [],
+            "CapsuleColliders": []
+          },
+          "TimbermeshSpec": {
+            "Model": "Buildings/Paths/Path/DirtPath0010.Model"
+          }
+        },
+        "DirtPath0011": {
+          "CollidersSpec": {
+            "BoxColliders": [
+              {
+                "Center": {
+                  "X": 0.5,
+                  "Y": 0.02,
+                  "Z": 0.5
+                },
+                "Size": {
+                  "X": 1.0,
+                  "Y": 0.04,
+                  "Z": 1.0
+                }
+              }
+            ],
+            "SphereColliders": [],
+            "CapsuleColliders": []
+          },
+          "TimbermeshSpec": {
+            "Model": "Buildings/Paths/Path/DirtPath0011.Model"
+          }
+        },
+        "DirtPath0111": {
+          "CollidersSpec": {
+            "BoxColliders": [
+              {
+                "Center": {
+                  "X": 0.5,
+                  "Y": 0.02,
+                  "Z": 0.5
+                },
+                "Size": {
+                  "X": 1.0,
+                  "Y": 0.04,
+                  "Z": 1.0
+                }
+              }
+            ],
+            "SphereColliders": [],
+            "CapsuleColliders": []
+          },
+          "TimbermeshSpec": {
+            "Model": "Buildings/Paths/Path/DirtPath0111.Model"
+          }
+        },
+        "DirtPath1010": {
+          "CollidersSpec": {
+            "BoxColliders": [
+              {
+                "Center": {
+                  "X": 0.5,
+                  "Y": 0.02,
+                  "Z": 0.5
+                },
+                "Size": {
+                  "X": 1.0,
+                  "Y": 0.04,
+                  "Z": 1.0
+                }
+              }
+            ],
+            "SphereColliders": [],
+            "CapsuleColliders": []
+          },
+          "TimbermeshSpec": {
+            "Model": "Buildings/Paths/Path/DirtPath1010.Model"
+          }
+        },
+        "DirtPath1111": {
+          "CollidersSpec": {
+            "BoxColliders": [
+              {
+                "Center": {
+                  "X": 0.5,
+                  "Y": 0.02,
+                  "Z": 0.5
+                },
+                "Size": {
+                  "X": 1.0,
+                  "Y": 0.04,
+                  "Z": 1.0
+                }
+              }
+            ],
+            "SphereColliders": [],
+            "CapsuleColliders": []
+          },
+          "TimbermeshSpec": {
+            "Model": "Buildings/Paths/Path/DirtPath1111.Model"
+          }
+        }
+      }
+    },
+    "#Unfinished": {
+      "Children": {
+        "ConstructionBase1x1#nested": {
+          "BlueprintPath": "ConstructionBases/ConstructionBase1x1/ConstructionBase1x1.blueprint"
+        },
+        "ConstructionStage0": {
+          "CollidersSpec": {
+            "BoxColliders": [
+              {
+                "Center": {
+                  "X": 0.5,
+                  "Y": 0.1,
+                  "Z": 0.5
+                },
+                "Size": {
+                  "X": 1.0,
+                  "Y": 0.2,
+                  "Z": 1.0
+                }
+              }
+            ],
+            "SphereColliders": [],
+            "CapsuleColliders": []
+          },
+          "TimbermeshSpec": {
+            "Model": "Buildings/Automation/PressurePlate/PressurePlate.Folktails.Model"
+          }
+        }
+      }
+    }
+  }
 }

@@ -46,7 +46,7 @@ namespace GerkinDev.WatertightGates.Components
 				return;
 			}
 
-			Vector3Int coordinates = _blockObject.TransformCoordinates(_spec.WaterDynamicPosition);
+			var coordinates = _blockObject.TransformCoordinates(_spec.WaterDynamicPosition);
 			switch (_height.Value)
 			{
 				case 1f:
@@ -87,9 +87,9 @@ namespace GerkinDev.WatertightGates.Components
 
 		public void OnEnterFinishedState()
 		{
-			foreach (Vector3Int blocking in _spec.WaterBlockingPositions)
+			foreach (var blocking in _spec.WaterBlockingPositions)
 			{
-				Vector3Int coordinates = _blockObject.TransformCoordinates(blocking);
+				var coordinates = _blockObject.TransformCoordinates(blocking);
 				_waterService.AddFullObstacle(coordinates);
 			}
 
@@ -98,9 +98,9 @@ namespace GerkinDev.WatertightGates.Components
 
 		public void OnExitFinishedState()
 		{
-			foreach (Vector3Int blocking in _spec.WaterBlockingPositions)
+			foreach (var blocking in _spec.WaterBlockingPositions)
 			{
-				Vector3Int coordinates = _blockObject.TransformCoordinates(blocking);
+				var coordinates = _blockObject.TransformCoordinates(blocking);
 				_waterService.RemoveFullObstacle(coordinates);
 			}
 

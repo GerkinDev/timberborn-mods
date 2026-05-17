@@ -1,5 +1,5 @@
-﻿using GerkinDev.WatertightGates.Services;
-using System;
+﻿using System;
+using GerkinDev.WatertightGates.Services;
 using Timberborn.AutomationBuildingsUI;
 using Timberborn.BaseComponentSystem;
 using Timberborn.Localization;

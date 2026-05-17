@@ -1,8 +1,8 @@
 {
-	"NeedCollectionSpec": {
-		"CollectionId": "Folktails",
-		"Needs#append": [
-			"BerryBun"
-		]
-	}
+  "NeedCollectionSpec": {
+    "CollectionId": "Folktails",
+    "Needs#append": [
+      "BerryBun"
+    ]
+  }
 }

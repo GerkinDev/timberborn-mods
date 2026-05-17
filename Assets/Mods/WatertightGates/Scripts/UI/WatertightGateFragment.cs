@@ -1,5 +1,5 @@
-﻿using GerkinDev.WatertightGates.Components;
-using System;
+﻿using System;
+using GerkinDev.WatertightGates.Components;
 using Timberborn.AutomationBuildingsUI;
 using Timberborn.BaseComponentSystem;
 using Timberborn.CoreUI;
@@ -104,38 +104,32 @@ namespace GerkinDev.WatertightGates.UI
 			_inactiveStateToggle.Initialize();
 			return;
 
-			static string GetModeClass(WatertightGate.EGateMode value)
-			{
-				return value switch
+			static string GetModeClass(WatertightGate.EGateMode value) =>
+				value switch
 				{
 					WatertightGate.EGateMode.OPEN => GateToggle.OpenedClass,
 					WatertightGate.EGateMode.CLOSE => GateToggle.ClosedClass,
 					WatertightGate.EGateMode.PASS => "WatertightGate-fragment__icon-pass",
 					_ => throw new ArgumentException($"Invalid value {value}")
 				};
-			}
 
-			string GetModeLabel(WatertightGate.EGateMode value)
-			{
-				return _loc.T(value switch
+			string GetModeLabel(WatertightGate.EGateMode value) =>
+				_loc.T(value switch
 				{
 					WatertightGate.EGateMode.OPEN => "GerkinDev.WatertightGates.UI.WatertightGate.Modes.Open.Label",
 					WatertightGate.EGateMode.CLOSE => "GerkinDev.WatertightGates.UI.WatertightGate.Modes.Close.Label",
 					WatertightGate.EGateMode.PASS => "GerkinDev.WatertightGates.UI.WatertightGate.Modes.Pass.Label",
 					_ => throw new ArgumentException($"Invalid value {value}")
 				});
-			}
 
-			string GetModeTooltip(WatertightGate.EGateMode value)
-			{
-				return _loc.T(value switch
+			string GetModeTooltip(WatertightGate.EGateMode value) =>
+				_loc.T(value switch
 				{
 					WatertightGate.EGateMode.OPEN => "GerkinDev.WatertightGates.UI.WatertightGate.Modes.Open.Tooltip",
 					WatertightGate.EGateMode.CLOSE => "GerkinDev.WatertightGates.UI.WatertightGate.Modes.Close.Tooltip",
 					WatertightGate.EGateMode.PASS => "GerkinDev.WatertightGates.UI.WatertightGate.Modes.Pass.Tooltip",
 					_ => throw new ArgumentException($"Invalid value {value}")
 				});
-			}
 		}
 
 		#endregion
@@ -157,7 +151,7 @@ namespace GerkinDev.WatertightGates.UI
 				return;
 			}
 
-			float width = Mathf.Max(_activeWidth.Value, _inactiveWidth.Value);
+			var width = Mathf.Max(_activeWidth.Value, _inactiveWidth.Value);
 			_activeDesc.style.width = width;
 			_inactiveDesc.style.width = width;
 		}
@@ -174,21 +168,15 @@ namespace GerkinDev.WatertightGates.UI
 			ClearFragment();
 			_activeDesc = _root.Q<Label>("ActiveStateDesc");
 			_inactiveDesc = _root.Q<Label>("InactiveStateDesc");
-			_activeDesc.RegisterCallbackOnce<GeometryChangedEvent>(evt =>
-			{
-				_SetLabelSizes(evt.newRect);
-			});
-			_inactiveDesc.RegisterCallbackOnce<GeometryChangedEvent>(evt =>
-			{
-				_SetLabelSizes(inactive: evt.newRect);
-			});
+			_activeDesc.RegisterCallbackOnce<GeometryChangedEvent>(evt => { _SetLabelSizes(evt.newRect); });
+			_inactiveDesc.RegisterCallbackOnce<GeometryChangedEvent>(evt => { _SetLabelSizes(inactive: evt.newRect); });
 
 			return _root;
 		}
 
 		public void ShowFragment(BaseComponent entity)
 		{
-			WatertightGate? component = entity.GetComponent<WatertightGate>();
+			var component = entity.GetComponent<WatertightGate>();
 			if (component is null)
 			{
 				return;

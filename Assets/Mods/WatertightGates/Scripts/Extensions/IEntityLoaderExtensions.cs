@@ -12,7 +12,7 @@ namespace GerkinDev.WatertightGates.Extensions
 			PropertyKey<T> propertyKey
 		) where T : Enum
 		{
-			if (!entityLoader.TryGetComponent(componentKey, out IObjectLoader? objectLoader))
+			if (!entityLoader.TryGetComponent(componentKey, out var objectLoader))
 			{
 				throw new PersistenceException(componentKey, PersistenceException.PropertyKeyType.FromKey(propertyKey));
 			}
@@ -38,7 +38,7 @@ namespace GerkinDev.WatertightGates.Extensions
 			Func<T> defaultValueFactory
 		) where T : Enum
 		{
-			if (!entityLoader.TryGetComponent(componentKey, out IObjectLoader? objectLoader))
+			if (!entityLoader.TryGetComponent(componentKey, out var objectLoader))
 			{
 				return defaultValueFactory();
 			}
@@ -57,7 +57,7 @@ namespace GerkinDev.WatertightGates.Extensions
 		public static string GetOrDefault(this IEntityLoader entityLoader, ComponentKey componentKey,
 			PropertyKey<string> propertyKey, Func<string> defaultValueFactory)
 		{
-			if (!entityLoader.TryGetComponent(componentKey, out IObjectLoader? objectLoader))
+			if (!entityLoader.TryGetComponent(componentKey, out var objectLoader))
 			{
 				return defaultValueFactory();
 			}
@@ -80,7 +80,7 @@ namespace GerkinDev.WatertightGates.Extensions
 			Func<string> defaultValueFactory
 		)
 		{
-			if (!entityLoader.TryGetComponent(componentKey, out IObjectLoader? objectLoader))
+			if (!entityLoader.TryGetComponent(componentKey, out var objectLoader))
 			{
 				return defaultValueFactory();
 			}
@@ -103,7 +103,7 @@ namespace GerkinDev.WatertightGates.Extensions
 			PropertyKey<T> propertyKey
 		)
 		{
-			if (!entityLoader.TryGetComponent(componentKey, out IObjectLoader? objectLoader))
+			if (!entityLoader.TryGetComponent(componentKey, out var objectLoader))
 			{
 				return null;
 			}

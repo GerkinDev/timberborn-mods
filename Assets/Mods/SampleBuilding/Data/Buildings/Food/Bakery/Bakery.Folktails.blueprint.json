@@ -1,7 +1,7 @@
 {
-	"ManufactorySpec": {
-		"ProductionRecipeIds": [
-			"BerryBun"
-		]
-	}
+  "ManufactorySpec": {
+    "ProductionRecipeIds": [
+      "BerryBun"
+    ]
+  }
 }

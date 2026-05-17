@@ -1,9 +1,9 @@
 {
-	"GoodCollectionSpec": {
-		"CollectionId": "Folktails",
-		"Goods#append": [
-			"BerryJam",
-			"BerryBun"
-		]
-	}
+  "GoodCollectionSpec": {
+    "CollectionId": "Folktails",
+    "Goods#append": [
+      "BerryJam",
+      "BerryBun"
+    ]
+  }
 }

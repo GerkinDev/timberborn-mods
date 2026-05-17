@@ -3,12 +3,12 @@
 namespace GerkinDev.PressurePlates.Services
 {
 	/// <see cref="Timberborn.TickSystem.TickerUnityAdapter">
-	/// <see cref="Timberborn.TickSystem.TickService">
+	///     <see cref="Timberborn.TickSystem.TickService">
 	internal class TickMaster : MonoBehaviour
 	{
+		private float _timeSinceLastDispatch;
 		public OccupantDetectorService? OccupantDetectorService { get; internal set; }
 		public float ScanInterval { get; internal set; }
-		private float _timeSinceLastDispatch = 0f;
 
 		public void Update()
 		{
@@ -16,11 +16,12 @@ namespace GerkinDev.PressurePlates.Services
 			{
 				return;
 			}
+
 			if (Time.deltaTime == 0)
 			{
 				return;
 			}
-			
+
 			_timeSinceLastDispatch += Time.deltaTime;
 			if (_timeSinceLastDispatch < ScanInterval)
 			{

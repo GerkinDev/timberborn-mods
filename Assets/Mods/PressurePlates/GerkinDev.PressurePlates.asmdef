@@ -1,15 +1,15 @@
 ﻿{
-	"name": "GerkinDev.PressurePlates",
-	"rootNamespace": "GerkinDev.PressurePlates",
-	"references": [],
-	"includePlatforms": [],
-	"excludePlatforms": [],
-	"//allowUnsafeCode": "Required for UI",
-	"allowUnsafeCode": true,
-	"overrideReferences": false,
-	"precompiledReferences": [],
-	"autoReferenced": false,
-	"defineConstraints": [],
-	"versionDefines": [],
-	"noEngineReferences": false
+  "name": "GerkinDev.PressurePlates",
+  "rootNamespace": "GerkinDev.PressurePlates",
+  "references": [],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "//allowUnsafeCode": "Required for UI",
+  "allowUnsafeCode": true,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
 }

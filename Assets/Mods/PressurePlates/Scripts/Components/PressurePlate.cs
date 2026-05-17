@@ -1,6 +1,6 @@
+using System.Linq;
 using GerkinDev.PressurePlates.Extensions;
 using GerkinDev.PressurePlates.Services;
-using System.Linq;
 using Timberborn.BaseComponentSystem;
 using Timberborn.BlockSystem;
 using Timberborn.Illumination;
@@ -11,11 +11,29 @@ namespace GerkinDev.PressurePlates.Components
 	{
 		private readonly OccupantDetectorService _occupantDetectorService;
 
-		public bool HasOccupant { get; private set; }
-
 		public PressurePlate(OccupantDetectorService occupantDetectorService)
 		{
 			_occupantDetectorService = occupantDetectorService;
+		}
+
+		public bool HasOccupant { get; private set; }
+
+		private void _OnEnter(object sender, OccupantDetectorService.OccupancyEvent evt)
+		{
+			this.Log("Entered");
+			_OnChangeOccupancy(evt);
+		}
+
+		private void _OnExit(object sender, OccupantDetectorService.OccupancyEvent evt)
+		{
+			this.Log("Exited");
+			_OnChangeOccupancy(evt);
+		}
+
+		private void _OnChangeOccupancy(OccupantDetectorService.OccupancyEvent evt)
+		{
+			HasOccupant = evt.Within.Any();
+			_illuminator.Toggle(HasOccupant);
 		}
 
 		#region IAwakableComponent
@@ -60,23 +78,5 @@ namespace GerkinDev.PressurePlates.Components
 		}
 
 		#endregion
-
-		private void _OnEnter(object sender, OccupantDetectorService.OccupancyEvent evt)
-		{
-			this.Log("Entered");
-			_OnChangeOccupancy(evt);
-		}
-
-		private void _OnExit(object sender, OccupantDetectorService.OccupancyEvent evt)
-		{
-			this.Log("Exited");
-			_OnChangeOccupancy(evt);
-		}
-
-		private void _OnChangeOccupancy(OccupantDetectorService.OccupancyEvent evt)
-		{
-			HasOccupant = evt.Within.Any();
-			_illuminator.Toggle(HasOccupant);
-		}
 	}
 }

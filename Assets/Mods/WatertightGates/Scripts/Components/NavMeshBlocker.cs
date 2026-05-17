@@ -1,6 +1,6 @@
+using System;
 using GerkinDev.WatertightGates.Components.Specs;
 using GerkinDev.WatertightGates.Utils;
-using System;
 using Timberborn.BaseComponentSystem;
 using Timberborn.BlockSystem;
 using Timberborn.BuildingsNavigation;
@@ -53,17 +53,17 @@ namespace GerkinDev.WatertightGates.Components
 		public bool CanConnectPath(Vector3Int origin, Vector3Int target)
 		{
 			// Verify if the path is on the correct sides (aligned with passage)
-			Vector3Int direction = origin - target;
+			var direction = origin - target;
 			if (direction != _blockObject.TransformDirection(Direction2D.Down).ToOffset() &&
 				direction != _blockObject.TransformDirection(Direction2D.Up).ToOffset())
 			{
 				return false;
 			}
 
-			Vector3Int pathStart = _blockObject.TransformCoordinates(_spec.PathStart);
-			Vector3Int pathCenter = _blockObject.TransformCoordinates(_spec.PathCenter);
-			Vector3Int pathEnd = _blockObject.TransformCoordinates(_spec.PathEnd);
-			foreach ((Vector3Int a, Vector3Int b) in new[] { (origin, target), (target, origin) })
+			var pathStart = _blockObject.TransformCoordinates(_spec.PathStart);
+			var pathCenter = _blockObject.TransformCoordinates(_spec.PathCenter);
+			var pathEnd = _blockObject.TransformCoordinates(_spec.PathEnd);
+			foreach (var (a, b) in new[] { (origin, target), (target, origin) })
 			{
 				if (_blockObject.IsIntersecting(Block.FullFrom(a)))
 				{
@@ -113,11 +113,11 @@ namespace GerkinDev.WatertightGates.Components
 				return;
 			}
 
-			Vector3Int start = _blockObject.TransformCoordinates(_spec.PathStart);
-			Vector3Int end = _blockObject.TransformCoordinates(_spec.PathEnd);
-			Vector3Int center = _blockObject.TransformCoordinates(_spec.PathCenter);
-			float prevCost = _GetCost(_traverseCost.Value);
-			float cost = _GetCost(_traverseCost.DesiredValue);
+			var start = _blockObject.TransformCoordinates(_spec.PathStart);
+			var end = _blockObject.TransformCoordinates(_spec.PathEnd);
+			var center = _blockObject.TransformCoordinates(_spec.PathCenter);
+			var prevCost = _GetCost(_traverseCost.Value);
+			var cost = _GetCost(_traverseCost.DesiredValue);
 			_navMeshService.RemoveEdge(_GetEdge(center, start, prevCost));
 			_navMeshService.RemoveEdge(_GetEdge(center, end, prevCost));
 			_navMeshService.AddEdge(_GetEdge(center, start, cost));

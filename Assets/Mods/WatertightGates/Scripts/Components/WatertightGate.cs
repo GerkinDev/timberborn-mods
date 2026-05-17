@@ -1,7 +1,7 @@
+using System;
 using GerkinDev.WatertightGates.Components.Specs;
 using GerkinDev.WatertightGates.Extensions;
 using GerkinDev.WatertightGates.Services;
-using System;
 using Timberborn.Automation;
 using Timberborn.BaseComponentSystem;
 using Timberborn.BlockSystem;
@@ -275,7 +275,7 @@ namespace GerkinDev.WatertightGates.Components
 			}
 			catch (ArgumentException ex) when (ex.InnerException is ArgumentException)
 			{
-				string? stringValue = entityLoader.GetAsString(_persistenceKey, key);
+				var stringValue = entityLoader.GetAsString(_persistenceKey, key);
 				if (string.IsNullOrEmpty(stringValue))
 				{
 					this.Warn("No {0} gate mode found", label);
@@ -312,7 +312,7 @@ namespace GerkinDev.WatertightGates.Components
 			catch (IEntityLoaderExtensions.PersistenceException ex)
 			{
 				this.Log("Failed to load main mode value: {0}", ex);
-				string mode = entityLoader.GetOrDefaultAsString(
+				var mode = entityLoader.GetOrDefaultAsString(
 					_persistenceKey,
 					_mainModeKey,
 					() => entityLoader.GetOrDefaultAsString(
@@ -352,7 +352,7 @@ namespace GerkinDev.WatertightGates.Components
 
 		public void Save(IEntitySaver entitySaver)
 		{
-			IObjectSaver? objectSaver = entitySaver.GetComponent(_persistenceKey);
+			var objectSaver = entitySaver.GetComponent(_persistenceKey);
 			objectSaver.Set(_mainModeKey, _mainMode);
 			objectSaver.Set(_activeGateModeKey, ActiveGateMode);
 			objectSaver.Set(_inactiveGateModeKey, InactiveGateMode);
@@ -379,7 +379,7 @@ namespace GerkinDev.WatertightGates.Components
 			get => _currentGateState;
 			set
 			{
-				EGateState prevState = _currentGateState;
+				var prevState = _currentGateState;
 				_currentGateState = value;
 				_UpdateState();
 				if (_didInitialize)

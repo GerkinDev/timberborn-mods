@@ -1,17 +1,17 @@
 {
-    "name": "GerkinDev.WatertightGates",
-    "rootNamespace": "GerkinDev.WatertightGates",
-    "references": [
-        "GUID:7e8721c15c995034982194661dfa49ff"
-    ],
-    "includePlatforms": [],
-    "excludePlatforms": [],
-    "//allowUnsafeCode": "Required for UI",
-    "allowUnsafeCode": true,
-    "overrideReferences": false,
-    "precompiledReferences": [],
-    "autoReferenced": false,
-    "defineConstraints": [],
-    "versionDefines": [],
-    "noEngineReferences": false
+  "name": "GerkinDev.WatertightGates",
+  "rootNamespace": "GerkinDev.WatertightGates",
+  "references": [
+    "GUID:7e8721c15c995034982194661dfa49ff"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "//allowUnsafeCode": "Required for UI",
+  "allowUnsafeCode": true,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
 }

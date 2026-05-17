@@ -1,5 +1,5 @@
-﻿using GerkinDev.WatertightGates.Components.Specs;
-using System.Linq;
+﻿using System.Linq;
+using GerkinDev.WatertightGates.Components.Specs;
 using Timberborn.BaseComponentSystem;
 using Timberborn.BlockObjectModelSystem;
 using Timberborn.BlockSystem;
@@ -46,7 +46,7 @@ namespace GerkinDev.WatertightGates.Components
 
 		public void UpdateModel()
 		{
-			Vector3Int pathOrigin = _GetPathOrigin();
+			var pathOrigin = _GetPathOrigin();
 			_SetMatchingModel(_CanConnectInDirection(pathOrigin, Direction2D.Down),
 				_CanConnectInDirection(pathOrigin, Direction2D.Left),
 				_CanConnectInDirection(pathOrigin, Direction2D.Up),
@@ -58,8 +58,8 @@ namespace GerkinDev.WatertightGates.Components
 
 		private GameObject _GetModelVariant(string prefix, string variant, Material material)
 		{
-			string childName = prefix + variant;
-			GameObject gameObject = GameObject.FindChild(childName);
+			var childName = prefix + variant;
+			var gameObject = GameObject.FindChild(childName);
 			gameObject.SetActive(false);
 			gameObject.GetComponentInChildren<Renderer>().sharedMaterial = material;
 			return gameObject;
@@ -67,10 +67,10 @@ namespace GerkinDev.WatertightGates.Components
 
 		private void _SetMatchingModel(bool down, bool left, bool up, bool right)
 		{
-			NeighboredValues4<GameObject> neighboredValues = _IsValidForGroundModel() ? _groundModels : _roofModels;
+			var neighboredValues = _IsValidForGroundModel() ? _groundModels : _roofModels;
 			if (!neighboredValues.IsEmpty)
 			{
-				(GameObject? model, Orientation orientation2) = neighboredValues.GetMatch(down, left, up, right);
+				var (model, orientation2) = neighboredValues.GetMatch(down, left, up, right);
 				_SetCurrentModel(model, orientation2);
 			}
 			else if ((bool)_currentModel)
@@ -81,13 +81,13 @@ namespace GerkinDev.WatertightGates.Components
 
 		private bool _IsValidForGroundModel()
 		{
-			Vector3Int coordinates = _blockObject.TransformCoordinates(_pathModelSpec.Position);
+			var coordinates = _blockObject.TransformCoordinates(_pathModelSpec.Position);
 			if (!_IsEnforced(coordinates, PathModelType.Roof))
 			{
-				Vector3Int vector3Int = coordinates - new Vector3Int(0, 0, 1);
-				bool num = _terrainService.OnGround(coordinates) ||
+				var vector3Int = coordinates - new Vector3Int(0, 0, 1);
+				var num = _terrainService.OnGround(coordinates) ||
 					_stackableBlockService.IsUnfinishedGroundBlockAt(vector3Int);
-				bool flag = _IsEnforced(vector3Int, PathModelType.Ground);
+				var flag = _IsEnforced(vector3Int, PathModelType.Ground);
 				return num || flag;
 			}
 
@@ -96,7 +96,7 @@ namespace GerkinDev.WatertightGates.Components
 
 		private bool _IsEnforced(Vector3Int coordinates, PathModelType modelType)
 		{
-			PathModelTypeEnforcer? pathModelTypeEnforcer =
+			var pathModelTypeEnforcer =
 				_blockService.GetObjectsWithComponentAt<PathModelTypeEnforcer>(coordinates).FirstOrDefault() ??
 				_previewBlockService.GetObjectsWithComponentAt<PathModelTypeEnforcer>(coordinates).FirstOrDefault();
 			if (pathModelTypeEnforcer != null)
@@ -111,7 +111,7 @@ namespace GerkinDev.WatertightGates.Components
 		{
 			if (!(_currentModel != model) && _currentModelOrientation == orientation)
 			{
-				GameObject currentModel = _currentModel;
+				var currentModel = _currentModel;
 				if (!currentModel || currentModel.activeSelf)
 				{
 					return;
@@ -123,8 +123,8 @@ namespace GerkinDev.WatertightGates.Components
 				_currentModel.SetActive(false);
 			}
 
-			Vector3 localPosition = CoordinateSystem.GridToWorld(orientation.ToPivotOffset());
-			Quaternion localRotation = orientation.ToWorldSpaceRotation();
+			var localPosition = CoordinateSystem.GridToWorld(orientation.ToPivotOffset());
+			var localRotation = orientation.ToWorldSpaceRotation();
 			model.transform.SetLocalPositionAndRotation(localPosition, localRotation);
 			_currentModel = model;
 			_currentModelOrientation = orientation;
@@ -135,7 +135,7 @@ namespace GerkinDev.WatertightGates.Components
 
 		private bool _CanConnectInDirection(Vector3Int origin, Direction2D direction2D)
 		{
-			Direction2D direction2D2 = _blockObject.Orientation.Transform(direction2D);
+			var direction2D2 = _blockObject.Orientation.Transform(direction2D);
 			return _connectionService.CanConnectInDirection(origin, direction2D2);
 		}
 

@@ -6,7 +6,6 @@ namespace GerkinDev.PressurePlates.Extensions
 {
 	public static class BaseComponentExtensions
 	{
-
 		private static string _GetLogPrefix(BaseComponent component)
 		{
 			string who;
@@ -27,14 +26,16 @@ namespace GerkinDev.PressurePlates.Extensions
 
 			return who;
 		}
+
 		public static void Log(this BaseComponent component, string format, params object[] args)
 		{
-			string who = _GetLogPrefix(component);
+			var who = _GetLogPrefix(component);
 			PressurePlates.Log(who, format, args);
 		}
+
 		public static void Warn(this BaseComponent component, string format, params object[] args)
 		{
-			string who = _GetLogPrefix(component);
+			var who = _GetLogPrefix(component);
 			PressurePlates.Warn(who, format, args);
 		}
 	}

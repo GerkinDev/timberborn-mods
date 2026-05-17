@@ -1,5 +1,5 @@
-﻿using HarmonyLib;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using HarmonyLib;
 using Timberborn.AutomationBuildings;
 using Timberborn.Navigation;
 using Timberborn.SingletonSystem;
@@ -80,7 +80,7 @@ namespace GerkinDev.WatertightGates.Services
 			if (_OpenGateCrossings.Count > 0)
 			{
 				Debug.LogFormat("[LateUpdateSingleton] Base updater has {0} members", _OpenGateCrossings.Count);
-				foreach (KeyValuePair<Vector3Int, Vector3Int> kvp in _OpenGateCrossings)
+				foreach (var kvp in _OpenGateCrossings)
 				{
 					Debug.LogFormat("[LateUpdateSingleton] {0} => {1}", kvp.Key, kvp.Value);
 				}
@@ -88,7 +88,7 @@ namespace GerkinDev.WatertightGates.Services
 
 			if (_hasScheduledGates)
 			{
-				foreach (KeyValuePair<IGateLike, GateLikeUpdate> kvp in _gateChangeOperations)
+				foreach (var kvp in _gateChangeOperations)
 				{
 					_TryUpdateGate(kvp.Key, kvp.Value);
 				}
@@ -189,15 +189,15 @@ namespace GerkinDev.WatertightGates.Services
 				return;
 			}
 
-			foreach ((IGateLike? gate, GateLikeUpdate? update) in _gatesWithConflict)
+			foreach (var (gate, update) in _gatesWithConflict)
 			{
 				_gatesWithConflictCache.Add(gate, update);
 			}
 
 			_gatesWithConflict.Clear();
-			foreach ((IGateLike? gate, GateLikeUpdate? update) in _gatesWithConflictCache)
+			foreach (var (gate, update) in _gatesWithConflictCache)
 			{
-				EGateState result = _TryUpdateGate(gate, update);
+				var result = _TryUpdateGate(gate, update);
 			}
 
 			_gatesWithConflictCache.Clear();

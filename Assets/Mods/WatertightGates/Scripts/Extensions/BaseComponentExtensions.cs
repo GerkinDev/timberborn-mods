@@ -14,7 +14,7 @@ namespace GerkinDev.WatertightGates.Extensions
 				who = component.GetType().Name;
 				who += ":" + component.Name;
 				who += "<" + component.GameObject.GetEntityId() + ">";
-				if (component.TryGetComponent<BlockObject>(out BlockObject? blockObject))
+				if (component.TryGetComponent<BlockObject>(out var blockObject))
 				{
 					who += "@" + blockObject.Placement.Coordinates;
 				}
@@ -29,13 +29,13 @@ namespace GerkinDev.WatertightGates.Extensions
 
 		public static void Log(this BaseComponent component, string format, params object[] args)
 		{
-			string who = _GetLogPrefix(component);
+			var who = _GetLogPrefix(component);
 			WatertightGates.Log(who, format, args);
 		}
 
 		public static void Warn(this BaseComponent component, string format, params object[] args)
 		{
-			string who = _GetLogPrefix(component);
+			var who = _GetLogPrefix(component);
 			WatertightGates.Warn(who, format, args);
 		}
 	}

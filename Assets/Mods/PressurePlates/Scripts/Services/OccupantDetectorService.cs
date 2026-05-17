@@ -3,17 +3,13 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
-using Timberborn.BaseComponentSystem;
 using Timberborn.BlockSystem;
 using Timberborn.CharacterModelSystem;
-using Timberborn.Characters;
 using Timberborn.Common;
 using Timberborn.Coordinates;
-using Timberborn.EntityNaming;
 using Timberborn.EntitySystem;
 using Timberborn.TickSystem;
 using UnityEngine;
-using Debug = UnityEngine.Debug;
 
 namespace GerkinDev.PressurePlates.Services
 {
@@ -23,17 +19,24 @@ namespace GerkinDev.PressurePlates.Services
 		private const float _PARTITION_DISTANCE = 5f;
 		private readonly EntityComponentRegistry _entityComponentRegistry;
 
+		private readonly Dictionary<Subscriber, ImmutableArray<CharacterMeta>> _partitions = new();
+		private readonly Stopwatch _stopwatch = new();
+
 		private readonly Dictionary<object, Subscriber> _subscribers = new();
 		private readonly Dictionary<Subscriber, SubscriberState> _subscribersState = new();
-		private readonly GameObject _tickMasterOwner;
 		private readonly TickMaster _tickMaster;
+		private readonly GameObject _tickMasterOwner;
+
+		private int _buildPartitionCount;
+
+		private int _scanCount;
 
 		public OccupantDetectorService(EntityComponentRegistry entityComponentRegistry)
 		{
 			_entityComponentRegistry = entityComponentRegistry;
 			PressurePlates.Log("Initializing the tickmaster");
 
-			_tickMasterOwner = new GameObject("Ticker");
+			_tickMasterOwner = new("Ticker");
 			_tickMaster = _tickMasterOwner.AddComponent<TickMaster>();
 			_tickMaster.OccupantDetectorService = this;
 			_tickMaster.ScanInterval = 0.2f;
@@ -41,17 +44,9 @@ namespace GerkinDev.PressurePlates.Services
 
 		#region ITickableSingleton
 
-		public void Tick()
-		{
-			FullScan();
-		}
+		public void Tick() => FullScan();
 
 		#endregion
-
-		private readonly Dictionary<Subscriber, ImmutableArray<CharacterMeta>> _partitions = new();
-		private readonly Stopwatch _stopwatch = new();
-
-		private int _buildPartitionCount = 0;
 
 		/// <summary>
 		///     Find beavers near watched positions. Beavers within the partitions will be checked on each frame in
@@ -66,18 +61,18 @@ namespace GerkinDev.PressurePlates.Services
 			}
 
 			_stopwatch.Restart();
-			ImmutableArray<BlockOccupant> occupants =
+			var occupants =
 				_entityComponentRegistry.GetEnabled<BlockOccupant>().ToImmutableArray();
-			foreach (Subscriber? subscriber in _subscribers.Values)
+			foreach (var subscriber in _subscribers.Values)
 			{
 				List<CharacterMeta> subscriberPartitionOccupants = new(occupants.Length / 2);
-				List<BlockOccupant> tempOccupants = occupants.ToList();
-				foreach (Vector3Int cell in subscriber.Positions)
+				var tempOccupants = occupants.ToList();
+				foreach (var cell in subscriber.Positions)
 				{
-					for (int i = 0; i < tempOccupants.Count; i++)
+					for (var i = 0; i < tempOccupants.Count; i++)
 					{
-						BlockOccupant? occupant = tempOccupants[i];
-						float distance = Vector3.Distance(occupant.GridCoordinates, cell);
+						var occupant = tempOccupants[i];
+						var distance = Vector3.Distance(occupant.GridCoordinates, cell);
 						// Add to partition, remove from further checks
 						if (distance < _PARTITION_DISTANCE)
 						{
@@ -109,8 +104,6 @@ namespace GerkinDev.PressurePlates.Services
 			);
 		}
 
-		private int _scanCount = 0;
-
 		public bool ScanPartitions()
 		{
 			if (_partitions.Count == 0 && _subscribersState.Count == 0)
@@ -121,19 +114,19 @@ namespace GerkinDev.PressurePlates.Services
 			_stopwatch.Restart();
 			var subscriberCurrentOccupants = new Dictionary<Subscriber, HashSet<BlockOccupant>>(_subscribers.Count);
 			// Ensure previously occupied subscriber will be checked even if no one is within
-			foreach (Subscriber? subscriber in _subscribersState.Keys)
+			foreach (var subscriber in _subscribersState.Keys)
 			{
 				subscriberCurrentOccupants.Add(subscriber, new());
 			}
 
 			// Check each partition
-			foreach ((Subscriber? subscriber, ImmutableArray<CharacterMeta> partitionOccupants) in _partitions)
+			foreach (var (subscriber, partitionOccupants) in _partitions)
 			{
 				subscriberCurrentOccupants[subscriber] = _FilterOccupantsInPartition(subscriber, partitionOccupants);
 			}
 
-			bool dispatched = false;
-			foreach ((Subscriber? subscriber, HashSet<BlockOccupant>? occupants) in subscriberCurrentOccupants)
+			var dispatched = false;
+			foreach (var (subscriber, occupants) in subscriberCurrentOccupants)
 			{
 				dispatched |= _MaybeDispatchToSubscriber(subscriber, occupants);
 			}
