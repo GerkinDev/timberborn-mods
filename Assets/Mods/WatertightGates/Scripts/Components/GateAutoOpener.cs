@@ -1,14 +1,14 @@
 #region Optional dependencies
 
-using System.Linq;
-using OccupantDetectorService = GerkinDev.PressurePlates.Services.OccupantDetectorService;
-using Subscriber = GerkinDev.PressurePlates.Services.OccupantDetectorService.Subscriber;
-using OccupancyEvent = GerkinDev.PressurePlates.Services.OccupantDetectorService.OccupancyEvent;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using GerkinDev.WatertightGates.Components.Specs;
 using Timberborn.BaseComponentSystem;
 using Timberborn.BlockSystem;
 using Timberborn.TimeSystem;
+using OccupantDetectorService = GerkinDev.PressurePlates.Services.OccupantDetectorService;
+using Subscriber = GerkinDev.PressurePlates.Services.OccupantDetectorService.Subscriber;
+using OccupancyEvent = GerkinDev.PressurePlates.Services.OccupantDetectorService.OccupancyEvent;
 
 #endregion
 

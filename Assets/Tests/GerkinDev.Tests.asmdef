@@ -32,6 +32,7 @@
 		"Timberborn.TransformControl.dll",
 		"Timberborn.SerializationSystem.dll",
 		"Timberborn.CharacterModelSystem.dll",
+    "Timberborn.Localization.dll",
 		"Moq.dll"
 	],
 	"autoReferenced": false,

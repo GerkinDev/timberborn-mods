@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using GerkinDev.WatertightGates.Components;
+using GerkinDev.WatertightGates.Services;
 using Timberborn.AutomationBuildingsUI;
 using Timberborn.BaseComponentSystem;
 using Timberborn.CoreUI;
@@ -15,14 +16,14 @@ namespace GerkinDev.WatertightGates.UI
 	internal class WatertightGateFragment : IEntityPanelFragment, ILoadableSingleton
 	{
 		private readonly ILoc _loc;
+		private readonly OptionalDependencies _optionalDependencies;
 		private readonly SliderToggleFactory _sliderToggleFactory;
 		private readonly VisualElementLoader _visualElementLoader;
-		private Label _activeDesc;
+		private Label? _activeDesc;
 		private EnumSliderToggle<WatertightGate.EGateMode>? _activeStateToggle;
-
 		private float? _activeWidth;
 		private VisualElement? _automatedContainer;
-		private Label _inactiveDesc;
+		private Label? _inactiveDesc;
 		private EnumSliderToggle<WatertightGate.EGateMode>? _inactiveStateToggle;
 		private float? _inactiveWidth;
 		private EnumSliderToggle<WatertightGate.EGateMainMode>? _mainModeToggle;
@@ -31,11 +32,12 @@ namespace GerkinDev.WatertightGates.UI
 		private WatertightGate? _target;
 
 		public WatertightGateFragment(VisualElementLoader visualElementLoader, SliderToggleFactory sliderToggleFactory,
-			ILoc loc)
+			ILoc loc, OptionalDependencies optionalDependencies)
 		{
 			_visualElementLoader = visualElementLoader;
 			_sliderToggleFactory = sliderToggleFactory;
 			_loc = loc;
+			_optionalDependencies = optionalDependencies;
 		}
 
 		#region ILoadableSingleton
@@ -50,7 +52,21 @@ namespace GerkinDev.WatertightGates.UI
 				_root.Q<VisualElement>("MainModeToggle"),
 				_root.Q<Label>("MainModeLabel"),
 				() => _target!.MainMode,
-				value => _target!.MainMode = value
+				value => _target!.MainMode = value,
+				_optionalDependencies.PressurePlates
+					? new[]
+					{
+						WatertightGate.EGateMainMode.OPEN,
+						WatertightGate.EGateMainMode.CLOSE,
+						WatertightGate.EGateMainMode.PASS,
+						WatertightGate.EGateMainMode.AUTOMATED
+					}
+					: new[]
+					{
+						WatertightGate.EGateMainMode.OPEN,
+						WatertightGate.EGateMainMode.CLOSE,
+						WatertightGate.EGateMainMode.AUTOMATED
+					}
 			)
 			{
 				IconClassGetter = value => value switch
@@ -102,7 +118,6 @@ namespace GerkinDev.WatertightGates.UI
 				value => _target!.InactiveGateMode = value
 			) { IconClassGetter = GetModeClass, LabelGetter = GetModeLabel, TooltipGetter = GetModeTooltip };
 			_inactiveStateToggle.Initialize();
-			return;
 
 			static string GetModeClass(WatertightGate.EGateMode value) =>
 				value switch
@@ -152,8 +167,16 @@ namespace GerkinDev.WatertightGates.UI
 			}
 
 			var width = Mathf.Max(_activeWidth.Value, _inactiveWidth.Value);
-			_activeDesc.style.width = width;
-			_inactiveDesc.style.width = width;
+
+			if (_activeDesc != null)
+			{
+				_activeDesc.style.width = width;
+			}
+
+			if (_inactiveDesc != null)
+			{
+				_inactiveDesc.style.width = width;
+			}
 		}
 
 		#region IEntityPanelFragment

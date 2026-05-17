@@ -11,10 +11,6 @@ namespace GerkinDev.WatertightGates.Components.UI
 	{
 		private readonly ILoc _loc;
 
-		private WatertightGate _gate;
-
-		private StatusToggle _statusToggle;
-
 		public WatertightGateConflictStatus(ILoc loc)
 		{
 			_loc = loc;
@@ -23,17 +19,28 @@ namespace GerkinDev.WatertightGates.Components.UI
 		private static string _ConflictLocKey => GateConflictStatus.ConflictLocKey;
 		private static string _ConflictShortLocKey => GateConflictStatus.ConflictShortLocKey;
 
+		#region IStartableComponent
+
+		public void Start() => GetComponent<StatusSubject>().RegisterStatus(_statusToggle);
+
+		#endregion
+
+		private void _OnStateChanged(object sender, EventArgs e) =>
+			_statusToggle.Toggle(_gate.CurrentGateState == EGateState.OpenConflict);
+
+		#region IAwakableComponent
+
+		private WatertightGate _gate = null!;
+		private StatusToggle _statusToggle = null!;
+
 		public void Awake()
 		{
 			_gate = GetComponent<WatertightGate>();
 			_statusToggle = StatusToggle.CreateNormalStatusWithAlertAndFloatingIcon("GateConflict",
 				_loc.T(_ConflictLocKey), _loc.T(_ConflictShortLocKey));
-			_gate.ConflictStateChanged += OnStateChanged;
+			_gate.ConflictStateChanged += _OnStateChanged;
 		}
 
-		public void Start() => GetComponent<StatusSubject>().RegisterStatus(_statusToggle);
-
-		public void OnStateChanged(object sender, EventArgs e) =>
-			_statusToggle.Toggle(_gate.CurrentGateState == EGateState.OpenConflict);
+		#endregion
 	}
 }
