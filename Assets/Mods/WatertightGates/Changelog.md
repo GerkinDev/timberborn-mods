@@ -1,3 +1,13 @@
+[h1] v1.0.2.0 (17/05/2026) [/h1]
+
+[list]
+    [*] Add support for copy/paste settings
+    [*] Add open/close animations
+    [*] Fix models and path joins during construction
+[/list]
+
+Fix loading for Timberborn 1.0.13
+
 [h1] v1.0.1.2 (15/05/2026) [/h1]
 
 Fix loading for Timberborn 1.0.13
