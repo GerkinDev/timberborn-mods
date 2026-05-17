@@ -190,8 +190,8 @@
         "Z": 0.0
       }
     },
-    "OpenTime": 0.0,
-    "CloseTime": 0.0,
+    "OpenTime": 5.0,
+    "CloseTime": 1.0,
     "PathStart": {
       "X": 0,
       "Y": -1,

@@ -113,7 +113,6 @@ namespace GerkinDev.WatertightGates.Services
 
 		public void OnNavMeshUpdated(NavMeshUpdate navMeshUpdate)
 		{
-			Debug.LogFormat("[OnNavMeshUpdated] NavMesh updated");
 			_hasScheduledUnblocking = true;
 		}
 
@@ -125,7 +124,7 @@ namespace GerkinDev.WatertightGates.Services
 		{
 			if (_baseGameGateUpdater._openGateCrossings.Count > 0)
 			{
-				Debug.LogFormat("[UpdateSingleton] Base updater has {0} members",
+				WatertightGates.Log("[UpdateSingleton] Base updater has {0} members",
 					_baseGameGateUpdater._openGateCrossings.Count);
 			}
 		}

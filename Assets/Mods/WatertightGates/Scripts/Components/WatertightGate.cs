@@ -112,6 +112,7 @@ namespace GerkinDev.WatertightGates.Components
 		{
 			CurrentGateState = EGateState.Closed;
 			_ScheduleStateUpdate();
+			_didInitialize = true;
 		}
 
 		#endregion
@@ -178,6 +179,8 @@ namespace GerkinDev.WatertightGates.Components
 			}
 		}
 
+		private bool _didInitialize;
+		private bool _didScheduledForCorrectState;
 		private void _UpdateState()
 		{
 			EGateMode actualGateMode = _currentGateState != EGateState.Open ? EGateMode.CLOSE : _CurrentGateMode;
@@ -197,7 +200,14 @@ namespace GerkinDev.WatertightGates.Components
 					break;
 			}
 
-			_gateTransformController.IsOpen = actualGateMode == EGateMode.OPEN;
+			if (_didInitialize && _didScheduledForCorrectState)
+			{
+				_gateTransformController.IsOpen = actualGateMode == EGateMode.OPEN;
+			}
+			else
+			{
+				_gateTransformController.SetImmediateOpen(actualGateMode == EGateMode.OPEN);
+			}
 		}
 
 		private void _NotifyConflictStateChanged() => ConflictStateChanged?.Invoke(this, EventArgs.Empty);
@@ -363,6 +373,10 @@ namespace GerkinDev.WatertightGates.Components
 				EGateState prevState = _currentGateState;
 				_currentGateState = value;
 				_UpdateState();
+				if (_didInitialize)
+				{
+					_didScheduledForCorrectState = true;
+				}
 				if (
 					prevState != _currentGateState &&
 					(prevState == EGateState.OpenConflict || _currentGateState == EGateState.OpenConflict)

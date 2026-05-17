@@ -1,359 +1,359 @@
 {
-	"BlockObjectNavMeshSettingsSpec": {
-		"BlockedEdges": [
-			{
-				"End": {
-					"X": 1,
-					"Y": 0,
-					"Z": 0
-				},
-				"Group": "",
-				"Start": {
-					"X": 0,
-					"Y": 0,
-					"Z": 0
-				}
-			},
-			{
-				"End": {
-					"X": -1,
-					"Y": 0,
-					"Z": 0
-				},
-				"Group": "",
-				"Start": {
-					"X": 0,
-					"Y": 0,
-					"Z": 0
-				}
-			}
-		],
-		"EdgeGroups": [
-			{
-				"AddedEdges": [
-					{
-						"End": {
-							"X": 0,
-							"Y": 1,
-							"Z": 0
-						},
-						"IsTwoWay": false,
-						"Start": {
-							"X": 0,
-							"Y": 0,
-							"Z": 0
-						}
-					},
-					{
-						"End": {
-							"X": 0,
-							"Y": -1,
-							"Z": 0
-						},
-						"IsTwoWay": false,
-						"Start": {
-							"X": 0,
-							"Y": 0,
-							"Z": 0
-						}
-					}
-				],
-				"Cost": 0,
-				"Group": {
-					"GroupName": "",
-					"UseGroup": false
-				},
-				"IsPath": true
-			}
-		],
-		"GenerateFloorsOnStackable": false,
-		"NoAutoWalls": false,
-		"UnblockedCoordinates": []
-	},
-	"BlockObjectSpec": {
-		"BaseZ": 0,
-		"Blocks": [
-			{
-				"MatterBelow": "GroundOrStackable",
-				"Occupations": "Bottom, Top, Path, Middle",
-				"OccupyAllBelow": false,
-				"Stackable": "None",
-				"Underground": false
-			},
-			{
-				"MatterBelow": "Any",
-				"Occupations": "All",
-				"OccupyAllBelow": false,
-				"Stackable": "BlockObject",
-				"Underground": false
-			}
-		],
-		"Entrance": {
-			"Coordinates": {
-				"X": 0,
-				"Y": 0,
-				"Z": 0
-			},
-			"HasEntrance": false
-		},
-		"Flippable": false,
-		"Overridable": false,
-		"Size": {
-			"X": 1,
-			"Y": 1,
-			"Z": 2
-		}
-	},
-	"BlockObjectWithPathRangeSpec": {},
-	"BuildingModelSpec": {
-		"ConstructionModeModel": "Finished",
-		"FinishedModelName": "#Finished",
-		"FinishedUncoveredModelName": "",
-		"UndergroundModelDepth": 0,
-		"UndergroundModelName": "",
-		"UnfinishedModelName": "#Unfinished"
-	},
-	"BuildingSpec": {
-		"BuildingCost": [
-			{
-				"Amount": 10,
-				"Id": "Log"
-			},
-			{
-				"Amount": 6,
-				"Id": "Plank"
-			},
-			{
-				"Amount": 6,
-				"Id": "Gear"
-			},
-			{
-				"Amount": 6,
-				"Id": "ScrapMetal"
-			}
-		],
-		"DrawRangeBoundsOnIt": false,
-		"FinishableWithBeaversOnSite": false,
-		"LoopingSoundName": "",
-		"PlaceFinished": false,
-		"ScienceCost": 400,
-		"SelectionSoundName": "Floodgate"
-	},
-	"Children": {
-		"#Finished": {
-			"Children": {
-				"DirtPath0000": {
-					"TimbermeshSpec": {
-						"Model": "Buildings/Paths/Path/DirtPath0000.Model"
-					}
-				},
-				"DirtPath0010": {
-					"TimbermeshSpec": {
-						"Model": "Buildings/Paths/Path/DirtPath0010.Model"
-					}
-				},
-				"DirtPath0011": {
-					"TimbermeshSpec": {
-						"Model": "Buildings/Paths/Path/DirtPath0011.Model"
-					}
-				},
-				"DirtPath0111": {
-					"TimbermeshSpec": {
-						"Model": "Buildings/Paths/Path/DirtPath0111.Model"
-					}
-				},
-				"DirtPath1010": {
-					"TimbermeshSpec": {
-						"Model": "Buildings/Paths/Path/DirtPath1010.Model"
-					}
-				},
-				"DirtPath1111": {
-					"TimbermeshSpec": {
-						"Model": "Buildings/Paths/Path/DirtPath1111.Model"
-					}
-				}
-			},
-			"CollidersSpec": {
-				"BoxColliders": [
-					{
-						"Center": {
-							"X": 0.5,
-							"Y": 1.45,
-							"Z": 0.5
-						},
-						"Size": {
-							"X": 1,
-							"Y": 1.1,
-							"Z": 1
-						}
-					},
-					{
-						"Center": {
-							"X": 0.1,
-							"Y": 0.45,
-							"Z": 0.5
-						},
-						"Size": {
-							"X": 0.2,
-							"Y": 0.9,
-							"Z": 1
-						}
-					},
-					{
-						"Center": {
-							"X": 0.9,
-							"Y": 0.45,
-							"Z": 0.5
-						},
-						"Size": {
-							"X": 0.2,
-							"Y": 0.9,
-							"Z": 1
-						}
-					}
-				],
-				"CapsuleColliders": [],
-				"SphereColliders": []
-			},
-			"TimbermeshSpec": {
-				"Model": "Buildings/Paths/WatertightGate/WatertightGate.Flat.IronTeeth.Model"
-			}
-		},
-		"#Unfinished": {
-			"Children": {
-				"ConstructionBase1x1#nested": {
-					"BlueprintPath": "ConstructionBases/ConstructionBase1x1/ConstructionBase1x1.blueprint"
-				},
-				"ConstructionStage0": {
-					"CollidersSpec": {
-						"BoxColliders": [
-							{
-								"Center": {
-									"X": 0.5,
-									"Y": 0.102597028,
-									"Z": 0.5
-								},
-								"Size": {
-									"X": 1,
-									"Y": 0.200555,
-									"Z": 1
-								}
-							}
-						],
-						"CapsuleColliders": [],
-						"SphereColliders": []
-					},
-					"TimbermeshSpec": {
-						"Model": "Buildings/Paths/WatertightGate/WatertightGate.Flat.IronTeeth.Model"
-					}
-				}
-			}
-		}
-	},
-	"ConstructionSiteProgressVisualizerSpec": {
-		"ProgressThresholds": [
-			0
-		]
-	},
-	"FreePositionedDynamicPathModelSpec": {
-		"GroundModelPrefix": "DirtPath",
-		"Position": {
-			"X": 0,
-			"Y": 0,
-			"Z": 0
-		},
-		"RoofModelPrefix": ""
-	},
-	"LabeledEntitySpec": {
-		"DescriptionLocKey": "GerkinDev.WatertightGates.Building.WatertightGate.Flat.Description",
-		"DisplayNameLocKey": "GerkinDev.WatertightGates.Building.WatertightGate.Flat.DisplayName",
-		"FlavorDescriptionLocKey": "GerkinDev.WatertightGates.Building.WatertightGate.Flat.FlavorDescription",
-		"Icon": "Buildings/Paths/WatertightGate/WatertightGate.Flat"
-	},
-	"MergeableObjectModelEnforcerSpec": {},
-	"PathSpec": {
-		"MainPathCoordinates": {
-			"X": 0,
-			"Y": 0,
-			"Z": 0
-		}
-	},
-	"PlaceableBlockObjectSpec": {
-		"CanBeAttachedToTerrainSide": false,
-		"CustomPivot": {
-			"Coordinates": {
-				"X": 0,
-				"Y": 0,
-				"Z": 0
-			},
-			"HasCustomPivot": false
-		},
-		"DevModeTool": false,
-		"Layout": "Single",
-		"ToolGroupId": "Paths",
-		"ToolOrder": 61,
-		"ToolShape": "Square"
-	},
-	"TemplateSpec": {
-		"BackwardCompatibleTemplateNames": [],
-		"DisablingFeatureToggle": "",
-		"RequiredFeatureToggle": "",
-		"TemplateName": "GerkinDev.WatertightGate.Flat.IronTeeth"
-	},
-	"WatertightGateSpec": {
-		"Anchor": "#WatertightGate.Flat.IronTeeth.GateAnchor",
-		"CloseTime": 0,
-		"CloseTransform": {
-			"Position": {
-				"X": 0,
-				"Y": 0,
-				"Z": 0
-			},
-			"Rotation": {
-				"X": 0,
-				"Y": 0,
-				"Z": 0
-			}
-		},
-		"OpenTime": 0,
-		"OpenTransform": {
-			"Position": {
-				"X": 0,
-				"Y": 1,
-				"Z": 0
-			},
-			"Rotation": {
-				"X": 0,
-				"Y": 0,
-				"Z": 0
-			}
-		},
-		"PathCenter": {
-			"X": 0,
-			"Y": 0,
-			"Z": 0
-		},
-		"PathEnd": {
-			"X": 0,
-			"Y": 1,
-			"Z": 0
-		},
-		"PathStart": {
-			"X": 0,
-			"Y": -1,
-			"Z": 0
-		},
-		"WaterBlockingPositions": [
-			{
-				"X": 0,
-				"Y": 0,
-				"Z": 1
-			}
-		],
-		"WaterDynamicPosition": {
-			"X": 0,
-			"Y": 0,
-			"Z": 0
-		}
-	}
+  "BlockObjectNavMeshSettingsSpec": {
+    "BlockedEdges": [
+      {
+        "End": {
+          "X": 1,
+          "Y": 0,
+          "Z": 0
+        },
+        "Group": "",
+        "Start": {
+          "X": 0,
+          "Y": 0,
+          "Z": 0
+        }
+      },
+      {
+        "End": {
+          "X": -1,
+          "Y": 0,
+          "Z": 0
+        },
+        "Group": "",
+        "Start": {
+          "X": 0,
+          "Y": 0,
+          "Z": 0
+        }
+      }
+    ],
+    "EdgeGroups": [
+      {
+        "AddedEdges": [
+          {
+            "End": {
+              "X": 0,
+              "Y": 1,
+              "Z": 0
+            },
+            "IsTwoWay": false,
+            "Start": {
+              "X": 0,
+              "Y": 0,
+              "Z": 0
+            }
+          },
+          {
+            "End": {
+              "X": 0,
+              "Y": -1,
+              "Z": 0
+            },
+            "IsTwoWay": false,
+            "Start": {
+              "X": 0,
+              "Y": 0,
+              "Z": 0
+            }
+          }
+        ],
+        "Cost": 0,
+        "Group": {
+          "GroupName": "",
+          "UseGroup": false
+        },
+        "IsPath": true
+      }
+    ],
+    "GenerateFloorsOnStackable": false,
+    "NoAutoWalls": false,
+    "UnblockedCoordinates": []
+  },
+  "BlockObjectSpec": {
+    "BaseZ": 0,
+    "Blocks": [
+      {
+        "MatterBelow": "GroundOrStackable",
+        "Occupations": "Bottom, Top, Path, Middle",
+        "OccupyAllBelow": false,
+        "Stackable": "None",
+        "Underground": false
+      },
+      {
+        "MatterBelow": "Any",
+        "Occupations": "All",
+        "OccupyAllBelow": false,
+        "Stackable": "BlockObject",
+        "Underground": false
+      }
+    ],
+    "Entrance": {
+      "Coordinates": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "HasEntrance": false
+    },
+    "Flippable": false,
+    "Overridable": false,
+    "Size": {
+      "X": 1,
+      "Y": 1,
+      "Z": 2
+    }
+  },
+  "BlockObjectWithPathRangeSpec": {},
+  "BuildingModelSpec": {
+    "ConstructionModeModel": "Finished",
+    "FinishedModelName": "#Finished",
+    "FinishedUncoveredModelName": "",
+    "UndergroundModelDepth": 0,
+    "UndergroundModelName": "",
+    "UnfinishedModelName": "#Unfinished"
+  },
+  "BuildingSpec": {
+    "BuildingCost": [
+      {
+        "Amount": 10,
+        "Id": "Log"
+      },
+      {
+        "Amount": 6,
+        "Id": "Plank"
+      },
+      {
+        "Amount": 6,
+        "Id": "Gear"
+      },
+      {
+        "Amount": 6,
+        "Id": "ScrapMetal"
+      }
+    ],
+    "DrawRangeBoundsOnIt": false,
+    "FinishableWithBeaversOnSite": false,
+    "LoopingSoundName": "",
+    "PlaceFinished": false,
+    "ScienceCost": 400,
+    "SelectionSoundName": "Floodgate"
+  },
+  "Children": {
+    "#Finished": {
+      "Children": {
+        "DirtPath0000": {
+          "TimbermeshSpec": {
+            "Model": "Buildings/Paths/Path/DirtPath0000.Model"
+          }
+        },
+        "DirtPath0010": {
+          "TimbermeshSpec": {
+            "Model": "Buildings/Paths/Path/DirtPath0010.Model"
+          }
+        },
+        "DirtPath0011": {
+          "TimbermeshSpec": {
+            "Model": "Buildings/Paths/Path/DirtPath0011.Model"
+          }
+        },
+        "DirtPath0111": {
+          "TimbermeshSpec": {
+            "Model": "Buildings/Paths/Path/DirtPath0111.Model"
+          }
+        },
+        "DirtPath1010": {
+          "TimbermeshSpec": {
+            "Model": "Buildings/Paths/Path/DirtPath1010.Model"
+          }
+        },
+        "DirtPath1111": {
+          "TimbermeshSpec": {
+            "Model": "Buildings/Paths/Path/DirtPath1111.Model"
+          }
+        }
+      },
+      "CollidersSpec": {
+        "BoxColliders": [
+          {
+            "Center": {
+              "X": 0.5,
+              "Y": 1.45,
+              "Z": 0.5
+            },
+            "Size": {
+              "X": 1,
+              "Y": 1.1,
+              "Z": 1
+            }
+          },
+          {
+            "Center": {
+              "X": 0.1,
+              "Y": 0.45,
+              "Z": 0.5
+            },
+            "Size": {
+              "X": 0.2,
+              "Y": 0.9,
+              "Z": 1
+            }
+          },
+          {
+            "Center": {
+              "X": 0.9,
+              "Y": 0.45,
+              "Z": 0.5
+            },
+            "Size": {
+              "X": 0.2,
+              "Y": 0.9,
+              "Z": 1
+            }
+          }
+        ],
+        "CapsuleColliders": [],
+        "SphereColliders": []
+      },
+      "TimbermeshSpec": {
+        "Model": "Buildings/Paths/WatertightGate/WatertightGate.Flat.IronTeeth.Model"
+      }
+    },
+    "#Unfinished": {
+      "Children": {
+        "ConstructionBase1x1#nested": {
+          "BlueprintPath": "ConstructionBases/ConstructionBase1x1/ConstructionBase1x1.blueprint"
+        },
+        "ConstructionStage0": {
+          "CollidersSpec": {
+            "BoxColliders": [
+              {
+                "Center": {
+                  "X": 0.5,
+                  "Y": 0.102597028,
+                  "Z": 0.5
+                },
+                "Size": {
+                  "X": 1,
+                  "Y": 0.200555,
+                  "Z": 1
+                }
+              }
+            ],
+            "CapsuleColliders": [],
+            "SphereColliders": []
+          },
+          "TimbermeshSpec": {
+            "Model": "Buildings/Paths/WatertightGate/WatertightGate.Flat.IronTeeth.Model"
+          }
+        }
+      }
+    }
+  },
+  "ConstructionSiteProgressVisualizerSpec": {
+    "ProgressThresholds": [
+      0
+    ]
+  },
+  "FreePositionedDynamicPathModelSpec": {
+    "GroundModelPrefix": "DirtPath",
+    "Position": {
+      "X": 0,
+      "Y": 0,
+      "Z": 0
+    },
+    "RoofModelPrefix": ""
+  },
+  "LabeledEntitySpec": {
+    "DescriptionLocKey": "GerkinDev.WatertightGates.Building.WatertightGate.Flat.Description",
+    "DisplayNameLocKey": "GerkinDev.WatertightGates.Building.WatertightGate.Flat.DisplayName",
+    "FlavorDescriptionLocKey": "GerkinDev.WatertightGates.Building.WatertightGate.Flat.FlavorDescription",
+    "Icon": "Buildings/Paths/WatertightGate/WatertightGate.Flat"
+  },
+  "MergeableObjectModelEnforcerSpec": {},
+  "PathSpec": {
+    "MainPathCoordinates": {
+      "X": 0,
+      "Y": 0,
+      "Z": 0
+    }
+  },
+  "PlaceableBlockObjectSpec": {
+    "CanBeAttachedToTerrainSide": false,
+    "CustomPivot": {
+      "Coordinates": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "HasCustomPivot": false
+    },
+    "DevModeTool": false,
+    "Layout": "Single",
+    "ToolGroupId": "Paths",
+    "ToolOrder": 61,
+    "ToolShape": "Square"
+  },
+  "TemplateSpec": {
+    "BackwardCompatibleTemplateNames": [],
+    "DisablingFeatureToggle": "",
+    "RequiredFeatureToggle": "",
+    "TemplateName": "GerkinDev.WatertightGate.Flat.IronTeeth"
+  },
+  "WatertightGateSpec": {
+    "Anchor": "#WatertightGate.Flat.IronTeeth.GateAnchor",
+    "CloseTime": 1,
+    "CloseTransform": {
+      "Position": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "Rotation": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      }
+    },
+    "OpenTime": 5,
+    "OpenTransform": {
+      "Position": {
+        "X": 0,
+        "Y": 1,
+        "Z": 0
+      },
+      "Rotation": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      }
+    },
+    "PathCenter": {
+      "X": 0,
+      "Y": 0,
+      "Z": 0
+    },
+    "PathEnd": {
+      "X": 0,
+      "Y": 1,
+      "Z": 0
+    },
+    "PathStart": {
+      "X": 0,
+      "Y": -1,
+      "Z": 0
+    },
+    "WaterBlockingPositions": [
+      {
+        "X": 0,
+        "Y": 0,
+        "Z": 1
+      }
+    ],
+    "WaterDynamicPosition": {
+      "X": 0,
+      "Y": 0,
+      "Z": 0
+    }
+  }
 }

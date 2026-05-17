@@ -3,7 +3,7 @@
 	"rootNamespace": "GerkinDev.Tests",
 	"references": [
 		"UnityEngine.TestRunner",
-		"GerkinDev.WatertightGates",
+		"GerkinDev.WatertightGates"
 	],
 	"includePlatforms": [
 		"Editor"
