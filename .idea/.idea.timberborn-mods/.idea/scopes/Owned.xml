@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="Owned" pattern="file:Assets/Mods//*&amp;&amp;!file:Assets/Mods/HelloWorld//*&amp;&amp;!file:Assets/Mods/OverwritesExample//*&amp;&amp;!file:Assets/Mods/ShantySpeaker//*&amp;&amp;!file:Assets/Mods/YearOfTheSnakeBeaverTails//*" />
+</component>

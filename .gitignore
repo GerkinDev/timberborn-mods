@@ -17,7 +17,7 @@
 /omnisharp.json
 
 # JetBrains Rider files
-/.idea
+#/.idea
 *.iml
 /Assets/Plugins/Editor.meta
 /Assets/Plugins/Editor/JetBrains/
