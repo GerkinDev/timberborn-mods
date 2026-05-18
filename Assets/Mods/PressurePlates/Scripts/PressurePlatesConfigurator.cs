@@ -12,6 +12,9 @@ namespace GerkinDev.PressurePlates
 	{
 		protected override void Configure()
 		{
+			Bind<ModInfo>().ToInstance(PressurePlatesModStarter.ModInfo);
+			Bind<LogicModeSerializer>().AsSingleton();
+			Bind<PressurePlateVersionService>().AsSingleton();
 			Bind<OccupantDetectorService>().AsSingleton();
 			Bind<PressurePlate>().AsTransient();
 			MultiBind<TemplateModule>().ToProvider(() =>

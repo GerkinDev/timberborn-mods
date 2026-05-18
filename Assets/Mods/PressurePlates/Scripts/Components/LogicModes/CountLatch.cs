@@ -1,13 +1,15 @@
 using System;
+using System.Text.Json.Nodes;
 using GerkinDev.PressurePlates.Services;
+using Version = Timberborn.Versioning.Version;
 
 namespace GerkinDev.PressurePlates.Components.LogicModes
 {
 	public class CountLatch : IPressurePlateLogicMode
 	{
-		private int _count;
 		private int _activationThreshold = 2;
 		private bool _active;
+		private int _count;
 
 		#region IPressurePlateEventHandler
 
@@ -22,6 +24,7 @@ namespace GerkinDev.PressurePlates.Components.LogicModes
 		}
 
 		public event EventHandler<bool>? ActiveChanged;
+
 		public bool Active
 		{
 			get => _active;
@@ -31,9 +34,32 @@ namespace GerkinDev.PressurePlates.Components.LogicModes
 				{
 					return;
 				}
+
 				_active = value;
 				ActiveChanged?.Invoke(this, _active);
 			}
+		}
+
+		public JsonObject SerializeState()
+		{
+			var obj = new JsonObject
+			{
+				[nameof(_count)] = _count,
+				[nameof(_activationThreshold)] = _activationThreshold,
+				[nameof(_active)] = _active
+			};
+			return obj;
+		}
+
+		public static CountLatch Load(JsonObject state, Version? previousVersion)
+		{
+			var latch = new CountLatch
+			{
+				_active = state[nameof(_active)]?.GetValue<bool>() ?? false,
+				_activationThreshold = state[nameof(_activationThreshold)]?.GetValue<int>() ?? 0,
+				_count = state[nameof(_count)]?.GetValue<int>() ?? 0
+			};
+			return latch;
 		}
 
 		#endregion

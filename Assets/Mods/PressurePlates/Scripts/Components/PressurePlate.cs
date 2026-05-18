@@ -5,20 +5,26 @@ using GerkinDev.PressurePlates.Services;
 using Timberborn.BaseComponentSystem;
 using Timberborn.BlockSystem;
 using Timberborn.Illumination;
+using Timberborn.Persistence;
 using Timberborn.WorldPersistence;
 
 namespace GerkinDev.PressurePlates.Components
 {
-	internal class PressurePlate : BaseComponent, IAwakableComponent, IFinishedStateListener
+	internal class PressurePlate : BaseComponent, IAwakableComponent, IFinishedStateListener, IPersistentEntity
 	{
+		internal static readonly ComponentKey _persistenceKey = new(nameof(PressurePlate));
+		private readonly LogicModeSerializer _logicModeSerializer;
 		private readonly OccupantDetectorService _occupantDetectorService;
 		private IPressurePlateLogicMode _logicMode = new CountLatch();
+		private readonly PropertyKey<string> _logicModeKey = new(nameof(_logicMode));
 
-		public PressurePlate(OccupantDetectorService occupantDetectorService)
+		public PressurePlate(OccupantDetectorService occupantDetectorService, LogicModeSerializer logicModeSerializer)
 		{
 			_occupantDetectorService = occupantDetectorService;
-			_SetupLogicMode(_logicMode);
+			_logicModeSerializer = logicModeSerializer;
 		}
+
+		public bool HasOccupant { get; private set; }
 
 		private void _SetupLogicMode(IPressurePlateLogicMode mode)
 		{
@@ -26,8 +32,6 @@ namespace GerkinDev.PressurePlates.Components
 			mode.ActiveChanged += _OnActiveChanged;
 			_logicMode = mode;
 		}
-
-		public bool HasOccupant { get; private set; }
 
 		private void _OnEnter(object sender, OccupantDetectorService.OccupancyEvent evt)
 		{
@@ -48,6 +52,7 @@ namespace GerkinDev.PressurePlates.Components
 			HasOccupant = evt.Within.Any();
 			_illuminator.Toggle(HasOccupant);
 		}
+
 		private void _OnActiveChanged(object sender, bool active)
 		{
 			this.Log("Active changed");
@@ -87,12 +92,30 @@ namespace GerkinDev.PressurePlates.Components
 			}
 
 			_occupantDetectorService.Unsubscribe(this);
-			if (_subscriber != null)
-			{
-				_subscriber.OnEnter -= _OnEnter;
-				_subscriber.OnExit -= _OnExit;
-				_subscriber = null;
-			}
+
+			_subscriber.OnEnter -= _OnEnter;
+			_subscriber.OnExit -= _OnExit;
+			_subscriber = null;
+		}
+
+		#endregion
+
+		#region IPersistentEntity
+
+		public void Save(IEntitySaver entitySaver)
+		{
+			var serializedLogicMode = _logicModeSerializer.Serialize(_logicMode);
+			var objectSaver = entitySaver.GetComponent(_persistenceKey);
+			objectSaver.Set(_logicModeKey, serializedLogicMode);
+		}
+
+		public void Load(IEntityLoader entityLoader)
+		{
+			var serializedLogicMode = entityLoader.GetAsString(_persistenceKey, _logicModeKey);
+			var logicMode = serializedLogicMode is null
+				? _logicMode
+				: _logicModeSerializer.Deserialize(serializedLogicMode) ?? _logicMode;
+			_SetupLogicMode(logicMode);
 		}
 
 		#endregion
