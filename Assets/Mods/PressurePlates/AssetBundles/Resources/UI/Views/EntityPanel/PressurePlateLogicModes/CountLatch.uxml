@@ -19,11 +19,12 @@
                                   class="game-text-normal entity-panel-setting__text"/>
             <cui:NineSliceIntegerField name="CurrentCountInput" max-length="9"
                                        class="entity-panel-setting__input entity-panel-input"/>
-            <ui:VisualElement name="CurrentCountReset" class="entity-panel__button-wrapper">
-                <cui:NineSliceButton name="CurrentCountResetButton" text="Reset"
-                                     class="entity-panel__text entity-fragment__button entity-fragment__button--red"
-                                     style="padding-top: 0; padding-bottom: 0; padding-left: 0; padding-right: 0;"/>
-            </ui:VisualElement>
         </cui:NineSliceVisualElement>
+        <ui:VisualElement name="CurrentCountReset" class="entity-panel__button-wrapper">
+            <cui:NineSliceButton name="CurrentCountResetButton" text="Reset"
+                                 class="entity-panel__text entity-fragment__button entity-fragment__button--red"/>
+        </ui:VisualElement>
+        <Timberborn.AutomationUI.TransmitterSelector name="CurrentCountResetAutomatorContainer"
+                                                     label-loc-key="Automation.Input.Reset"/>
     </cui:NineSliceVisualElement>
 </ui:UXML>

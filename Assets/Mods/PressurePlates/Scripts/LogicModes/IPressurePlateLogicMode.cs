@@ -1,6 +1,7 @@
 using System;
 using System.Text.Json.Nodes;
 using GerkinDev.PressurePlates.Services;
+using Timberborn.Automation;
 using UnityEngine.UIElements;
 using Version = Timberborn.Versioning.Version;
 
@@ -19,7 +20,7 @@ namespace GerkinDev.PressurePlates.LogicModes
 		IPressurePlateLogicModeUI<TLogicMode> ConnectToLogicMode(TLogicMode logicMode);
 	}
 
-	public interface IPressurePlateLogicMode
+	public interface IPressurePlateLogicMode : ICombinationalTransmitter
 	{
 		bool Active { get; }
 		void OnEnter(OccupantDetectorService.OccupancyEvent evt);
@@ -36,6 +37,9 @@ namespace GerkinDev.PressurePlates.LogicModes
 
 		static IPressurePlateLogicMode LoadState(JsonObject state, Version? previousVersion) =>
 			throw new NotImplementedException();
+
+
+		void PostLoad();
 
 		#endregion
 	}

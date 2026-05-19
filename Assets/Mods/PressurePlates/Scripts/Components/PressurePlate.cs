@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using GerkinDev.PressurePlates.Extensions;
 using GerkinDev.PressurePlates.LogicModes;
@@ -5,6 +6,7 @@ using GerkinDev.PressurePlates.Services;
 using Timberborn.Automation;
 using Timberborn.BaseComponentSystem;
 using Timberborn.BlockSystem;
+using Timberborn.EntitySystem;
 using Timberborn.Illumination;
 using Timberborn.Persistence;
 using Timberborn.WorldPersistence;
@@ -13,7 +15,7 @@ using UnityEngine;
 namespace GerkinDev.PressurePlates.Components
 {
 	internal class PressurePlate : BaseComponent, IAwakableComponent, IFinishedStateListener, IPersistentEntity,
-		ITransmitter
+		ICombinationalTransmitter, IPostLoadableEntity
 	{
 		private static readonly ComponentKey _persistenceKey = new(nameof(PressurePlate));
 		private readonly PropertyKey<string> _logicModeKey = new(nameof(LogicMode));
@@ -21,6 +23,7 @@ namespace GerkinDev.PressurePlates.Components
 		private readonly OccupantDetectorService _occupantDetectorService;
 
 		private bool _hasOccupant;
+		private IPressurePlateLogicMode? _logicMode;
 
 		public PressurePlate(OccupantDetectorService occupantDetectorService, LogicModeSerializer logicModeSerializer)
 		{
@@ -28,14 +31,34 @@ namespace GerkinDev.PressurePlates.Components
 			_logicModeSerializer = logicModeSerializer;
 		}
 
-		public IPressurePlateLogicMode LogicMode { get; private set; } = new CountLatch();
-
-		private void _SetupLogicMode(IPressurePlateLogicMode mode)
+		public IPressurePlateLogicMode LogicMode
 		{
-			LogicMode.ActiveChanged -= _OnActiveChanged;
-			mode.ActiveChanged += _OnActiveChanged;
-			LogicMode = mode;
+			get => _logicMode ?? throw new NullReferenceException(nameof(_logicMode));
+			private set
+			{
+				if (_logicMode == value)
+				{
+					return;
+				}
+
+				if (_logicMode is IDisposable logicMode)
+				{
+					logicMode.Dispose();
+					_logicMode.ActiveChanged -= _OnActiveChanged;
+				}
+
+				_logicMode = value;
+				_logicMode.ActiveChanged += _OnActiveChanged;
+			}
 		}
+
+		public void Evaluate()
+		{
+			this.Log("Evaluate");
+			LogicMode.Evaluate();
+		}
+
+		public void PostLoadEntity() => LogicMode.PostLoad();
 
 		private void _OnEnter(object sender, OccupantDetectorService.OccupancyEvent evt)
 		{
@@ -133,10 +156,7 @@ namespace GerkinDev.PressurePlates.Components
 		public void Load(IEntityLoader entityLoader)
 		{
 			var serializedLogicMode = entityLoader.GetAsString(_persistenceKey, _logicModeKey);
-			var logicMode = serializedLogicMode is null
-				? LogicMode
-				: _logicModeSerializer.Deserialize(serializedLogicMode) ?? LogicMode;
-			_SetupLogicMode(logicMode);
+			LogicMode = _logicModeSerializer.Deserialize(_automator, serializedLogicMode);
 		}
 
 		#endregion

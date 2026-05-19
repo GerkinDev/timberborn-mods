@@ -43,7 +43,7 @@ namespace GerkinDev.PressurePlates.UI
 				}
 			}
 
-			_logicModeUi = _root.Q<VisualElement>("LogicModeUi");
+			_logicModeUi = _root.Q<VisualElement>("PressurePlateWrapper");
 			ClearFragment();
 
 			return _root;
@@ -54,26 +54,52 @@ namespace GerkinDev.PressurePlates.UI
 			var component = entity.GetComponent<PressurePlate>();
 			if (component is null)
 			{
-				_logicModeUi?.Clear();
+				if (_activeUI is not null)
+				{
+					_logicModeUi?.Remove(_activeUI.Element);
+				}
+
 				_activeUI?.Reset();
 				_activeUI = null;
 				return;
 			}
 
 			_target = component;
-			UpdateFragment();
 			_root.ToggleDisplayStyle(true);
+
+			var newLogicModeUi = _modesDisplay[component.LogicMode.GetType()];
+			if (newLogicModeUi == _activeUI)
+			{
+				return;
+			}
+
 			_activeUI?.Reset();
 			_activeUI = _modesDisplay[component.LogicMode.GetType()].ConnectToLogicMode(component.LogicMode);
 			_logicModeUi?.Add(_activeUI.Element);
+			if (_activeUI is IEntityPanelFragment panelFragment)
+			{
+				panelFragment.ShowFragment(component);
+			}
+
+			UpdateFragment();
 		}
 
 		public void ClearFragment()
 		{
 			_target = null;
 			_root?.ToggleDisplayStyle(false);
-			_logicModeUi?.Clear();
+			if (_activeUI is IEntityPanelFragment panelFragment)
+			{
+				panelFragment.ClearFragment();
+			}
+
+			if (_activeUI is not null)
+			{
+				_logicModeUi?.Remove(_activeUI.Element);
+			}
+
 			_activeUI?.Reset();
+			_activeUI = null;
 		}
 
 		public void UpdateFragment()

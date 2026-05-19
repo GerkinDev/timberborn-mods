@@ -7,10 +7,7 @@
     <Style src="project://database/Assets/Resources/UI/Views/Common/EntityPanel/EntityPanelCommonStyle.uss?fileID=7433441132597879392&amp;guid=893cedbf9f9e0e7479308895a1a3f67f&amp;type=3#EntityPanelCommonStyle"/>
     <Style src="project://database/Assets/Resources/UI/Views/Game/EntityPanel/EntityPanelGameStyle.uss?fileID=7433441132597879392&amp;guid=db9f9634e1905804882a145e12c8c8a4&amp;type=3#EntityPanelGameStyle"/>-->
     <cui:NineSliceVisualElement name="PressurePlateWrapper"
-                                class="entity-sub-panel PressurePlateWrapper-fragment bg-sub-box--green"
-                                style="align-items: flex-start; align-self: stretch; flex-direction: column;">
+                                class="entity-sub-panel PressurePlateWrapper-fragment bg-sub-box--green">
         <Style src="project://database/Assets/Mods/PressurePlates/AssetBundles/Resources/UI/Styles/EntityPanel/PressurePlate.uss"/>
-        <ui:VisualElement name="LogicModeUi" class="entity-panel-setting">
-        </ui:VisualElement>
     </cui:NineSliceVisualElement>
 </ui:UXML>
