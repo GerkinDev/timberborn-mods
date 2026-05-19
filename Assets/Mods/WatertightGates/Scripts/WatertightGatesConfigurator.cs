@@ -15,13 +15,12 @@ namespace GerkinDev.WatertightGates
 	{
 		protected override void Configure()
 		{
-			Bind<GateLikeUpdater>().AsSingleton();
-
 			Bind<WatertightGateFragment>().AsSingleton();
+			MultiBind<EntityPanelModule>().ToProvider<WatertightGateEntityPanelModuleProvider>().AsSingleton();
+			
+			Bind<GateLikeUpdater>().AsSingleton();
 			var optionalDependencies = new OptionalDependencies();
 			Bind<OptionalDependencies>().ToInstance(optionalDependencies);
-			MultiBind<EntityPanelModule>().ToProvider<WatertightGateEntityPanelModuleProvider>().AsSingleton();
-
 			Bind<WatertightGate>().AsTransient();
 			Bind<WatertightGateTransformController>().AsTransient();
 			Bind<NavMeshBlocker>().AsTransient();

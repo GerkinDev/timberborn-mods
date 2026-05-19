@@ -1,0 +1,12 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:cui="Timberborn.CoreUI" xsi="http://www.w3.org/2001/XMLSchema-instance"
+         engine="UnityEngine.UIElements" editor="UnityEditor.UIElements"
+         noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <cui:NineSliceVisualElement name="PressurePlateWrapper"
+                                class="entity-sub-panel PressurePlateWrapper-fragment bg-sub-box--green"
+                                style="align-items: flex-start; align-self: stretch; flex-direction: column;">
+        <Style
+                src="project://database/Assets/Mods/PressurePlateWrapper/AssetBundles/Resources/UI/Styles/EntityPanel/PressurePlateWrapper.uss"/>
+        <ui:VisualElement name="LogicModeUi">
+        </ui:VisualElement>
+    </cui:NineSliceVisualElement>
+</ui:UXML>

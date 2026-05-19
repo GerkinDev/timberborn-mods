@@ -1,0 +1,11 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:cui="Timberborn.CoreUI" xsi="http://www.w3.org/2001/XMLSchema-instance"
+         engine="UnityEngine.UIElements" editor="UnityEditor.UIElements"
+         noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <cui:NineSliceVisualElement name="CountLatchWrapper"
+                                class="entity-sub-panel CountLatchWrapper-fragment bg-sub-box--green"
+                                style="align-items: flex-start; align-self: stretch; flex-direction: column;">
+        <Style
+                src="project://database/Assets/Mods/PressurePlateWrapper/AssetBundles/Resources/UI/Styles/EntityPanel/PressurePlateWrapper.uss"/>
+        <ui:Label name="MainModeLabel" text="Count Latch" class="entity-panel__text"/>
+    </cui:NineSliceVisualElement>
+</ui:UXML>

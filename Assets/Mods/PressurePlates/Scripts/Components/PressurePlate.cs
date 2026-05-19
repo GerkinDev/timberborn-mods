@@ -12,11 +12,11 @@ namespace GerkinDev.PressurePlates.Components
 {
 	internal class PressurePlate : BaseComponent, IAwakableComponent, IFinishedStateListener, IPersistentEntity
 	{
-		internal static readonly ComponentKey _persistenceKey = new(nameof(PressurePlate));
+		private static readonly ComponentKey _persistenceKey = new(nameof(PressurePlate));
 		private readonly LogicModeSerializer _logicModeSerializer;
 		private readonly OccupantDetectorService _occupantDetectorService;
-		private IPressurePlateLogicMode _logicMode = new CountLatch();
-		private readonly PropertyKey<string> _logicModeKey = new(nameof(_logicMode));
+		public IPressurePlateLogicMode LogicMode { get; private set; } = new CountLatch();
+		private readonly PropertyKey<string> _logicModeKey = new(nameof(LogicMode));
 
 		public PressurePlate(OccupantDetectorService occupantDetectorService, LogicModeSerializer logicModeSerializer)
 		{
@@ -28,22 +28,22 @@ namespace GerkinDev.PressurePlates.Components
 
 		private void _SetupLogicMode(IPressurePlateLogicMode mode)
 		{
-			_logicMode.ActiveChanged -= _OnActiveChanged;
+			LogicMode.ActiveChanged -= _OnActiveChanged;
 			mode.ActiveChanged += _OnActiveChanged;
-			_logicMode = mode;
+			LogicMode = mode;
 		}
 
 		private void _OnEnter(object sender, OccupantDetectorService.OccupancyEvent evt)
 		{
 			this.Log("Entered");
-			_logicMode.OnEnter(evt);
+			LogicMode.OnEnter(evt);
 			_OnChangeOccupancy(evt);
 		}
 
 		private void _OnExit(object sender, OccupantDetectorService.OccupancyEvent evt)
 		{
 			this.Log("Exited");
-			_logicMode.OnExit(evt);
+			LogicMode.OnExit(evt);
 			_OnChangeOccupancy(evt);
 		}
 
@@ -104,7 +104,7 @@ namespace GerkinDev.PressurePlates.Components
 
 		public void Save(IEntitySaver entitySaver)
 		{
-			var serializedLogicMode = _logicModeSerializer.Serialize(_logicMode);
+			var serializedLogicMode = _logicModeSerializer.Serialize(LogicMode);
 			var objectSaver = entitySaver.GetComponent(_persistenceKey);
 			objectSaver.Set(_logicModeKey, serializedLogicMode);
 		}
@@ -113,8 +113,8 @@ namespace GerkinDev.PressurePlates.Components
 		{
 			var serializedLogicMode = entityLoader.GetAsString(_persistenceKey, _logicModeKey);
 			var logicMode = serializedLogicMode is null
-				? _logicMode
-				: _logicModeSerializer.Deserialize(serializedLogicMode) ?? _logicMode;
+				? LogicMode
+				: _logicModeSerializer.Deserialize(serializedLogicMode) ?? LogicMode;
 			_SetupLogicMode(logicMode);
 		}
 
