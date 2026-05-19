@@ -1,6 +1,6 @@
 using System.Linq;
-using GerkinDev.PressurePlates.Components.LogicModes;
 using GerkinDev.PressurePlates.Extensions;
+using GerkinDev.PressurePlates.LogicModes;
 using GerkinDev.PressurePlates.Services;
 using Timberborn.Automation;
 using Timberborn.BaseComponentSystem;

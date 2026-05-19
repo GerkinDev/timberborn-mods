@@ -4,21 +4,13 @@ using GerkinDev.PressurePlates.Services;
 using UnityEngine.UIElements;
 using Version = Timberborn.Versioning.Version;
 
-namespace GerkinDev.PressurePlates.Components.LogicModes
+namespace GerkinDev.PressurePlates.LogicModes
 {
 	public interface IPressurePlateLogicModeUI
 	{
 		VisualElement Element { get; }
 		IPressurePlateLogicModeUI ConnectToLogicMode(IPressurePlateLogicMode logicMode);
 		void Reset();
-
-		void UpdateFragment()
-		{
-		}
-
-		void InitializeFragment()
-		{
-		}
 	}
 
 	public interface IPressurePlateLogicModeUI<TLogicMode> : IPressurePlateLogicModeUI

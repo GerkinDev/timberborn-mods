@@ -1,6 +1,6 @@
 using System;
 using System.Text.Json.Nodes;
-using GerkinDev.PressurePlates.Components.LogicModes;
+using GerkinDev.PressurePlates.LogicModes;
 
 namespace GerkinDev.PressurePlates.Services
 {

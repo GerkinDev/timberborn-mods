@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 using GerkinDev.PressurePlates.Components;
-using GerkinDev.PressurePlates.Components.LogicModes;
+using GerkinDev.PressurePlates.LogicModes;
 using Timberborn.BaseComponentSystem;
 using Timberborn.CoreUI;
 using Timberborn.EntityPanelSystem;
 using Timberborn.Localization;
-using Timberborn.SliderToggleSystem;
 using UnityEngine.UIElements;
+using CountLatch = GerkinDev.PressurePlates.LogicModes.CountLatch;
 
 namespace GerkinDev.PressurePlates.UI
 {
@@ -22,12 +22,12 @@ namespace GerkinDev.PressurePlates.UI
 
 		public PressurePlateFragment(
 			VisualElementLoader visualElementLoader,
-			SliderToggleFactory sliderToggleFactory,
-			ILoc loc
+			ILoc loc,
+			CountLatch.Fragment countLatchFragment
 		)
 		{
 			_visualElementLoader = visualElementLoader;
-			_modesDisplay[typeof(CountLatch)] = new CountLatch.Fragment(visualElementLoader, loc);
+			_modesDisplay[typeof(CountLatch)] = countLatchFragment;
 		}
 
 		#region IEntityPanelFragment
@@ -35,9 +35,12 @@ namespace GerkinDev.PressurePlates.UI
 		public VisualElement InitializeFragment()
 		{
 			_root = _visualElementLoader.LoadVisualElement("EntityPanel/PressurePlate");
-			foreach (var (_, display) in _modesDisplay)
+			foreach (var (_, fragment) in _modesDisplay)
 			{
-				display.InitializeFragment();
+				if (fragment is IEntityPanelFragment panelFragment)
+				{
+					panelFragment.InitializeFragment();
+				}
 			}
 
 			_logicModeUi = _root.Q<VisualElement>("LogicModeUi");
@@ -80,7 +83,10 @@ namespace GerkinDev.PressurePlates.UI
 				return;
 			}
 
-			_activeUI?.UpdateFragment();
+			if (_activeUI is IEntityPanelFragment panelFragment)
+			{
+				panelFragment.UpdateFragment();
+			}
 		}
 
 		#endregion

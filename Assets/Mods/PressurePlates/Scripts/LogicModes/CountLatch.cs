@@ -3,7 +3,7 @@ using System.Text.Json.Nodes;
 using GerkinDev.PressurePlates.Services;
 using Version = Timberborn.Versioning.Version;
 
-namespace GerkinDev.PressurePlates.Components.LogicModes
+namespace GerkinDev.PressurePlates.LogicModes
 {
 	public partial class CountLatch : IPressurePlateLogicMode
 	{

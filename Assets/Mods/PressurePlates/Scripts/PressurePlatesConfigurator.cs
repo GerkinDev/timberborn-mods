@@ -6,6 +6,7 @@ using GerkinDev.PressurePlates.UI;
 using Timberborn.EntityPanelSystem;
 using Timberborn.Illumination;
 using Timberborn.TemplateInstantiation;
+using CountLatch = GerkinDev.PressurePlates.LogicModes.CountLatch;
 
 namespace GerkinDev.PressurePlates
 {
@@ -15,6 +16,7 @@ namespace GerkinDev.PressurePlates
 		protected override void Configure()
 		{
 			Bind<PressurePlateFragment>().AsSingleton();
+			Bind<CountLatch.Fragment>().AsSingleton();
 			MultiBind<EntityPanelModule>().ToProvider<PressurePlateEntityPanelModuleProvider>().AsSingleton();
 
 			Bind<ModInfo>().ToInstance(PressurePlatesModStarter.ModInfo);

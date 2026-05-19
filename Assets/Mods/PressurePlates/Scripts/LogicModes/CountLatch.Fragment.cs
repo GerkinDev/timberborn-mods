@@ -1,13 +1,16 @@
 using System;
+using Timberborn.AutomationUI;
+using Timberborn.BaseComponentSystem;
 using Timberborn.CoreUI;
+using Timberborn.EntityPanelSystem;
 using Timberborn.Localization;
 using UnityEngine.UIElements;
 
-namespace GerkinDev.PressurePlates.Components.LogicModes
+namespace GerkinDev.PressurePlates.LogicModes
 {
 	public partial class CountLatch
 	{
-		public class Fragment : IPressurePlateLogicModeUI<CountLatch>
+		public class Fragment : IPressurePlateLogicModeUI<CountLatch>, IEntityPanelFragment
 		{
 			private readonly ILoc _loc;
 			private readonly VisualElementLoader _visualElementLoader;
@@ -22,12 +25,6 @@ namespace GerkinDev.PressurePlates.Components.LogicModes
 				_visualElementLoader = visualElementLoader;
 				_loc = loc;
 			}
-
-			#region ILoadableSingleton
-
-			public void Load() => PressurePlates.Log("CountLatchFragment.Load");
-
-			#endregion
 
 			private void _OnThresholdChanged(ChangeEvent<int> evt)
 			{
@@ -69,8 +66,13 @@ namespace GerkinDev.PressurePlates.Components.LogicModes
 
 			public void Reset() => _countLatch = null;
 
-			public void InitializeFragment()
+			#endregion
+
+			#region IEntityPanelFragment
+
+			public VisualElement InitializeFragment()
 			{
+				PressurePlates.Log(nameof(InitializeFragment));
 				_root = _visualElementLoader.LoadVisualElement("EntityPanel/PressurePlateLogicModes/CountLatch");
 				_thresholdField = _root.Q<NineSliceIntegerField>("ThresholdInput");
 				_thresholdField.RegisterValueChangedCallback(_OnThresholdChanged);
@@ -79,10 +81,17 @@ namespace GerkinDev.PressurePlates.Components.LogicModes
 				_currentCountField.SetEnabled(false);
 				_currentCountResetButton = _root.Q<NineSliceButton>("CurrentCountResetButton");
 				_currentCountResetButton.RegisterCallback<ClickEvent>(_OnResetCount);
+				return _root;
 			}
+
+			public void ShowFragment(BaseComponent entity) => PressurePlates.Log(nameof(ShowFragment));
+
+			public void ClearFragment() => PressurePlates.Log(nameof(ClearFragment));
+
 
 			public void UpdateFragment()
 			{
+				PressurePlates.Log(nameof(UpdateFragment));
 				if (_countLatch is null)
 				{
 					return;
