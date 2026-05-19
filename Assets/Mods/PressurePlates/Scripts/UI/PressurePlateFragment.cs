@@ -6,20 +6,19 @@ using Timberborn.BaseComponentSystem;
 using Timberborn.CoreUI;
 using Timberborn.EntityPanelSystem;
 using Timberborn.Localization;
-using Timberborn.SingletonSystem;
 using Timberborn.SliderToggleSystem;
 using UnityEngine.UIElements;
 
 namespace GerkinDev.PressurePlates.UI
 {
-	internal class PressurePlateFragment : IEntityPanelFragment, ILoadableSingleton
+	internal class PressurePlateFragment : IEntityPanelFragment
 	{
-		private readonly VisualElementLoader _visualElementLoader;
-		private VisualElement? _root;
-		private PressurePlate? _target;
 		private readonly Dictionary<Type, IPressurePlateLogicModeUI> _modesDisplay = new();
+		private readonly VisualElementLoader _visualElementLoader;
 		private IPressurePlateLogicModeUI? _activeUI;
 		private VisualElement? _logicModeUi;
+		private VisualElement? _root;
+		private PressurePlate? _target;
 
 		public PressurePlateFragment(
 			VisualElementLoader visualElementLoader,
@@ -28,31 +27,17 @@ namespace GerkinDev.PressurePlates.UI
 		)
 		{
 			_visualElementLoader = visualElementLoader;
-			_modesDisplay[typeof(CountLatch)] = new CountLatchFragment(visualElementLoader, loc);
+			_modesDisplay[typeof(CountLatch)] = new CountLatch.Fragment(visualElementLoader, loc);
 		}
-
-		#region ILoadableSingleton
-
-		public void Load()
-		{
-			PressurePlates.Log("PressurePlateFragment.Load");
-			_root = _visualElementLoader.LoadVisualElement("EntityPanel/PressurePlate");
-			foreach (var (_, display) in _modesDisplay)
-			{
-				display.Load();
-			}
-		}
-
-		#endregion
 
 		#region IEntityPanelFragment
 
 		public VisualElement InitializeFragment()
 		{
-			PressurePlates.Log("PressurePlateFragment.InitializeFragment");
-			if (_root == null)
+			_root = _visualElementLoader.LoadVisualElement("EntityPanel/PressurePlate");
+			foreach (var (_, display) in _modesDisplay)
 			{
-				throw new NullReferenceException($"{nameof(PressurePlateFragment)} has not been initialized");
+				display.InitializeFragment();
 			}
 
 			_logicModeUi = _root.Q<VisualElement>("LogicModeUi");
@@ -66,6 +51,7 @@ namespace GerkinDev.PressurePlates.UI
 			var component = entity.GetComponent<PressurePlate>();
 			if (component is null)
 			{
+				_logicModeUi?.Clear();
 				_activeUI?.Reset();
 				_activeUI = null;
 				return;
@@ -76,7 +62,7 @@ namespace GerkinDev.PressurePlates.UI
 			_root.ToggleDisplayStyle(true);
 			_activeUI?.Reset();
 			_activeUI = _modesDisplay[component.LogicMode.GetType()].ConnectToLogicMode(component.LogicMode);
-			_logicModeUi.Add(_activeUI.Element);
+			_logicModeUi?.Add(_activeUI.Element);
 		}
 
 		public void ClearFragment()

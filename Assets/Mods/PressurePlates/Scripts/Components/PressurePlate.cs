@@ -2,21 +2,25 @@ using System.Linq;
 using GerkinDev.PressurePlates.Components.LogicModes;
 using GerkinDev.PressurePlates.Extensions;
 using GerkinDev.PressurePlates.Services;
+using Timberborn.Automation;
 using Timberborn.BaseComponentSystem;
 using Timberborn.BlockSystem;
 using Timberborn.Illumination;
 using Timberborn.Persistence;
 using Timberborn.WorldPersistence;
+using UnityEngine;
 
 namespace GerkinDev.PressurePlates.Components
 {
-	internal class PressurePlate : BaseComponent, IAwakableComponent, IFinishedStateListener, IPersistentEntity
+	internal class PressurePlate : BaseComponent, IAwakableComponent, IFinishedStateListener, IPersistentEntity,
+		ITransmitter
 	{
 		private static readonly ComponentKey _persistenceKey = new(nameof(PressurePlate));
+		private readonly PropertyKey<string> _logicModeKey = new(nameof(LogicMode));
 		private readonly LogicModeSerializer _logicModeSerializer;
 		private readonly OccupantDetectorService _occupantDetectorService;
-		public IPressurePlateLogicMode LogicMode { get; private set; } = new CountLatch();
-		private readonly PropertyKey<string> _logicModeKey = new(nameof(LogicMode));
+
+		private bool _hasOccupant;
 
 		public PressurePlate(OccupantDetectorService occupantDetectorService, LogicModeSerializer logicModeSerializer)
 		{
@@ -24,7 +28,7 @@ namespace GerkinDev.PressurePlates.Components
 			_logicModeSerializer = logicModeSerializer;
 		}
 
-		public bool HasOccupant { get; private set; }
+		public IPressurePlateLogicMode LogicMode { get; private set; } = new CountLatch();
 
 		private void _SetupLogicMode(IPressurePlateLogicMode mode)
 		{
@@ -49,25 +53,42 @@ namespace GerkinDev.PressurePlates.Components
 
 		private void _OnChangeOccupancy(OccupantDetectorService.OccupancyEvent evt)
 		{
-			HasOccupant = evt.Within.Any();
-			_illuminator.Toggle(HasOccupant);
+			_hasOccupant = evt.Within.Any();
+			_UpdateIlluminator();
 		}
 
 		private void _OnActiveChanged(object sender, bool active)
 		{
-			this.Log("Active changed");
-			_illuminator.Toggle(active);
+			this.Log("Active changed: {0}", active);
+			_automator.SetState(active);
+			_UpdateIlluminator();
+		}
+
+		private void _UpdateIlluminator()
+		{
+			var active = _automator.State == AutomatorState.On;
+			if (!active && !_hasOccupant)
+			{
+				_illuminator.Toggle(false);
+				return;
+			}
+
+			var strength = Mathf.Clamp((active ? 0.67f : 0) + (_hasOccupant ? 0.33f : 0), 0, 1);
+			_illuminator.SetStrength(strength);
+			_illuminator.Toggle(true);
 		}
 
 		#region IAwakableComponent
 
 		private BlockObject _blockObject = null!;
 		private Illuminator _illuminator = null!;
+		private Automator _automator = null!;
 
 		public void Awake()
 		{
 			_blockObject = GetComponent<BlockObject>();
 			_illuminator = GetComponent<Illuminator>();
+			_automator = GetComponent<Automator>();
 		}
 
 		#endregion

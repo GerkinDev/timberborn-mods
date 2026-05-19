@@ -1,12 +1,16 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:cui="Timberborn.CoreUI" xsi="http://www.w3.org/2001/XMLSchema-instance"
          engine="UnityEngine.UIElements" editor="UnityEditor.UIElements"
          noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <!--<Style src="project://database/Assets/Resources/UI/Views/Core/CoreStyle.uss?fileID=7433441132597879392&amp;guid=3118bb1ca26b28940aa41272f380e0ef&amp;type=3#CoreStyle"/>
+    <Style src="project://database/Assets/Resources/UI/Views/Common/CommonStyle.uss?fileID=7433441132597879392&amp;guid=85eb77f9f64f3ec419a5ed214212b52c&amp;type=3#CommonStyle"/>
+    <Style src="project://database/Assets/Resources/UI/Views/Game/GameStyle.uss?fileID=7433441132597879392&amp;guid=6eef2ba7bfbbe584995dc557a887ef08&amp;type=3#GameStyle"/>
+    <Style src="project://database/Assets/Resources/UI/Views/Common/EntityPanel/EntityPanelCommonStyle.uss?fileID=7433441132597879392&amp;guid=893cedbf9f9e0e7479308895a1a3f67f&amp;type=3#EntityPanelCommonStyle"/>
+    <Style src="project://database/Assets/Resources/UI/Views/Game/EntityPanel/EntityPanelGameStyle.uss?fileID=7433441132597879392&amp;guid=db9f9634e1905804882a145e12c8c8a4&amp;type=3#EntityPanelGameStyle"/>-->
     <cui:NineSliceVisualElement name="PressurePlateWrapper"
                                 class="entity-sub-panel PressurePlateWrapper-fragment bg-sub-box--green"
                                 style="align-items: flex-start; align-self: stretch; flex-direction: column;">
-        <Style
-                src="project://database/Assets/Mods/PressurePlateWrapper/AssetBundles/Resources/UI/Styles/EntityPanel/PressurePlateWrapper.uss"/>
-        <ui:VisualElement name="LogicModeUi">
+        <Style src="project://database/Assets/Mods/PressurePlates/AssetBundles/Resources/UI/Styles/EntityPanel/PressurePlate.uss"/>
+        <ui:VisualElement name="LogicModeUi" class="entity-panel-setting">
         </ui:VisualElement>
     </cui:NineSliceVisualElement>
 </ui:UXML>

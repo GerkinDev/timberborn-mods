@@ -97,11 +97,11 @@ namespace GerkinDev.PressurePlates.Services
 			}
 
 			_stopwatch.Stop();
-			PressurePlates.Log(
-				"Partition {0} ended in {1}ms",
-				_buildPartitionCount++,
-				_stopwatch.Elapsed.TotalMilliseconds
-			);
+			// PressurePlates.Log(
+			// 	"Partition {0} ended in {1}ms",
+			// 	_buildPartitionCount++,
+			// 	_stopwatch.Elapsed.TotalMilliseconds
+			// );
 		}
 
 		public bool ScanPartitions()
@@ -131,7 +131,7 @@ namespace GerkinDev.PressurePlates.Services
 				dispatched |= _MaybeDispatchToSubscriber(subscriber, occupants);
 			}
 
-			PressurePlates.Log("Scan {0} ended in {1}ms", _scanCount++, _stopwatch.Elapsed.TotalMilliseconds);
+			// PressurePlates.Log("Scan {0} ended in {1}ms", _scanCount++, _stopwatch.Elapsed.TotalMilliseconds);
 			_stopwatch.Stop();
 			return dispatched;
 		}

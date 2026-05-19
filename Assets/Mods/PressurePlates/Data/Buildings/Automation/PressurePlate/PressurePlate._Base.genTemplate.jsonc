@@ -5,6 +5,9 @@
     "FlavorDescriptionLocKey": "GerkinDev.PressurePlate.Building.PressurePlate.FlavorDescription",
     "Icon": "Buildings/Automation/Chronometer/ChronometerIcon"
   },
+  "NamedEntitySpec": {
+    "IsEditable": true
+  },
   "BuildingSpec": {
     "SelectionSoundName": "Automation",
     "LoopingSoundName": "",

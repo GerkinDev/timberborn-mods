@@ -18,7 +18,7 @@ namespace GerkinDev.PressurePlates
 	// ReSharper disable once ClassNeverInstantiated.Global -- Injected
 	public class PressurePlatesModStarter : IModStarter
 	{
-		private static ModInfo _modInfo;
+		private static ModInfo? _modInfo;
 
 		public static ModInfo ModInfo => _modInfo ?? throw new NullReferenceException(nameof(_modInfo));
 

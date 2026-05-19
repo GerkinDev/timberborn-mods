@@ -23,9 +23,11 @@ namespace GerkinDev.PressurePlates.Services
 					stateNode?.AsObject() is { } stateNodeObject
 				))
 			{
+				PressurePlates.Warn(format: "Failed to deserialize state", saved);
 				return null;
 			}
 
+			PressurePlates.Log(format: "Loading logic mode {0} with state {1}", type, stateNodeObject.ToJsonString());
 			return type switch
 			{
 				nameof(CountLatch) => CountLatch.Load(stateNodeObject, _pressurePlateVersionService.PreviousVersion),
@@ -40,7 +42,9 @@ namespace GerkinDev.PressurePlates.Services
 				{ "type", logicMode.GetType().Name },
 				{ "state", logicMode.SerializeState() }
 			};
-			return obj.ToString();
+			var stringified = obj.ToJsonString();
+			PressurePlates.Log(format: "Serialized state to {0}", stringified);
+			return obj.ToJsonString();
 		}
 	}
 }

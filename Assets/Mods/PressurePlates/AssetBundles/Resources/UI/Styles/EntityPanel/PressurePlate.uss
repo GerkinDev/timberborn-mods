@@ -1,2 +1,9 @@
 :root {
 }
+
+.PressurePlates-fragment__row {
+    flex-direction: row;
+    justify-content: flex-start;
+    align-self: stretch;
+    align-items: center;
+}

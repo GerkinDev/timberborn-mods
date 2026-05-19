@@ -5,7 +5,7 @@ using Version = Timberborn.Versioning.Version;
 
 namespace GerkinDev.PressurePlates.Components.LogicModes
 {
-	public class CountLatch : IPressurePlateLogicMode
+	public partial class CountLatch : IPressurePlateLogicMode
 	{
 		private int _activationThreshold = 2;
 		private bool _active;
@@ -16,12 +16,14 @@ namespace GerkinDev.PressurePlates.Components.LogicModes
 		public void OnEnter(OccupantDetectorService.OccupancyEvent evt)
 		{
 			_count++;
-			Active = _count >= _activationThreshold;
+			Update();
 		}
 
 		public void OnExit(OccupantDetectorService.OccupancyEvent evt)
 		{
 		}
+
+		public void Update() => Active = _count >= _activationThreshold;
 
 		public event EventHandler<bool>? ActiveChanged;
 

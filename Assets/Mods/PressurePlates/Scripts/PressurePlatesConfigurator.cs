@@ -16,7 +16,7 @@ namespace GerkinDev.PressurePlates
 		{
 			Bind<PressurePlateFragment>().AsSingleton();
 			MultiBind<EntityPanelModule>().ToProvider<PressurePlateEntityPanelModuleProvider>().AsSingleton();
-			
+
 			Bind<ModInfo>().ToInstance(PressurePlatesModStarter.ModInfo);
 			Bind<LogicModeSerializer>().AsSingleton();
 			Bind<PressurePlateVersionService>().AsSingleton();
@@ -26,7 +26,7 @@ namespace GerkinDev.PressurePlates
 			{
 				TemplateModule.Builder builder = new();
 				builder.AddDecorator<PressurePlateSpec, PressurePlate>();
-				builder.AddDecorator<PressurePlate, Illuminator>();
+				builder.AddDecorator<PressurePlate, CustomizableIlluminator>();
 				return builder.Build();
 			}).AsSingleton();
 		}
